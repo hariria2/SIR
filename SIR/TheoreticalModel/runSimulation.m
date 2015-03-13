@@ -29,7 +29,7 @@ SIR1.singlePlot('All',1)
 
 %SIR1.makeMovie(3)
 
-open('../SIRXCode/SIR/Results/res_3-2-2015/sim_v26.fig')
+open('../../Results/res_3-2-2015/sim_v26.fig')
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
 hold on
 SIR1.plot('LegendOn')
