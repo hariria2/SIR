@@ -1,4 +1,6 @@
-Data/
+Data/data*
+Data/movie*
 Documentation/
 LiteratureReview/
-Results/
+Results/*
+SIR.xcodeproj/*

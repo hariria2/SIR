@@ -28,20 +28,23 @@ void generateSourceData();
 void Example1_SingleLocation(bool SaveData=true);
 void Example1_MultiLocation(bool SaveData=true);
 void Example2_MultiLocation(bool SaveData=true);
+
+void Ex1_Eig_SingleLocation(bool SaveData=true);
 //=================
 
-// Main ==================
+// ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
+    //Example1_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
- 	return 0;
+ 	Ex1_Eig_SingleLocation();
+    return 0;
  }
-// End main===============
+// ========================= End main =================
 
 
-// Example Simulations ==============================
+// ========================= Example Simulations ==============================
 void Example1_SingleLocation(bool SaveData){
     int maxdim = 2000;
     
@@ -273,9 +276,73 @@ void Example2_MultiLocation(bool SaveData){
         archie.Simulate();
     }
 }
-// End Examples ======================================
 
-// Utilities ===========================================
+void Ex1_Eig_SingleLocation(bool SaveData){
+    int maxdim = 2000;
+    
+    // Setting up parameters
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    
+    
+    // Instantiate Classes
+    Domain myCity("DiseasVille", cityBoundary);
+    Place home(1, "home", "Home", homeBoundary,myCity);
+    
+    double hco[2];
+    
+    vector<Place*> homes;
+    vector<Place*> works;
+    vector<Place*> schools;
+    vector<Place*> cemeteries;
+    
+    
+    homes.push_back(&home);
+    int population = 2000;
+    
+    Disease flu("Flu", 25, 40, 200);
+    
+    vector<Person*> people;
+    for (int i=0; i < population; i++){
+        string name = "randomName"+to_string(i);
+        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        
+        normal_distribution<double> ageDist(25,20);
+        double randage  = ageDist(generator);
+        int age = (randage < 0)? 0:floor(randage);
+        
+        getDefaultCoordinates(&home, hco);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 25,40,15, true);
+        
+        people.push_back(p);
+    };
+    (people.front())->setState('I');
+    
+    double InitialTime = 0;
+    double EndTime = 200;
+    double TimeStep = 1;
+    int l = floor((EndTime-InitialTime)/TimeStep);
+    
+    
+    if (SaveData) {
+        string ver;
+        cout << "Enter version number for single location simulation: ";
+        cin >> ver;
+        string dataFolder = "data_single_v"+ver+"_";
+        string movieFolder = "movie_single_v"+ver+"_";
+        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
+        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        archie.Simulate();
+        data.writeSIR();
+    }else{
+        Architect archie(InitialTime,EndTime,TimeStep, people);
+        archie.Simulate();
+    }
+}
+// ========================= End Examples ======================================
+
+// ========================= Utilities ===========================================
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain){
  
 	int xdist  = homesize[1];
@@ -409,4 +476,4 @@ void readPeopleData(){
 void generateSourceData(){
     
 }
-// End utilities ======================================
+// ========================= End utilities ======================================
