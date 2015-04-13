@@ -1,5 +1,5 @@
 clear all; close all; clc;
-ver = '26';
+ver = '1';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -13,6 +13,7 @@ else
     dataFolder = ['../../Data/data_single_v',ver,'_',timestamp];
     movieFolder = ['../../Data/movie_single_v',ver,'_',timestamp];
 end
+
 vis = Visualization(dataFolder, movieFolder,1,1);
 
 %vis.MakeMovie();

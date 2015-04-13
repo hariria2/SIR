@@ -34,8 +34,7 @@ classdef SIRDE < handle
         function dy = Update(obj,y)
             dy = y + obj.flow(obj.t,y)*obj.dt;
         end
-        function dy = flow(obj,~, y)
-            
+        function dy = flow(obj,~, y)  
             dy    =  zeros(size(y));   
             dy(1) = -obj.beta*y(1)*y(2);
             dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2);
@@ -228,6 +227,22 @@ classdef SIRDE < handle
                 close(h)
             end   
             obj.Frames = frames;
+        end
+        function saveEigenData(obj)
+            DataFolder = '../../Data/EigenData_v';
+            ver = '1';
+            [y,m,d]    = datevec(date());
+            timestamp  = [num2str(m),'-',num2str(d),'-',num2str(y)];
+            DataFolder = [DataFolder, ver,'_',timestamp];
+            
+            lam1 = obj.lam(1,:)';
+            lam2 = obj.lam(2,:)';
+            lam3 = obj.lam(3,:)';
+            TIME = obj.t';
+            
+            T_lam = table(TIME,lam1,lam2,lam3);
+            
+            
         end
     end
 end
