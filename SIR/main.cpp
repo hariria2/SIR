@@ -35,10 +35,10 @@ void Ex1_Eig_SingleLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    //Example1_SingleLocation();
+    Example1_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
- 	Ex1_Eig_SingleLocation();
+ 	//Ex1_Eig_SingleLocation();
     return 0;
  }
 // ========================= End main =================
@@ -320,7 +320,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 200;
+    double EndTime = 100;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     

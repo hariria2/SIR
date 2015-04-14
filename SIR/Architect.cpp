@@ -35,6 +35,7 @@ Architect::Architect(double t0, double te, double ts,
     D = 0;
 }
 
+
 Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool store)
 {
     
@@ -50,6 +51,7 @@ Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool 
     R = 0;
     D = 0;
 }
+
 
 Architect::~Architect() {
 
@@ -96,21 +98,6 @@ void Architect::Simulate(){
 	}
 }
 void Architect::Update(double t, Storage* data){
-    
-    //Disease flu = (PeoplePtr.front())->getDisease();
-    //Domain* myCity = (PeoplePtr.front())->getDomain();
-    //Place* home = (PeoplePtr.front())->getHome();
-    //double hco[2];
-    //hco[0] = ((PeoplePtr.front())->getHomeCoordinates())[0];
-    //hco[1] = ((PeoplePtr.front())->getHomeCoordinates())[1];
-    
-    //int s = PeoplePtr.size();
-    //Person *p = new Person(s+1, "newBaby", 0, 'S', flu, myCity, home, hco, 10,10,10, true);
-    //PeoplePtr.push_back(p);
-    
-    //s = PeoplePtr.size();
-    //Person *p2 = new Person(s+1, "newBaby", 0, 'S', flu, myCity, home, hco, 10,10,10, true);
-    //PeoplePtr.push_back(p2);
     
 	PopulationData();
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);

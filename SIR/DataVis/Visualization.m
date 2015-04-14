@@ -20,6 +20,7 @@ classdef Visualization < handle
         Peopy   = [];
         MovieFolder;
         DataFolder;
+        FullScreen = 0;
     end
     
     methods
@@ -104,6 +105,9 @@ classdef Visualization < handle
             DD = obj.HistoryData.Dead;
             total = II + PP + SS + RR + DD;
             h = figure;
+            if obj.FullScreen
+                set(gcf,'units','normalized','outerposition',[0 0 1 1])
+            end
             if strcmp(pop,'SIRONLY')
                 plot(t, SS,'b',...
                     t, PP+II,'r',...

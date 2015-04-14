@@ -24,6 +24,7 @@ public:
 	virtual ~Storage();
 	void saveSIR(int idx,double t, int S, int P,int I, int R, int D);
 	void writeSIR();
+    void writeEigSIR();
 	void startMovieSave(double t);
 	void endMovieSave();
 	void movieSave(int ID, string name, double t, double coord[2], string location, char state);
@@ -52,6 +53,7 @@ private:
     string timeStamp;
     
 	ofstream historyFile;
+    ofstream historyEigFile;
 	ofstream movieFile;
 	ofstream cityFile;
 	ofstream homeFile;
@@ -70,6 +72,7 @@ private:
     int* PP;
 	int* RR;
     int* DD;
+    int* XX;
 };
 
 #endif /* STORAGE_H_ */

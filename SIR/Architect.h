@@ -20,6 +20,7 @@ class Person;
 
 class Architect {
 public:
+    Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d, bool eig);
 	Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d);
     Architect(double t0, double tend, double ts, vector<Person *> pp, bool store=false);
 	virtual ~Architect();
@@ -54,5 +55,6 @@ private:
     int P;
 	int R;
     int D;
+    
 };
 #endif /* ARCHITECT_H_ */
