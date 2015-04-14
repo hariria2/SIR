@@ -82,59 +82,6 @@ void Storage::writeSIR(){
 	}
 
 }
-void Storage::writeEigSIR(){
-    
-    string historyEigFileName = "../Data/"+dataFolderName+timeStamp+"/historyEigData.dat";
-    historyFile.open(historyEigFileName, ios_base::out|ios_base::app);
-    cout << "Thank you!" << endl;
-    if (historyEigFile.is_open()){
-        cout << "File "+historyEigFileName+" opened correctly." << endl;
-        
-        historyEigFile << setw(6)  << "Index,";
-        historyEigFile << setw(15) << "Time,";
-        
-        historyEigFile << setw(15) << "x_1,";
-        historyEigFile << setw(15) << "x_2,";
-        historyEigFile << setw(15) << "x_3,";
-        historyEigFile << setw(15) << "xj_1,";
-        historyEigFile << setw(15) << "xj_2,";
-        historyEigFile << setw(15) << "xj_3,";
-        historyEigFile << setw(15) << "xj_4,";
-        historyEigFile << setw(15) << "xj_5,";
-        historyEigFile << setw(15) << "xj_6,";
-        historyEigFile << setw(15) << "xj_7,";
-        historyEigFile << setw(15) << "xj_8,";
-        historyEigFile << setw(15) << "xj_9,";
-        
-        historyEigFile << setw(15) << "xbar_1,";
-        historyEigFile << setw(15) << "xbar_2,";
-        historyEigFile << setw(15) << "xbar_3,";
-        historyEigFile << setw(15) << "xbarj_1,";
-        historyEigFile << setw(15) << "xbarj_2,";
-        historyEigFile << setw(15) << "xbarj_3,";
-        historyEigFile << setw(15) << "xbarj_4,";
-        historyEigFile << setw(15) << "xbarj_5,";
-        historyEigFile << setw(15) << "xbarj_6,";
-        historyEigFile << setw(15) << "xbarj_7,";
-        historyEigFile << setw(15) << "xbarj_8,";
-        historyEigFile << setw(15) << "xbarj_9,";
-        
-        historyEigFile << endl;
-        for (int i = 0; i<Length; i++){
-            historyEigFile << setw(5)  <<    i  << ",";
-            historyEigFile << setw(14) << TT[i] << ",";
-            
-            historyEigFile << setw(14) << SS[i] << ",";
-            historyEigFile << setw(14) << II[i]+PP[i] << ",";
-            historyEigFile << setw(14) << RR[i] << ",";
-            historyEigFile << endl;
-        }
-        cout << "Done writing to file. Closing..." << endl;
-        historyEigFile.close();
-        cout << "File "+historyEigFileName+" closed." << endl;
-    }
-    
-}
 void Storage::startMovieSave(double t){
 	string folder = "../Data/"+movieFolderName+timeStamp;
 
