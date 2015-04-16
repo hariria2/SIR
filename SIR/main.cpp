@@ -35,10 +35,10 @@ void Ex1_Eig_SingleLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
+    //Example1_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
- 	//Ex1_Eig_SingleLocation();
+ 	Ex1_Eig_SingleLocation(true);
     return 0;
  }
 // ========================= End main =================
@@ -317,10 +317,10 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         
         people.push_back(p);
     };
-    (people.front())->setState('I');
+    //(people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 100;
+    double EndTime = 50;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
@@ -338,6 +338,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
+        cout << archie.getS() << endl;
     }
 }
 // ========================= End Examples ======================================

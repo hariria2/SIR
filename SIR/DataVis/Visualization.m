@@ -128,7 +128,41 @@ classdef Visualization < handle
             ylabel('Population','interpreter','latex','FontSize',18);
             grid on
         end
-        
+        function h = PlotPhase(obj)
+            t  = obj.HistoryData.Time;
+            II = obj.HistoryData.Infected;
+            PP = obj.HistoryData.Symptomatic;
+            SS = obj.HistoryData.Suseptible;
+            RR = obj.HistoryData.Recovered;
+            DD = obj.HistoryData.Dead;
+            h = figure;
+            if obj.FullScreen
+                set(gcf,'units','normalized','outerposition',[0 0 1 1])
+            end
+            
+            subplot(2,2,1)
+            plot(PP+II,SS,'k','linewidth',3);
+            xlabel('Infected','interpreter','latex','FontSize',18);
+            ylabel('Susceptible','interpreter','latex','FontSize',18);
+            grid on
+            
+            subplot(2,2,2)
+            plot(RR,SS,'k','linewidth',3);  
+            xlabel('Recovered','interpreter','latex','FontSize',18);
+            ylabel('Susceptible','interpreter','latex','FontSize',18);
+            grid on
+            
+            subplot(2,2,3)
+            plot(PP+II,RR,'k','linewidth',3); 
+            xlabel('Infected','interpreter','latex','FontSize',18);
+            ylabel('Recovered','interpreter','latex','FontSize',18);
+            grid on
+            
+            subplot(2,2,4)
+            plot(SS,PP+II,'k','linewidth',3);
+            
+            
+        end      
         function DrawCity(obj)
             A = obj.City.Boundary;
             obj.polyxs = [obj.polyxs,[A(1,1);A(1,2);A(1,2);A(1,1)]];

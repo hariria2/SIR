@@ -31,6 +31,9 @@ public:
 	double getCurrentTime();
 	double getTimeStep();
 	double getDailyTime();
+    int getS();
+    int getI();
+    int getR();
 	vector<Person*> getPeople();
 
 	// Utilities

@@ -1,5 +1,5 @@
 clear all; close all; clc;
-ver = '3';
+ver = '1';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -18,10 +18,14 @@ vis = Visualization(dataFolder, movieFolder,1,1);
 vis.FullScreen = 1;
 %vis.MakeMovie();
 ResFolder = ['../../Results/res_',timestamp];
-mkdir(ResFolder);
+if ~(isdir(ResFolder))
+    mkdir(ResFolder);
+end
 movieFile = [ResFolder,'/mov_v',ver];
 dataFile = [ResFolder,'/sim_v',ver];
 %movie2avi(vis.Frames,movieFile,'fps',1.5);
 h = vis.PlotHistory('SIRONLY');
 saveas(h,dataFile,'pdf')
 saveas(h,dataFile,'fig')
+
+h = vis.PlotPhase();

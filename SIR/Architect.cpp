@@ -74,6 +74,15 @@ double Architect::getDailyTime(){
 
 	return ((hour % 24) + min);
 }
+int Architect::getS(){
+    return S;
+}
+int Architect::getI(){
+    return I;
+}
+int Architect::getR(){
+    return R;
+}
 
 // Utilities
 void Architect::IncrementTime(){
