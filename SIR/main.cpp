@@ -24,6 +24,8 @@ void getDefaultCoordinates(Place* location, double co[2]);
 void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries);
 void readPeopleData();
 void generateSourceData();
+void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s);
+void updatePop(vector<Person*> p1, char s);
 
 void Example1_SingleLocation(bool SaveData=true);
 void Example1_MultiLocation(bool SaveData=true);
@@ -39,6 +41,15 @@ int main(){
     //Example1_MultiLocation();
     //Example2_MultiLocation();
  	Ex1_Eig_SingleLocation(true);
+    
+//    vector<int> p;
+//    for (int i=0; i < 10; i++){
+//        p.push_back(i);
+//    };
+//    for (auto ip = p.cbegin(); ip != p.cend(); ++ip){
+//        cout << "Here is the number: " << *ip << endl;
+//    }
+//    cout << "Test this: " << p[4] << endl;
     return 0;
  }
 // ========================= End main =================
@@ -298,7 +309,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 2000;
+    int population = 100;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -314,32 +325,42 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         
         getDefaultCoordinates(&home, hco);
         Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 25,40,15, true);
-        
         people.push_back(p);
     };
-    //(people.front())->setState('I');
+    (people.front())->setState('I');
+    
+    vector<Person*> people1;
+    vector<Person*> people2;
+    vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime = 50;
-    double TimeStep = 1;
-    int l = floor((EndTime-InitialTime)/TimeStep);
+    double EndTime  = 4;
+    double TimeStep =  1;
+    //int l = floor((EndTime-InitialTime)/TimeStep);
+ 
     
+    Architect archie(InitialTime,EndTime,TimeStep, people);
     
-    if (SaveData) {
-        string ver;
-        cout << "Enter version number for single location simulation: ";
-        cin >> ver;
-        string dataFolder = "data_single_v"+ver+"_";
-        string movieFolder = "movie_single_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
-        archie.Simulate();
-        data.writeSIR();
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people);
-        archie.Simulate();
-        cout << archie.getS() << endl;
+    for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
+        
+        matchPeople(people, people1, 'S');
+        Architect archie1(archie.getCurrentTime(),EndTime,TimeStep,people1);
+        matchPeople(people, people2,'I');
+        Architect archie2(archie.getCurrentTime(),EndTime,TimeStep,people2);
+        matchPeople(people, people3,'R');
+        Architect archie3(archie.getCurrentTime(),EndTime,TimeStep,people3);
+        
+        archie.Update(tt);
+        archie1.Update(tt);
+        archie2.Update(tt);
+        archie3.Update(tt);
+
+        people1.clear();
+        people2.clear();
+        people3.clear();
     }
+    
+
 }
 // ========================= End Examples ======================================
 
@@ -364,30 +385,30 @@ void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], 
 	int n = 0;
  
 	for (int i = 0; i < xnum; i++){
- for ( int j = 0; j < ynum; j++){
- homedimx[n][0] = x[0];
- homedimx[n][1] = x[1];
- homedimy[n][0] = y[0];
- homedimy[n][1] = y[1];
- for (int i = 0; i < 2; i++){
- y[i] = y[i] + 2*ydist;
- }
- n += 1;
- }
- y[0] = perimeter[1][0]+floor(ydist/2);
- y[1] = perimeter[1][0]+ydist+floor(ydist/2);
- for (int i = 0; i < 2; i++){
- x[i] = x[i] + 2*xdist;
- }
+        for ( int j = 0; j < ynum; j++){
+            homedimx[n][0] = x[0];
+            homedimx[n][1] = x[1];
+            homedimy[n][0] = y[0];
+            homedimy[n][1] = y[1];
+            for (int i = 0; i < 2; i++){
+                y[i] = y[i] + 2*ydist;
+            }
+            n += 1;
+        }
+        y[0] = perimeter[1][0]+floor(ydist/2);
+        y[1] = perimeter[1][0]+ydist+floor(ydist/2);
+        for (int i = 0; i < 2; i++){
+            x[i] = x[i] + 2*xdist;
+        }
  
-	}
+    }
  
 	int perim[2][2];
 	for (int i=0; i<total; i++){
- for (int n=0;n<2;n++){
- perim[0][n] = homedimx[i][n];
- perim[1][n] = homedimy[i][n];
- }
+        for (int n=0;n<2;n++){
+            perim[0][n] = homedimx[i][n];
+            perim[1][n] = homedimy[i][n];
+        }
  Place* p = new Place(i, "home", "Home", perim, domain);
  homes.push_back(p);
 	}
@@ -476,5 +497,55 @@ void readPeopleData(){
 }
 void generateSourceData(){
     
+}
+void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
+    
+    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
+        
+        Person *p = new Person(
+        (*ip) -> getID(),
+        (*ip) -> getName(),
+        (*ip) -> getAge(),
+        (*ip) -> getState(),
+        (*ip) -> getDisease(),
+        (*ip) -> getDomain(),
+        (*ip) -> getHome(),
+        (*ip) -> getHomeCoordinates(),
+        (*ip) -> getInfVar(),
+        (*ip) -> getIncVar(),
+        (*ip) -> getRecVar(), true);
+        
+        p2.push_back(p);
+    }
+    string name = "randomName"+to_string(p1.size()+1);
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+    
+    normal_distribution<double> ageDist(25,20);
+    double randage  = ageDist(generator);
+    int age = (randage < 0)? 0:floor(randage);
+    
+    getDefaultCoordinates((p1.front())->getHome(), (p1.front())->getHomeCoordinates());
+    Person *np = new Person(p1.size()+1,
+                           name,
+                           age,
+                           s,
+                           (p1.front()->getDisease()),
+                           (p1.front()->getDomain()),
+                           (p1.front())->getHome(),
+                           (p1.front())->getHomeCoordinates(),
+                           (p1.front())-> getInfVar(),
+                           (p1.front())-> getIncVar(),
+                           (p1.front())-> getRecVar(), true);
+    p2.push_back(np);
+    
+}
+void updatePop(vector<Person*> p1, char s){
+    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
+        if ((*ip)->getState() != s){
+            (*ip)->setState(s);
+            break;
+        }
+    }
 }
 // ========================= End utilities ======================================

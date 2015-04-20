@@ -131,7 +131,8 @@ void Architect::Update(double t, Storage* data){
 	data->endMovieSave();
 }
 void Architect::Update(double t){
-	IncrementTime();
+	PopulationData();
+    IncrementTime();
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(CurrentTime);
 		if ((*ip)->IsSingleLocation) {
