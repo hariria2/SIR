@@ -33,6 +33,7 @@ public:
 	double getDailyTime();
     int getS();
     int getI();
+    int getP();
     int getR();
 	vector<Person*> getPeople();
 

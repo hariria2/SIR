@@ -80,6 +80,9 @@ int Architect::getS(){
 int Architect::getI(){
     return I;
 }
+int Architect::getP(){
+    return P;
+}
 int Architect::getR(){
     return R;
 }
@@ -136,7 +139,7 @@ void Architect::Update(double t){
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(CurrentTime);
 		if ((*ip)->IsSingleLocation) {
-			(*ip)->Move2((rand() % 360),5);
+			(*ip)->Move2((rand() % 360),200);
 		}else{
 			(*ip)->Move((rand() % 360),5);
 		}

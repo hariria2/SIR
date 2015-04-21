@@ -15,6 +15,8 @@
 #include "Person.h"
 #include "Architect.h"
 #include "Storage.h"
+#include <sys/stat.h>
+#include <sys/types.h>
  
 using namespace std;
 
@@ -309,7 +311,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 100;
+    int population = 200;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -334,15 +336,68 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime  = 4;
+    double EndTime  = 10;
     double TimeStep =  1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
  
     
     Architect archie(InitialTime,EndTime,TimeStep, people);
     
+    string ver;
+    cout << "Enter version number for single location simulation: ";
+    cin >> ver;
+    string dataFolderName = "eigdata_single_v"+ver+"_";
+    
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    string timeStamp = to_string((now->tm_mon + 1)) + "-" +
+    to_string(now->tm_mday) + "-" +
+    to_string((now->tm_year + 1900));
+    string eigdatafilename = "../Data/"+dataFolderName+timeStamp+"/eigHistoryData.dat";
+    
+    string folder = "../Data/"+dataFolderName+timeStamp;
+    
+    mode_t process_mask = umask(0);
+    mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+    umask(process_mask);
+    cout << eigdatafilename << endl;
+    
+    ofstream eigdatafile;
+    eigdatafile.open(eigdatafilename, ios_base::out|ios_base::app);
+    
+    eigdatafile << "t,";
+    
+    eigdatafile << "x_1,";
+    eigdatafile << "x_2,";
+    eigdatafile << "x_3,";
+    
+    eigdatafile << "xj_1,";
+    eigdatafile << "xj_2,";
+    eigdatafile << "xj_3,";
+    eigdatafile << "xj_4,";
+    eigdatafile << "xj_5,";
+    eigdatafile << "xj_6,";
+    eigdatafile << "xj_7,";
+    eigdatafile << "xj_8,";
+    eigdatafile << "xj_9,";
+    
+    eigdatafile << "xbar_1,";
+    eigdatafile << "xbar_2,";
+    eigdatafile << "xbar_3,";
+    
+    eigdatafile << "xbarj_1,";
+    eigdatafile << "xbarj_2,";
+    eigdatafile << "xbarj_3,";
+    eigdatafile << "xbarj_4,";
+    eigdatafile << "xbarj_5,";
+    eigdatafile << "xbarj_6,";
+    eigdatafile << "xbarj_7,";
+    eigdatafile << "xbarj_8,";
+    eigdatafile << "xbarj_9,";
+    eigdatafile << endl;
+    
     for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
-        
+        cout << "Time " << tt << " of " << EndTime << endl;
         matchPeople(people, people1, 'S');
         Architect archie1(archie.getCurrentTime(),EndTime,TimeStep,people1);
         matchPeople(people, people2,'I');
@@ -350,17 +405,46 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         matchPeople(people, people3,'R');
         Architect archie3(archie.getCurrentTime(),EndTime,TimeStep,people3);
         
+        eigdatafile << tt << ",";
+        eigdatafile << archie.getS() << ",";
+        eigdatafile << archie.getI()+archie.getP() << ",";
+        eigdatafile << archie.getR() << ",";
+        
+        eigdatafile << archie1.getS() << ",";
+        eigdatafile << archie1.getI()+archie1.getP() << ",";
+        eigdatafile << archie1.getR() << ",";
+        eigdatafile << archie2.getS() << ",";
+        eigdatafile << archie2.getI()+archie2.getP() << ",";
+        eigdatafile << archie2.getR() << ",";
+        eigdatafile << archie3.getS() << ",";
+        eigdatafile << archie3.getI()+archie3.getP()<< ",";
+        eigdatafile << archie3.getR() << ",";
+        
         archie.Update(tt);
         archie1.Update(tt);
         archie2.Update(tt);
         archie3.Update(tt);
+        
+        eigdatafile << archie.getS() << ",";
+        eigdatafile << archie.getI() << ",";
+        eigdatafile << archie.getR() << ",";
+        
+        eigdatafile << archie1.getS() << ",";
+        eigdatafile << archie1.getI() << ",";
+        eigdatafile << archie1.getR() << ",";
+        eigdatafile << archie2.getS() << ",";
+        eigdatafile << archie2.getI() << ",";
+        eigdatafile << archie2.getR() << ",";
+        eigdatafile << archie3.getS() << ",";
+        eigdatafile << archie3.getI() << ",";
+        eigdatafile << archie3.getR();
+        eigdatafile << endl;
 
         people1.clear();
         people2.clear();
         people3.clear();
     }
-    
-
+    eigdatafile.close();
 }
 // ========================= End Examples ======================================
 
