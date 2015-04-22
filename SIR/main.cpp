@@ -310,7 +310,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 100;
+    int population = 1500;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -335,7 +335,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime  = 25;
+    double EndTime  = 50;
     double TimeStep =  1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
  
@@ -402,15 +402,10 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         cout << "Time " << tt << " of " << EndTime << endl;
         matchPeople(people, people1, 'S');
         Architect archie1(archie.getCurrentTime(),EndTime,TimeStep,people1);
-        matchPeople(people, people2,'I');
+        matchPeople(people, people2,'P');
         Architect archie2(archie.getCurrentTime(),EndTime,TimeStep,people2);
         matchPeople(people, people3,'R');
         Architect archie3(archie.getCurrentTime(),EndTime,TimeStep,people3);
-        
-//        archie.Update(tt);
-//        archie1.Update(tt);
-//        archie2.Update(tt);
-//        archie3.Update(tt);
         
         eigdatafile << tt << ",";
         eigdatafile << archie.getS() << ",";
