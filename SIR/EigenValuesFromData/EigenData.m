@@ -66,10 +66,12 @@ classdef EigenData < handle
         end
         function EigenHistory(obj)
             for ii = 1:length(obj.t)
-                dfdx = obj.njacobian(obj.x(ii), obj.xbar(ii), obj.xj(:,:,ii), obj.xbarj(:,:,ii), obj.dt);
-                Df = dfdx;
+                dfdx = obj.njacobian(obj.x(ii,:)', obj.xbar(ii,:)', obj.xj(:,:,ii), obj.xbarj(:,:,ii), obj.dt);
+                
+                Df = dfdx
                 [~, D1] = eig(Df);
                 obj.numD(:,ii) = diag(D1);
+               
             end
         end
         function dfdx = njacobian(~, x, xbar, xj, xbarj, dt)
@@ -84,7 +86,8 @@ classdef EigenData < handle
             % =================================================================
             
             n = length(x);
-            dx = diag(xj) - x;
+            xj
+            dx = diag(xj) - x
             
             
             dfdx = zeros(n);

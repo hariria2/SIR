@@ -28,11 +28,11 @@ Architect::Architect(double t0, double te, double ts,
 	TimeIndex    = 0;
 	PeoplePtr    = pp;
 	Store        = store;
-	S = 0;
-	I = 0;
-    P = 0;
-	R = 0;
-    D = 0;
+    PopulationData();
+    //S = 0;
+    //I = 0;
+    //R = 0;
+    //D = 0;
 }
 
 
@@ -46,10 +46,11 @@ Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool 
     TimeIndex    = 0;
     PeoplePtr    = pp;
     Store        = store;
-    S = 0;
-    I = 0;
-    R = 0;
-    D = 0;
+    PopulationData();
+    //S = 0;
+    //I = 0;
+    //R = 0;
+    //D = 0;
 }
 
 

@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <iomanip>
 #include <sstream> 
@@ -311,7 +310,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 200;
+    int population = 100;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -336,7 +335,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime  = 10;
+    double EndTime  = 25;
     double TimeStep =  1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
  
@@ -396,6 +395,9 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     eigdatafile << "xbarj_9,";
     eigdatafile << endl;
     
+    
+    
+    
     for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
         cout << "Time " << tt << " of " << EndTime << endl;
         matchPeople(people, people1, 'S');
@@ -404,6 +406,11 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         Architect archie2(archie.getCurrentTime(),EndTime,TimeStep,people2);
         matchPeople(people, people3,'R');
         Architect archie3(archie.getCurrentTime(),EndTime,TimeStep,people3);
+        
+//        archie.Update(tt);
+//        archie1.Update(tt);
+//        archie2.Update(tt);
+//        archie3.Update(tt);
         
         eigdatafile << tt << ",";
         eigdatafile << archie.getS() << ",";
@@ -426,23 +433,29 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         archie3.Update(tt);
         
         eigdatafile << archie.getS() << ",";
-        eigdatafile << archie.getI() << ",";
+        eigdatafile << archie.getI()+archie.getP() << ",";
         eigdatafile << archie.getR() << ",";
         
         eigdatafile << archie1.getS() << ",";
-        eigdatafile << archie1.getI() << ",";
+        eigdatafile << archie1.getI()+archie1.getP() << ",";
         eigdatafile << archie1.getR() << ",";
+        
         eigdatafile << archie2.getS() << ",";
-        eigdatafile << archie2.getI() << ",";
+        eigdatafile << archie2.getI()+archie2.getP() << ",";
         eigdatafile << archie2.getR() << ",";
+        
         eigdatafile << archie3.getS() << ",";
-        eigdatafile << archie3.getI() << ",";
+        eigdatafile << archie3.getI()+archie3.getP() << ",";
         eigdatafile << archie3.getR();
+        
         eigdatafile << endl;
 
         people1.clear();
         people2.clear();
         people3.clear();
+        
+        
+        
     }
     eigdatafile.close();
 }
