@@ -116,8 +116,10 @@ classdef EigenData < handle
                     plot(obj.t, real(obj.D(ii,:)), obj.t, real(obj.numD(ii,:)),'k-.','linewidth',5)                    
                     l = legend('Jacobian', 'Numerical $Df$');
                     set(l, 'FontSize',20, 'Interpreter', 'Latex')
+                    ylim([min(-1,min(real(obj.numD(ii,:)))),max(1,max(real(obj.numD(ii,:))))]);
                 else
-                    plot(obj.t, real(obj.numD(ii,:)),'k','linewidth',5)                    
+                    plot(obj.t, real(obj.numD(ii,:)),'k','linewidth',5)
+                    ylim([min(-1,min(real(obj.numD(ii,:)))),max(1,max(real(obj.numD(ii,:))))]);
                 end
                 grid on
                 xlabel('Time $t$','Interpreter','Latex','FontSize',18)
@@ -128,9 +130,12 @@ classdef EigenData < handle
                     plot(obj.t, imag(obj.D(ii,:)), obj.t, imag(obj.numD(ii,:)),'k-.','linewidth',5)
                     l = legend('Jacobian', 'Numerical $Df$');
                     set(l, 'FontSize',20, 'Interpreter', 'Latex')
+                    ylim([min(-1,min(imag(obj.numD(ii,:)))),max(1,max(imag(obj.numD(ii,:))))]);
                 else
                     plot(obj.t, imag(obj.numD(ii,:)),'k','linewidth',5)
+                    ylim([min(-1,min(imag(obj.numD(ii,:)))),max(1,max(imag(obj.numD(ii,:))))]);
                 end
+                
                 grid on
                 
                 xlabel('Time $t$','Interpreter','Latex','FontSize',18)

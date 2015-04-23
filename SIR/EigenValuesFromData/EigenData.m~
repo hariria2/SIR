@@ -5,6 +5,7 @@ classdef EigenData < handle
         D    = [];
         numD = [];
         x    = [];
+        dx   = [];
         xbar = [];
         xj   = [];
         xbarj= [];
@@ -18,10 +19,10 @@ classdef EigenData < handle
     methods
         function ed = EigenData(dim, f)
             ed.Dim  = dim;
-            ed.D    = zeros(dim, length(ed.t));
-            ed.numD = zeros(dim, length(ed.t));
             ed.file = f;
             ed.readEigenData(ed.file);
+            ed.D    = zeros(dim, length(ed.t));
+            ed.numD = zeros(dim, length(ed.t));
         end
         function readEigenData(obj,xfile)
             obj.xdata = readtable(xfile);
@@ -59,6 +60,7 @@ classdef EigenData < handle
                     obj.xbarj(jj,:,ii) = xxbarj(ii,obj.Dim*jj-(obj.Dim-1):obj.Dim*jj);
                 end
             end 
+            obj.dx = diag(obj.xj(:,:,1)) - obj.x(1,:)';
         end
         function setEigenData(obj,DD)
             obj.compareq = 1;
@@ -66,15 +68,15 @@ classdef EigenData < handle
         end
         function EigenHistory(obj)
             for ii = 1:length(obj.t)
-                dfdx = obj.njacobian(obj.x(ii,:)', obj.xbar(ii,:)', obj.xj(:,:,ii), obj.xbarj(:,:,ii), obj.dt);
+                dfdx = obj.njacobian(obj.x(ii,:)', obj.xbar(ii,:)', obj.xj(:,:,ii), obj.xbarj(:,:,ii), obj.dt, obj.dx);
                 
-                Df = dfdx
+                Df = dfdx;
                 [~, D1] = eig(Df);
                 obj.numD(:,ii) = diag(D1);
                
             end
         end
-        function dfdx = njacobian(~, x, xbar, xj, xbarj, dt)
+        function dfdx = njacobian(~, x, xbar, xj, xbarj, dt, dx)
             % ==================================================================
             % | dfdx = njacobian(x, xbar, xj, xbarj, dt)
             % | Compute Jacobian from Data only, for only one time step.
@@ -86,9 +88,6 @@ classdef EigenData < handle
             % =================================================================
             
             n = length(x);
-            xj
-            dx = diag(xj) - x;
-            
             
             dfdx = zeros(n);
             
@@ -101,8 +100,8 @@ classdef EigenData < handle
         function PlotTrajectory(obj)
             figure
             for ii = 1:obj.Dim
-                subplot(obj.Dim,1)
-                plot(obj.t,obj.xx(ii,:),'linewidth',5)
+                subplot(obj.Dim,1,ii)
+                plot(obj.t,obj.x(:,ii),'linewidth',5)
                 grid on
                 xlabel('Time $t$','Interpreter','Latex','FontSize',18)
                 ylabel('Space $x$','Interpreter','Latex','FontSize',15)
@@ -123,7 +122,7 @@ classdef EigenData < handle
                 grid on
                 xlabel('Time $t$','Interpreter','Latex','FontSize',18)
                 ylabel(['$\lambda',sprintf('_%d',ii),'$'],'Interpreter','Latex','FontSize',18)
-                
+                ylim([-1,1]);
                 subplot(obj.Dim,2,2*ii)
                 if obj.compareq
                     plot(obj.t, imag(obj.D(ii,:)), obj.t, imag(obj.numD(ii,:)),'k-.','linewidth',5)
@@ -131,7 +130,9 @@ classdef EigenData < handle
                     set(l, 'FontSize',20, 'Interpreter', 'Latex')
                 else
                     plot(obj.t, imag(obj.numD(ii,:)),'k','linewidth',5)
+                    ylim([min(-1,min(imag(obj.numD(ii,:))),1]);
                 end
+                
                 grid on
                 
                 xlabel('Time $t$','Interpreter','Latex','FontSize',18)

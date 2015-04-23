@@ -310,7 +310,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 1500;
+    int population = 1000;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -335,13 +335,13 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime  = 50;
+    double EndTime  = 100;
     double TimeStep =  1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
  
     
     Architect archie(InitialTime,EndTime,TimeStep, people);
-    
+
     string ver;
     cout << "Enter version number for single location simulation: ";
     cin >> ver;

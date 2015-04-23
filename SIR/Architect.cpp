@@ -29,10 +29,6 @@ Architect::Architect(double t0, double te, double ts,
 	PeoplePtr    = pp;
 	Store        = store;
     PopulationData();
-    //S = 0;
-    //I = 0;
-    //R = 0;
-    //D = 0;
 }
 
 
@@ -47,10 +43,6 @@ Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool 
     PeoplePtr    = pp;
     Store        = store;
     PopulationData();
-    //S = 0;
-    //I = 0;
-    //R = 0;
-    //D = 0;
 }
 
 
@@ -112,7 +104,6 @@ void Architect::Simulate(){
 }
 void Architect::Update(double t, Storage* data){
     
-	PopulationData();
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
 	data->startMovieSave(CurrentTime);
 	IncrementTime();
@@ -133,9 +124,10 @@ void Architect::Update(double t, Storage* data){
 		(*ip)->UpdateDisease();
 	}
 	data->endMovieSave();
+    PopulationData();
 }
 void Architect::Update(double t){
-	PopulationData();
+	
     IncrementTime();
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(CurrentTime);
@@ -146,6 +138,7 @@ void Architect::Update(double t){
 		}
 		(*ip)->UpdateDisease();
 	}
+    PopulationData();
 }
 void Architect::DisplayTime(){
 	int day   = floor(CurrentTime/24);
