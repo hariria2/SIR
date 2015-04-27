@@ -147,6 +147,28 @@ classdef EigenData < handle
                 
             end
         end
+        function argonPlotEigen(obj)
+            lam1 = obj.numD(1,:);
+            lam2 = obj.numD(2,:);
+            lam3 = obj.numD(3,:);
+            
+            figure
+            subplot(2,1,1)
+            
+            plot(real(lam1),imag(lam1),'k.')
+            title('\lambda_1','FontSize',20)
+            xlabel('Real Part','FontSize',18)
+            ylabel('Imaginary Part','FontSize',18)
+           
+            subplot(2,1,2)
+            plot(real(lam2),imag(lam2),'k.',...
+                 real(lam3),imag(lam3),'b.')
+            title('\lambda_2 and \lambda_3','FontSize',20)
+            xlabel('Real Part','FontSize',18)
+            ylabel('Imaginary Part','FontSize',18)
+            l = legend('\lambda_2','\lambda_3');
+            set(l,'FontSize',18)
+        end
         
     end    
 end

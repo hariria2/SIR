@@ -43,14 +43,6 @@ int main(){
     //Example2_MultiLocation();
  	Ex1_Eig_SingleLocation(true);
     
-//    vector<int> p;
-//    for (int i=0; i < 10; i++){
-//        p.push_back(i);
-//    };
-//    for (auto ip = p.cbegin(); ip != p.cend(); ++ip){
-//        cout << "Here is the number: " << *ip << endl;
-//    }
-//    cout << "Test this: " << p[4] << endl;
     return 0;
  }
 // ========================= End main =================
@@ -310,7 +302,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 1000;
+    int population = 2000;
     
     Disease flu("Flu", 25, 40, 200);
     
@@ -335,7 +327,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     vector<Person*> people3;
     
     double InitialTime = 0;
-    double EndTime  = 100;
+    double EndTime  = 200;
     double TimeStep =  1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
  
