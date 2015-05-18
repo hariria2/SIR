@@ -1,5 +1,5 @@
 clear all; close all; clc;
-ver = '2';
+ver = '10';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -24,7 +24,7 @@ end
 movieFile = [ResFolder,'/mov_v',ver];
 dataFile = [ResFolder,'/sim_v',ver];
 %movie2avi(vis.Frames,movieFile,'fps',1.5);
-h = vis.PlotHistory('SIRONLY');
+h = vis.PlotHistory('SIR');
 saveas(h,dataFile,'pdf')
 saveas(h,dataFile,'fig')
 

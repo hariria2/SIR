@@ -38,10 +38,10 @@ void Ex1_Eig_SingleLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    //Example1_SingleLocation();
+    Example1_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
- 	Ex1_Eig_SingleLocation(true);
+ 	//Ex1_Eig_SingleLocation(true);
     
     return 0;
  }
@@ -72,7 +72,7 @@ void Example1_SingleLocation(bool SaveData){
     homes.push_back(&home);
     int population = 2000;
     
-    Disease flu("Flu", 25, 40, 200);
+    Disease flu("Flu", 24, 24, 1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -85,7 +85,7 @@ void Example1_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 25,40,15, true);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,0,0, true);
 
         people.push_back(p);
     };

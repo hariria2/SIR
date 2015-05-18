@@ -118,8 +118,8 @@ classdef Visualization < handle
                     t, II,'y',...
                     t, PP,'r',...
                     t, RR,'g',...
-                    t, DD,'k',... 
-                    t, total, 'c','linewidth',3)
+                    t, DD,'k',...
+                    'linewidth',3)
                 l = legend('Susceptible','Infected','Symptomatic','Recovered','Dead');
             end
             
@@ -141,7 +141,7 @@ classdef Visualization < handle
             end
             
             subplot(2,2,1)
-            plot(PP+II,SS,'k','linewidth',3);
+            plot(II,SS,'k','linewidth',3);
             xlabel('Infected','interpreter','latex','FontSize',18);
             ylabel('Susceptible','interpreter','latex','FontSize',18);
             grid on
@@ -153,14 +153,16 @@ classdef Visualization < handle
             grid on
             
             subplot(2,2,3)
-            plot(PP+II,RR,'k','linewidth',3); 
+            plot(II,RR,'k','linewidth',3); 
             xlabel('Infected','interpreter','latex','FontSize',18);
             ylabel('Recovered','interpreter','latex','FontSize',18);
             grid on
             
             subplot(2,2,4)
-            plot(SS,PP+II,'k','linewidth',3);
-            
+            plot(RR,DD,'k','linewidth',3);
+            xlabel('Recovered','interpreter','latex','FontSize',18);
+            ylabel('Dead','interpreter','latex','FontSize',18);
+            grid on
             
         end      
         function DrawCity(obj)
