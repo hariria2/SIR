@@ -33,16 +33,33 @@ void Example1_MultiLocation(bool SaveData=true);
 void Example2_MultiLocation(bool SaveData=true);
 
 void Ex1_Eig_SingleLocation(bool SaveData=true);
+void Ex1_SparseEig_SingleLocation(bool SaveData=true);
+void Ex2_SparseEig_SingleLocation(bool SaveData);
 //=================
+
+class Rectangle {
+    int width, height;
+public:
+    void set_values (int,int);
+    int area() {return width*height;}
+    int getHeight(){return height;}
+};
+
+void Rectangle::set_values (int x, int y) {
+    width = x;
+    height = y;
+}
+
 
 // ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
+    //Example1_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
  	//Ex1_Eig_SingleLocation(true);
-    
+    //Ex1_SparseEig_SingleLocation(true);
+    Ex2_SparseEig_SingleLocation(true);
     return 0;
  }
 // ========================= End main =================
@@ -440,6 +457,406 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         people1.clear();
         people2.clear();
         people3.clear();
+        
+        
+        
+    }
+    eigdatafile.close();
+}
+void Ex1_SparseEig_SingleLocation(bool SaveData){
+    int maxdim = 2000;
+    
+    // Setting up parameters
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    
+    
+    // Instantiate Classes
+    Domain myCity("DiseasVille", cityBoundary);
+    Place home(1, "home", "Home", homeBoundary,myCity);
+    
+    double hco[2];
+    
+    vector<Place*> homes;
+    vector<Place*> works;
+    vector<Place*> schools;
+    vector<Place*> cemeteries;
+    
+    
+    homes.push_back(&home);
+    int population = 2000;
+    
+    Disease flu("Flu", 25, 15, 24);
+    
+    vector<Person*> people;
+    for (int i=0; i < population; i++){
+        string name = "randomName"+to_string(i);
+        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        
+        normal_distribution<double> ageDist(25,20);
+        double randage  = ageDist(generator);
+        int age = (randage < 0)? 0:floor(randage);
+        
+        getDefaultCoordinates(&home, hco);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,10,5, true);
+        people.push_back(p);
+    };
+    (people.front())->setState('I');
+    
+    vector<Person*> people1;
+    vector<Person*> people2;
+    vector<Person*> people3;
+    
+    double InitialTime = 0;
+    double EndTime  = 100;
+    double TimeStep =  1;
+    //int l = floor((EndTime-InitialTime)/TimeStep);
+    
+    
+    Architect archie(InitialTime,EndTime,TimeStep, people);
+    
+    string ver;
+    cout << "Enter version number for single location simulation: ";
+    cin >> ver;
+    string dataFolderName = "eigdata_single_v"+ver+"_";
+    
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    string timeStamp = to_string((now->tm_mon + 1)) + "-" +
+    to_string(now->tm_mday) + "-" +
+    to_string((now->tm_year + 1900));
+    string eigdatafilename = "../Data/"+dataFolderName+timeStamp+"/eigHistoryData.dat";
+    
+    string folder = "../Data/"+dataFolderName+timeStamp;
+    
+    mode_t process_mask = umask(0);
+    mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+    umask(process_mask);
+    cout << eigdatafilename << endl;
+    
+    ofstream eigdatafile;
+    eigdatafile.open(eigdatafilename, ios_base::out|ios_base::app);
+    
+    eigdatafile << "t,";
+    
+    eigdatafile << "x_1,";
+    eigdatafile << "x_2,";
+    eigdatafile << "x_3,";
+    
+    eigdatafile << "xj_1,";
+    eigdatafile << "xj_2,";
+    eigdatafile << "xj_3,";
+    eigdatafile << "xj_4,";
+    eigdatafile << "xj_5,";
+    eigdatafile << "xj_6,";
+    eigdatafile << "xj_7,";
+    eigdatafile << "xj_8,";
+    eigdatafile << "xj_9,";
+    
+    eigdatafile << "xbar_1,";
+    eigdatafile << "xbar_2,";
+    eigdatafile << "xbar_3,";
+    
+    eigdatafile << "xbarj_1,";
+    eigdatafile << "xbarj_2,";
+    eigdatafile << "xbarj_3,";
+    eigdatafile << "xbarj_4,";
+    eigdatafile << "xbarj_5,";
+    eigdatafile << "xbarj_6,";
+    eigdatafile << "xbarj_7,";
+    eigdatafile << "xbarj_8,";
+    eigdatafile << "xbarj_9,";
+    eigdatafile << endl;
+    
+    
+    
+    
+    for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
+        cout << "Time " << tt << " of " << EndTime << endl;
+        
+        
+        Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+        Architect archie1 = archie;
+        archie1.AddPerson(p1);
+        
+        
+        Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, &myCity, &home, hco, 5,0,0, true);
+        Architect archie2 = archie;
+        archie2.AddPerson(p2);
+        
+        Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, &myCity, &home, hco, 5,0,0, true);
+        Architect archie3 = archie;
+        archie3.AddPerson(p3);
+        
+        
+        eigdatafile << tt << ",";
+        eigdatafile << archie.getS() << ",";
+        eigdatafile << archie.getI()+archie.getP() << ",";
+        eigdatafile << archie.getR() << ",";
+        
+        eigdatafile << archie1.getS() << ",";
+        eigdatafile << archie1.getI()+archie1.getP() << ",";
+        eigdatafile << archie1.getR() << ",";
+        eigdatafile << archie2.getS() << ",";
+        eigdatafile << archie2.getI()+archie2.getP() << ",";
+        eigdatafile << archie2.getR() << ",";
+        eigdatafile << archie3.getS() << ",";
+        eigdatafile << archie3.getI()+archie3.getP()<< ",";
+        eigdatafile << archie3.getR() << ",";
+        
+        archie.Update(tt);
+        archie1.Update(tt);
+        archie2.Update(tt);
+        archie3.Update(tt);
+        
+        eigdatafile << archie.getS() << ",";
+        eigdatafile << archie.getI()+archie.getP() << ",";
+        eigdatafile << archie.getR() << ",";
+        
+        eigdatafile << archie1.getS() << ",";
+        eigdatafile << archie1.getI()+archie1.getP() << ",";
+        eigdatafile << archie1.getR() << ",";
+        
+        eigdatafile << archie2.getS() << ",";
+        eigdatafile << archie2.getI()+archie2.getP() << ",";
+        eigdatafile << archie2.getR() << ",";
+        
+        eigdatafile << archie3.getS() << ",";
+        eigdatafile << archie3.getI()+archie3.getP() << ",";
+        eigdatafile << archie3.getR();
+        
+        eigdatafile << endl;
+        
+        
+        
+    }
+    eigdatafile.close();
+}
+void Ex2_SparseEig_SingleLocation(bool SaveData){
+    int maxdim = 2000;
+    
+    // Setting up parameters
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    
+    
+    // Instantiate Classes
+    Domain myCity("DiseasVille", cityBoundary);
+    Place home(1, "home", "Home", homeBoundary,myCity);
+    
+    double hco[2];
+    
+    vector<Place*> homes;
+    vector<Place*> works;
+    vector<Place*> schools;
+    vector<Place*> cemeteries;
+    
+    
+    homes.push_back(&home);
+    int population = 2000;
+    
+    Disease flu("Flu", 25, 15, 24);
+    
+    vector<Person*> people;
+    for (int i=0; i < population; i++){
+        string name = "randomName"+to_string(i);
+        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        
+        normal_distribution<double> ageDist(25,20);
+        double randage  = ageDist(generator);
+        int age = (randage < 0)? 0:floor(randage);
+        
+        getDefaultCoordinates(&home, hco);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,10,5, true);
+        people.push_back(p);
+    };
+    (people.front())->setState('I');
+    
+    vector<Person*> people1;
+    vector<Person*> people2;
+    vector<Person*> people3;
+    
+    double InitialTime = 0;
+    double EndTime  = 100;
+    double TimeStep =  1;
+    //int l = floor((EndTime-InitialTime)/TimeStep);
+    
+    
+    Architect archie(InitialTime,EndTime,TimeStep, people);
+    
+    string ver;
+    cout << "Enter version number for single location simulation: ";
+    cin >> ver;
+    string dataFolderName = "eigdata_single_v"+ver+"_";
+    
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    string timeStamp = to_string((now->tm_mon + 1)) + "-" +
+    to_string(now->tm_mday) + "-" +
+    to_string((now->tm_year + 1900));
+    string eigdatafilename = "../Data/"+dataFolderName+timeStamp+"/eigHistoryData.dat";
+    
+    string folder = "../Data/"+dataFolderName+timeStamp;
+    
+    mode_t process_mask = umask(0);
+    mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+    umask(process_mask);
+    cout << eigdatafilename << endl;
+    
+    ofstream eigdatafile;
+    eigdatafile.open(eigdatafilename, ios_base::out|ios_base::app);
+    
+    eigdatafile << "t,";
+    
+    eigdatafile << "x_1,";
+    eigdatafile << "x_2,";
+    eigdatafile << "x_3,";
+    
+    eigdatafile << "xj_1,";
+    eigdatafile << "xj_2,";
+    eigdatafile << "xj_3,";
+    eigdatafile << "xj_4,";
+    eigdatafile << "xj_5,";
+    eigdatafile << "xj_6,";
+    eigdatafile << "xj_7,";
+    eigdatafile << "xj_8,";
+    eigdatafile << "xj_9,";
+    
+    eigdatafile << "xbar_1,";
+    eigdatafile << "xbar_2,";
+    eigdatafile << "xbar_3,";
+    
+    eigdatafile << "xbarj_1,";
+    eigdatafile << "xbarj_2,";
+    eigdatafile << "xbarj_3,";
+    eigdatafile << "xbarj_4,";
+    eigdatafile << "xbarj_5,";
+    eigdatafile << "xbarj_6,";
+    eigdatafile << "xbarj_7,";
+    eigdatafile << "xbarj_8,";
+    eigdatafile << "xbarj_9,";
+    eigdatafile << endl;
+    
+
+    double x_1 = 0;
+    double x_2 = 0;
+    double x_3 = 0;
+    
+    double xj_1 = 0;
+    double xj_2 = 0;
+    double xj_3 = 0;
+    double xj_4 = 0;
+    double xj_5 = 0;
+    double xj_6 = 0;
+    double xj_7 = 0;
+    double xj_8 = 0;
+    double xj_9 = 0;
+    
+    double xbar_1 = 0;
+    double xbar_2 = 0;
+    double xbar_3 = 0;
+    
+    double xbarj_1 = 0;
+    double xbarj_2 = 0;
+    double xbarj_3 = 0;
+    double xbarj_4 = 0;
+    double xbarj_5 = 0;
+    double xbarj_6 = 0;
+    double xbarj_7 = 0;
+    double xbarj_8 = 0;
+    double xbarj_9 = 0;
+    
+    int total_iter;
+    cout << "Enter Total number of iterations: ";
+    cin >> total_iter;
+    
+    for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
+        cout << "Time " << tt << " of " << EndTime << endl;
+        
+        for (int ii = 1; ii <= total_iter; ii++){
+            getDefaultCoordinates(&home, hco);
+            cout << hco[0] << endl;
+            Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+            Architect archie1 = archie;
+            archie1.AddPerson(p1);
+        
+            Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, &myCity, &home, hco, 5,0,0, true);
+            Architect archie2 = archie;
+            archie2.AddPerson(p2);
+        
+            Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, &myCity, &home, hco, 5,0,0, true);
+            Architect archie3 = archie;
+            archie3.AddPerson(p3);
+        
+            x_1 = archie.getS();
+            x_2 = archie.getI()+archie.getP();
+            x_3 = archie.getR();
+        
+            xj_1 = archie1.getS();
+            xj_2 = archie1.getI()+archie1.getP();
+            xj_3 = archie1.getR();
+            xj_4 = archie2.getS();
+            xj_5 = archie2.getI()+archie2.getP();
+            xj_6 = archie2.getR();
+            xj_7 = archie3.getS();
+            xj_8 = archie3.getI()+archie3.getP();
+            xj_9 = archie3.getR();
+        
+            archie.Update(tt);
+            archie1.Update(tt);
+            archie2.Update(tt);
+            archie3.Update(tt);
+        
+            xbar_1 = archie.getS();
+            xbar_2 = archie.getI()+archie.getP();
+            xbar_3 = archie.getR();
+        
+            xbarj_1 = archie1.getS();
+            xbarj_2 = archie1.getI()+archie1.getP();
+            xbarj_3 = archie1.getR();
+            xbarj_4 = archie2.getS();
+            xbarj_5 = archie2.getI()+archie2.getP();
+            xbarj_6 = archie2.getR();
+            xbarj_7 = archie3.getS();
+            xbarj_8 = archie3.getI()+archie3.getP();
+            xbarj_9 = archie3.getR();
+        }
+        eigdatafile << tt << ",";
+        eigdatafile << x_1/total_iter << ",";
+        eigdatafile << x_2/total_iter << ",";
+        eigdatafile << x_3/total_iter << ",";
+        
+        eigdatafile << xj_1/total_iter << ",";
+        eigdatafile << xj_2/total_iter << ",";
+        eigdatafile << xj_3/total_iter << ",";
+        eigdatafile << xj_4/total_iter << ",";
+        eigdatafile << xj_5/total_iter << ",";
+        eigdatafile << xj_6/total_iter << ",";
+        eigdatafile << xj_7/total_iter << ",";
+        eigdatafile << xj_8/total_iter << ",";
+        eigdatafile << xj_9/total_iter << ",";
+        
+        eigdatafile << xbar_1/total_iter << ",";
+        eigdatafile << xbar_2/total_iter << ",";
+        eigdatafile << xbar_3/total_iter << ",";
+        
+        eigdatafile << xbarj_1/total_iter << ",";
+        eigdatafile << xbarj_2/total_iter << ",";
+        eigdatafile << xbarj_3/total_iter << ",";
+        
+        eigdatafile << xbarj_4/total_iter << ",";
+        eigdatafile << xbarj_5/total_iter << ",";
+        eigdatafile << xbarj_6/total_iter << ",";
+        
+        eigdatafile << xbarj_7/total_iter << ",";
+        eigdatafile << xbarj_8/total_iter << ",";
+        eigdatafile << xbarj_9/total_iter;
+        
+        
+        
+        eigdatafile << endl;
         
         
         

@@ -23,7 +23,10 @@ public:
     Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d, bool eig);
 	Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d);
     Architect(double t0, double tend, double ts, vector<Person *> pp, bool store=false);
-	virtual ~Architect();
+	
+    
+    virtual ~Architect();
+    
 
 	// Setters
 
@@ -44,6 +47,7 @@ public:
 	void Update(double t);
 	void DisplayTime();
 	void PopulationData();
+    void AddPerson(Person *p);
 
 private:
 	double InitialTime;

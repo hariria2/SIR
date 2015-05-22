@@ -46,6 +46,7 @@ Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool 
 }
 
 
+
 Architect::~Architect() {
 
 }
@@ -179,4 +180,8 @@ void Architect::PopulationData(){
             D += 1;
         }
     }
+}
+void Architect::AddPerson(Person *p){
+    PeoplePtr.push_back(p);
+    PopulationData();
 }

@@ -8,7 +8,7 @@ ic    = [0.9995,1-0.9995,0];
 SIR1 = SIRDE(tend,0.2,ic, 2000);
 
 % ===== V26 =======
-SIR1.beta  = .175;
+SIR1.beta  = 3.875;
 SIR1.gamma = .011;
 SIR1.mu    = .05; 
 
@@ -34,5 +34,5 @@ open('../../Results/res_4-23-2015/sim_v2.fig')
 
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
 hold on
-SIR1.plot('LegendOn')
+%SIR1.plot('LegendOn')
 
