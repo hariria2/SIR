@@ -656,7 +656,7 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
     homes.push_back(&home);
     int population = 2000;
     
-    Disease flu("Flu", 25, 15, 24);
+    Disease flu("Flu", 5, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -669,7 +669,7 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,10,5, true);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,0,0, true);
         people.push_back(p);
     };
     (people.front())->setState('I');
@@ -813,34 +813,34 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
             xbar_2 = archie.getI()+archie.getP();
             xbar_3 = archie.getR();
         
-            xbarj_1 = archie1.getS();
-            xbarj_2 = archie1.getI()+archie1.getP();
-            xbarj_3 = archie1.getR();
-            xbarj_4 = archie2.getS();
-            xbarj_5 = archie2.getI()+archie2.getP();
-            xbarj_6 = archie2.getR();
-            xbarj_7 = archie3.getS();
-            xbarj_8 = archie3.getI()+archie3.getP();
-            xbarj_9 = archie3.getR();
+            xbarj_1 += archie1.getS();
+            xbarj_2 += archie1.getI()+archie1.getP();
+            xbarj_3 += archie1.getR();
+            xbarj_4 += archie2.getS();
+            xbarj_5 += archie2.getI()+archie2.getP();
+            xbarj_6 += archie2.getR();
+            xbarj_7 += archie3.getS();
+            xbarj_8 += archie3.getI()+archie3.getP();
+            xbarj_9 += archie3.getR();
         }
         eigdatafile << tt << ",";
-        eigdatafile << x_1/total_iter << ",";
-        eigdatafile << x_2/total_iter << ",";
-        eigdatafile << x_3/total_iter << ",";
+        eigdatafile << x_1 << ",";
+        eigdatafile << x_2 << ",";
+        eigdatafile << x_3 << ",";
         
-        eigdatafile << xj_1/total_iter << ",";
-        eigdatafile << xj_2/total_iter << ",";
-        eigdatafile << xj_3/total_iter << ",";
-        eigdatafile << xj_4/total_iter << ",";
-        eigdatafile << xj_5/total_iter << ",";
-        eigdatafile << xj_6/total_iter << ",";
-        eigdatafile << xj_7/total_iter << ",";
-        eigdatafile << xj_8/total_iter << ",";
-        eigdatafile << xj_9/total_iter << ",";
+        eigdatafile << xj_1 << ",";
+        eigdatafile << xj_2 << ",";
+        eigdatafile << xj_3 << ",";
+        eigdatafile << xj_4 << ",";
+        eigdatafile << xj_5 << ",";
+        eigdatafile << xj_6 << ",";
+        eigdatafile << xj_7 << ",";
+        eigdatafile << xj_8 << ",";
+        eigdatafile << xj_9 << ",";
         
-        eigdatafile << xbar_1/total_iter << ",";
-        eigdatafile << xbar_2/total_iter << ",";
-        eigdatafile << xbar_3/total_iter << ",";
+        eigdatafile << xbar_1 << ",";
+        eigdatafile << xbar_2 << ",";
+        eigdatafile << xbar_3 << ",";
         
         eigdatafile << xbarj_1/total_iter << ",";
         eigdatafile << xbarj_2/total_iter << ",";

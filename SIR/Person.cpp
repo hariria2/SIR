@@ -306,7 +306,7 @@ void Person::UpdateDisease() {
 	if (getState() == 'S'){
 		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
 			if ((*ip)->getState() == 'P' | (*ip)->getState() == 'I'){
-				if (Distance(*ip) < 10){
+				if (Distance(*ip) < 20){
 					IncubationTime = Time;
 					setDisease((*ip)->getDisease());
                     setState('I');

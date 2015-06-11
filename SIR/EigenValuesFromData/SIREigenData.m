@@ -7,6 +7,7 @@ clear all; close all; clc;
 %file = '../../Data/eigdata_single_v4_5-19-2015/eigHistoryData.dat';
 %file = '../../Data/eigdata_single_v5_5-19-2015/eigHistoryData.dat';
 %file = '../../Data/eigdata_single_v3_5-21-2015/eigHistoryData.dat';
+file = '../../Data/eigdata_single_v4_5-22-2015/eigHistoryData.dat';
 ed = EigenData(3,file);
 ed.EigenHistory();
 ed.PlotTrajectory();

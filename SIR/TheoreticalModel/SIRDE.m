@@ -4,13 +4,16 @@ classdef SIRDE < handle
         dt;
         ic;
         t;
+        dim;
         beta  = 1;
         gamma = 1;
         mu    = 1; 
+        f     = 1;
         delta = @(r) 1;
         dDdr  = @(r) 0;
         result;
         lam;
+        Roots;
         V;
         Frames;
         Population;
@@ -21,11 +24,12 @@ classdef SIRDE < handle
             sir.dt    = dt;
             sir.t     = 0:dt:sir.tend;
             sir.ic    = ic;
+            sir.dim   = length(ic);
             sir.Population = pop;
         end
         function Simulate(obj, isPeriodic)
             if isPeriodic
-                [~,y] = ode45(@obj.flowPeriodic,obj.t,obj.ic);
+                [~,y] = ode45(@obj.flowPeriodic,obj.t,obj. ic);
             else
                 [~,y] = ode45(@obj.flow,obj.t,obj.ic);
             end
@@ -39,7 +43,24 @@ classdef SIRDE < handle
             dy(1) = -obj.beta*y(1)*y(2);
             dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2);
             dy(3) =  obj.gamma*y(2);
-        end      
+        end
+        function dy = flow_WBD(obj,~, y)  
+            dy    =  zeros(size(y));   
+            dy(1) = -obj.beta*y(1)*y(2) + obj.f*(1-y(1));
+            dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2) - obj.mu*y(2);
+            dy(3) =  obj.gamma*y(2) - obj.mu*y(3);
+        end
+        function dy = flow_SIS(obj, ~, y)
+            dy    =  zeros(size(y));   
+            dy(1) = -obj.beta*y(1)*y(2) + obj.mu*(1-y(1)) + obj.gamma*y(2);
+            dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2) - obj.mu*y(2);
+        end
+        function dy = flow_SIRS(obj,~, y)  
+            dy    =  zeros(size(y));   
+            dy(1) = -obj.beta*y(1)*y(2) + obj.mu*(1-y(1)) + obj.f*y(3);
+            dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2) - obj.mu*y(2);
+            dy(3) =  obj.gamma*y(2) - obj.mu*y(2) - obj.f*y(3);
+        end
         function dy = flowPeriodic(obj,~, y)
             dy    =  zeros(size(y));   
             %dy(1) = -obj.beta*y(1)*y(2) + obj.mu*(1-y(1));
@@ -69,9 +90,26 @@ classdef SIRDE < handle
                  b,...
                  0];
         end 
+        function getRoots(obj)
+            obj.Roots = zeros(3,length(obj.t));
+            
+            for ii = 1:length(obj.t)
+                t0 = obj.t(ii);
+                id = find(t0-obj.dt/2 <= obj.t & obj.t < t0+obj.dt/2); 
+                S  = obj.result(id,1);
+                I  = obj.result(id,2);
+                R  = obj.result(id,3);
+            
+                p = [1, -obj.beta*(I + S), ...
+                obj.gamma^2 + 2*obj.beta^2*I*S, -obj.beta*obj.gamma^2*I];
+                obj.Roots(:,ii) = roots(p);
+                obj.Roots(abs(obj.Roots)<1e-5)=0;
+            end
+        end
+            
         function getEigen(obj)
-            obj.lam = zeros(3,length(obj.t));
-            obj.V = zeros(3,3,length(obj.t));
+            obj.lam = zeros(obj.dim,length(obj.t));
+            obj.V = zeros(obj.dim,obj.dim,length(obj.t));
             for ii = 1:length(obj.t)
                 J = obj.Jacobian(obj.t(ii));
                 [v,l] = eig(J);
@@ -80,14 +118,19 @@ classdef SIRDE < handle
                 obj.lam(abs(obj.lam)<1e-5)=0;
             end
         end
-        function plot(obj,leg,varargin)
-            S = obj.result(:,1)*obj.Population;
-            I = obj.result(:,2)*obj.Population;
-            R = obj.result(:,3)*obj.Population;
-            %figure
-            plot(obj.t, S, 'b--',obj.t, I, 'r--',obj.t, R, 'g--','LineWidth',3,varargin{:})
+        function plot(obj,fignum,leg,varargin)
+            dleg = {'Susceptible','Infected','Recovered','Dead'};
+            dc   = {'b','r','g'};
+            p = zeros(1,obj.dim);
+            figure(fignum)
+            for ii = 1:obj.dim
+                p(ii) = plot(obj.t, obj.result(:,ii)*obj.Population,...
+                    dc{ii},'LineWidth',3, 'DisplayName', dleg{ii}); hold on
+            end
+            hold off
+           
             if strcmpi(leg,'LegendOn')
-                l=legend('Susceptible','Infected','Recovered');
+                l = legend(p);
                 set(l,'FontSize',18)
             end
             ti = title(sprintf('\\beta = %3.2e, \\gamma = %3.2e',obj.beta, obj.gamma));
@@ -95,30 +138,40 @@ classdef SIRDE < handle
             xlabel('Time','FontSize',18)
             ylabel('S,I,R','FontSize',18)
         end    
-        function timePlotEigen(obj)
-            lam1 = obj.lam(1,:);
-            lam2 = obj.lam(2,:);
-            lam3 = obj.lam(3,:);
+        function timePlotEigen(obj,fignum) 
             
-            figure
-            subplot(3,1,1)
-            plot(obj.t,real(lam1),'k','LineWidth',3)
-            xlabel('Time','FontSize',18)
-            ylabel('\lambda_1','FontSize',18)
-            ylim([-1,1])
-            hold on
-            subplot(3,1,2)
-            plot(obj.t,real(lam2),'k','LineWidth',3)
-            xlabel('Time','FontSize',18)
-            ylabel('\lambda_2','FontSize',18)
-            hold on
-            subplot(3,1,3)
-            plot(obj.t,real(lam3),'k','LineWidth',3)
-            xlabel('Time','FontSize',18)
-            ylabel('\lambda_3','FontSize',18)
-            hold on
+            figure(fignum)
+            for ii = 1:obj.dim
+                subplot(obj.dim, 2, 2*ii-1) 
+                plot(obj.t,real(obj.lam(ii,:)),'k','LineWidth',3); hold on
+                xlabel('Time','FontSize',18)
+                ylabel(['\lambda_',sprintf('%d',ii)],'FontSize',18)
+                
+                
+                subplot(obj.dim, 2, 2*ii) 
+                plot(obj.t,imag(obj.lam(ii,:)),'k','LineWidth',3); hold on
+                xlabel('Time','FontSize',18)
+                ylabel(['\lambda_',sprintf('%d',ii)],'FontSize',18)
+            end
+            hold off
+            subplot(3,2,1)
+            title('Real Part','FontSize', 18)
+            subplot(3,2,2)
+            title('Imaginary Part','FontSize', 18)
         end
-        function argonPlotEigen(obj)
+        function phasePlot(obj,fignum)
+            figure(fignum)
+            subplot(2,2,1)
+            plot(obj.result(:,1),obj.result(:,2),'k','linewidth',3)
+            xlabel('S');ylabel('I');
+            subplot(2,2,2)
+            plot(obj.result(:,1),obj.result(:,3),'k','linewidth',3)
+            xlabel('S');ylabel('R');
+            subplot(2,2,3)
+            plot(obj.result(:,2),obj.result(:,3),'k','linewidth',3)
+            xlabel('I'); ylabel('R')
+        end
+        function argonPlotEigen(obj) % Legacy
             lam1 = obj.lam(1,:);
             lam2 = obj.lam(2,:);
             lam3 = obj.lam(3,:);

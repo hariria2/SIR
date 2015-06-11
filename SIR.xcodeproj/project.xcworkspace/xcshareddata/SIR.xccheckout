@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>92E04E58-A3BA-4C63-80AB-61D247F27B11</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>SIR</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>0F97E27E83C996D354933AC4C4A05A835FCCC80C</key>
 		<string>https://github.com/hariria2/SIR.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>SIR.xcodeproj/project.xcworkspace</string>
+	<string>SIR.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>0F97E27E83C996D354933AC4C4A05A835FCCC80C</key>
