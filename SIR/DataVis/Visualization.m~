@@ -24,7 +24,6 @@ classdef Visualization < handle
         FullScreen = 0;
         graphFiles;
         Adj;
-        Nodes;
     end
     
     methods
@@ -50,7 +49,6 @@ classdef Visualization < handle
             end
             if showGraph
                 directoryfiles = dir(['../Data/', movieFolder]);
-                
                 files = cell(1, length(directoryfiles)-2);
                 for ii = 1:length(files)
                     files{ii} = directoryfiles(ii + 2).name;
@@ -110,7 +108,7 @@ classdef Visualization < handle
             end
         end
         function [A,C] = ProduceGraphData(obj, t)
-            f = strcat(obj.MovieFolder,'/',obj.graphFiles(t))
+            f = strcat(obj.MovieFolder,'/',obj.graphFiles(t));
             rawData = readtable(f{1});
             ids  = rawData.ID+1;
             xs   = rawData.x;
@@ -307,10 +305,9 @@ classdef Visualization < handle
         function h = DrawGraph(obj, t, fignum)
             [A,C] = obj.ProduceGraphData(t);
             obj.Adj = sparse(A);
- 
-            obj.Nodes = C;
+            
             figure(fignum)
-            gplot(obj.Adj,obj.Nodes,'-*');
+            h = gplot(obj.Adj,C);
         end
 
     end

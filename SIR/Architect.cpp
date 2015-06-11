@@ -114,7 +114,8 @@ void Architect::Update(double t, Storage* data){
                         (*ip)->getTime(),
                         (*ip)->getCoordinates(),
                        ((*ip)->getLocation())->getName(),
-                        (*ip)->getState());
+                        (*ip)->getState(),
+                        ((*ip)->getConnectionIDs()));
         
 		(*ip)->setTime(CurrentTime);
 		if ((*ip)->IsSingleLocation) {

@@ -228,6 +228,12 @@ Place* Person::getLocation(){
 Disease Person::getDisease() const{
     return disease;
 }
+list<Person*> Person::getConnections(){
+    return Connections;
+}
+list<int> Person:: getConnectionIDs(){
+    return ConnectionIDs;
+}
 
 // Utilities
 void Person::Move(double theta, double r) {
@@ -303,10 +309,18 @@ void Person::Move2(double theta, double r){
 }
 void Person::UpdateDisease() {
 	list<Person*> peeps = Location->getOccupants();
+    int criticalDistance = 20;
+    
+    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        if (Distance(*ip) < criticalDistance){
+            addConnectionID((*ip)->getID());
+        }
+    }
+    
 	if (getState() == 'S'){
 		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
 			if ((*ip)->getState() == 'P' | (*ip)->getState() == 'I'){
-				if (Distance(*ip) < 20){
+				if (Distance(*ip) < criticalDistance){
 					IncubationTime = Time;
 					setDisease((*ip)->getDisease());
                     setState('I');
@@ -349,6 +363,14 @@ double Person::Distance(Person* p){
 }
 bool Person::operator == (const Person& p) const {
 	return (p.ID == this->ID);
+}
+void Person::addConnection(Person* p){
+    Connections.push_back(p);
+}
+void Person::addConnectionID(int id){
+    ConnectionIDs.push_back(id);
+    ConnectionIDs.sort();
+    ConnectionIDs.unique();
 }
 
 Person::~Person(){

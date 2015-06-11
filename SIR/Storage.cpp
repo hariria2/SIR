@@ -113,6 +113,7 @@ void Storage::startMovieSave(double t){
 		movieFile << setw(15) << "y,";
 		movieFile << setw(15) << "Location,";
 		movieFile << setw(15) << "State,";
+        movieFile << setw(15) << "Connections,";
 		movieFile << endl;
 	}
 
@@ -122,12 +123,14 @@ void Storage::endMovieSave(){
 	movieFile.close();
 	cout << "File "+movieFolderName+" closed." << endl;
 }
-void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state){
+void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state, list<int> connectionIDs){
 	double x;
 	double y;
 	x = coord[0];
 	y = coord[1];
-
+    
+    //cout << connectionIDs.front() << endl;
+    
 	if (movieFile.is_open()){
 		movieFile << setw(7) << ID << ",";
 		movieFile << setw(14) << name << ",";
@@ -136,6 +139,7 @@ void Storage::movieSave(int ID, string name, double t, double coord[2], string l
 		movieFile << setw(14) << y << ",";
 		movieFile << setw(14) << location << ",";
 		movieFile << setw(14) << state << ",";
+        movieFile << setw(14) << "[" << listToString(connectionIDs) << "]" << ",";
 		movieFile << endl;
 	}
 }
@@ -325,6 +329,19 @@ int* Storage::getSS(){
 }
 int* Storage::getDD(){
     return DD;
+}
+
+string Storage::listToString(list<int> l){
+    
+    ostringstream ss;
+    
+    for (auto v:l){
+        ss << v << " ";
+    }
+    string res = ss.str();
+    res.pop_back();
+    res.pop_back();
+    return res;
 }
 
 Storage::~Storage(){

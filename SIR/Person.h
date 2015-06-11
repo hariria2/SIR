@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <list>
 #include "Place.h"
 #include "Disease.h"
 
@@ -77,6 +78,8 @@ public:
     int getInfVar();
     int getIncVar();
     int getRecVar();
+    list<Person*> getConnections();
+    list<int> getConnectionIDs();
 
 
 	// Utilities
@@ -86,6 +89,9 @@ public:
 	void ContractDisease(Disease d);
 	void UpdateDisease();
 	bool operator == (const Person& p) const;
+    void addConnection(Person* p);
+    void addConnectionID(int id);
+    
 
 
 private:
@@ -116,6 +122,8 @@ private:
     int InfectionVar;
     int IncubationVar;
     int RecoveryVar;
+    list<Person*> Connections;
+    list<int> ConnectionIDs;
 };
 
 #endif /* PERSON_H_ */

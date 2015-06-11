@@ -26,7 +26,7 @@ public:
 	void writeSIR();
 	void startMovieSave(double t);
 	void endMovieSave();
-	void movieSave(int ID, string name, double t, double coord[2], string location, char state);
+	void movieSave(int ID, string name, double t, double coord[2], string location, char state, list<int> connectionIDs);
 	void citySave();
 	void homeSave();
 	void workSave();
@@ -38,6 +38,8 @@ public:
     int* getPP();
 	int* getRR();
     int* getDD();
+    
+    string listToString(list<int> l);
 
 private:
 	int Length;
