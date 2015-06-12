@@ -132,7 +132,7 @@ void Example1_SingleLocation(bool SaveData){
     }
 }
 void Example2_SingleLocation(bool SaveData){
-    int maxdim = 2000;
+    int maxdim = 500;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -152,9 +152,9 @@ void Example2_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 10;
+    int population = 500;
     
-    Disease flu("Flu", 24, 24, 1);
+    Disease flu("Flu", 24, 15, 15);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -167,14 +167,14 @@ void Example2_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,5,5, true);
         
         people.push_back(p);
     };
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 20;
+    double EndTime = 100;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     

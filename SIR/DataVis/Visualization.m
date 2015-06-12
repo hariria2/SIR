@@ -110,7 +110,7 @@ classdef Visualization < handle
             end
         end
         function [A,C] = ProduceGraphData(obj, t)
-            f = strcat(obj.MovieFolder,'/',obj.graphFiles(t))
+            f = strcat(obj.MovieFolder,'/',obj.graphFiles(t));
             rawData = readtable(f{1});
             ids  = rawData.ID+1;
             xs   = rawData.x;
@@ -306,11 +306,17 @@ classdef Visualization < handle
         end
         function h = DrawGraph(obj, t, fignum)
             [A,C] = obj.ProduceGraphData(t);
+            
             obj.Adj = sparse(A);
  
             obj.Nodes = C;
             figure(fignum)
             gplot(obj.Adj,obj.Nodes,'-*');
+            [fn,sn,~] = find(obj.Adj);
+            nodes = [fn;sn];
+            for n = nodes
+                text(obj.Nodes(n,1),obj.Nodes(n,2)+10,num2str(n-1,'%d'),'fontsize', 18)
+            end
         end
 
     end

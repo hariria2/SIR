@@ -264,24 +264,28 @@ void Person::Move(double theta, double r) {
 	double ymin = Location->Perimeter[1][0];
 	double ymax = Location->Perimeter[1][1];
 
-	if (x < xmin){
-		x = xmin;
-	}
-	else if (x > xmax){
-		x = xmax;
-	}
-
-	if (y <  ymin){
-		y = ymin;
-	}
-	else if (y > ymax){
-		y = ymax;
-	}
+    if (x < xmin){
+        x = xmin + abs(x);
+    }
+    else if (x > xmax){
+        x = xmax - abs(x-xmax);
+    }
+    
+    if (y <  ymin){
+        y = ymin + abs(y);
+    }
+    else if (y > ymax){
+        y = ymax - abs(y-ymax);
+    }
 
 	Coordinates[0] = x;
 	Coordinates[1] = y;
 }
 void Person::Move2(double theta, double r){
+    
+    if (getState() == 'D') {
+        return;
+    }
     
 	double x = Coordinates[0] + r*cos(theta);
 	double y = Coordinates[1] + r*sin(theta);
@@ -291,17 +295,17 @@ void Person::Move2(double theta, double r){
 	double ymax = Location->Perimeter[1][1];
 
 	if (x < xmin){
-		x = xmin;
+		x = xmin + abs(x);
 	}
 	else if (x > xmax){
-		x = xmax;
+		x = xmax - abs(x-xmax);
 	}
 
 	if (y <  ymin){
-		y = ymin;
+		y = ymin + abs(y);
 	}
 	else if (y > ymax){
-		y = ymax;
+		y = ymax - abs(y-ymax);
 	}
 
 	Coordinates[0] = x;
@@ -311,11 +315,11 @@ void Person::UpdateDisease() {
 	list<Person*> peeps = Location->getOccupants();
     int criticalDistance = 20;
     
-    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
-        if (Distance(*ip) < criticalDistance){
-            addConnectionID((*ip)->getID());
-        }
-    }
+//    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+//        if (Distance(*ip) < criticalDistance){
+//            addConnectionID((*ip)->getID());
+//        }
+//    }
     
 	if (getState() == 'S'){
 		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
@@ -324,6 +328,7 @@ void Person::UpdateDisease() {
 					IncubationTime = Time;
 					setDisease((*ip)->getDisease());
                     setState('I');
+                    addConnectionID((*ip)->getID());
 				}
 			}
 		}
