@@ -113,7 +113,10 @@ void Storage::startMovieSave(double t){
 		movieFile << setw(15) << "y,";
 		movieFile << setw(15) << "Location,";
 		movieFile << setw(15) << "State,";
-        movieFile << setw(15) << "Connections,";
+        movieFile << setw(30) << "SIConnections,";
+        movieFile << setw(30) << "SIConnectionsHist,";
+        movieFile << setw(30) << "AllConnections,";
+        movieFile << setw(30) << "AllConnectionsHist,";
 		movieFile << endl;
 	}
 
@@ -123,7 +126,7 @@ void Storage::endMovieSave(){
 	movieFile.close();
 	cout << "File "+movieFolderName+" closed." << endl;
 }
-void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state, list<int> connectionIDs){
+void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state, list<int> SIconnections, list<int> SIconnectionsHist, list<int> Allconnections, list<int> AllconnectionsHist){
 	double x;
 	double y;
 	x = coord[0];
@@ -139,7 +142,10 @@ void Storage::movieSave(int ID, string name, double t, double coord[2], string l
 		movieFile << setw(14) << y << ",";
 		movieFile << setw(14) << location << ",";
 		movieFile << setw(14) << state << ",";
-        movieFile << setw(14) << "[" << listToString(connectionIDs) << "]" << ",";
+        movieFile << setw(30) << "[" << listToString(SIconnections) << "]" << ",";
+        movieFile << setw(30) << "[" << listToString(SIconnectionsHist) << "]" << ",";
+        movieFile << setw(30) << "[" << listToString(Allconnections) << "]" << ",";
+        movieFile << setw(30) << "[" << listToString(AllconnectionsHist) << "]" << ",";
 		movieFile << endl;
 	}
 }
@@ -335,13 +341,11 @@ string Storage::listToString(list<int> l){
     
     ostringstream ss;
     
+    
     for (auto v:l){
         ss << v << " ";
     }
-    string res = ss.str();
-    res.pop_back();
-    res.pop_back();
-    return res;
+    return ss.str();;
 }
 
 Storage::~Storage(){

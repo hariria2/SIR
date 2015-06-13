@@ -228,11 +228,17 @@ Place* Person::getLocation(){
 Disease Person::getDisease() const{
     return disease;
 }
-list<Person*> Person::getConnections(){
-    return Connections;
+list<int> Person:: getSIConnections(){
+    return SIConnections;
 }
-list<int> Person:: getConnectionIDs(){
-    return ConnectionIDs;
+list<int> Person:: getSIConnectionsHist(){
+    return SIConnectionsHist;
+}
+list<int> Person:: getAllConnections(){
+    return AllConnections;
+}
+list<int> Person:: getAllConnectionsHist(){
+    return AllConnectionsHist;
 }
 
 // Utilities
@@ -312,14 +318,23 @@ void Person::Move2(double theta, double r){
 	Coordinates[1] = y;
 }
 void Person::UpdateDisease() {
-	list<Person*> peeps = Location->getOccupants();
-    int criticalDistance = 20;
     
-//    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
-//        if (Distance(*ip) < criticalDistance){
-//            addConnectionID((*ip)->getID());
-//        }
-//    }
+    // Note that SIConnectionsHist does not get cleared here.
+    SIConnections.clear();
+    // Note that AllConnectionsHist does not get cleared here.
+    AllConnections.clear();
+    
+	
+    
+    list<Person*> peeps = Location->getOccupants();
+    int criticalDistance = 5;
+    
+    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        if (Distance(*ip) < criticalDistance){
+            addAllConnection((*ip)->getID());
+            addAllConnectionHist((*ip)->getID());
+        }
+    }
     
 	if (getState() == 'S'){
 		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
@@ -328,7 +343,8 @@ void Person::UpdateDisease() {
 					IncubationTime = Time;
 					setDisease((*ip)->getDisease());
                     setState('I');
-                    addConnectionID((*ip)->getID());
+                    addSIConnection((*ip)->getID());
+                    addSIConnectionHist((*ip)->getID());
 				}
 			}
 		}
@@ -369,13 +385,27 @@ double Person::Distance(Person* p){
 bool Person::operator == (const Person& p) const {
 	return (p.ID == this->ID);
 }
-void Person::addConnection(Person* p){
-    Connections.push_back(p);
+void Person::addSIConnection(int id){
+    SIConnections.push_back(id);
+    SIConnections.sort();
+    SIConnections.unique();
 }
-void Person::addConnectionID(int id){
-    ConnectionIDs.push_back(id);
-    ConnectionIDs.sort();
-    ConnectionIDs.unique();
+
+void Person::addSIConnectionHist(int id){
+    SIConnectionsHist.push_back(id);
+    SIConnectionsHist.sort();
+    SIConnectionsHist.unique();
+}
+void Person::addAllConnection(int id){
+    AllConnections.push_back(id);
+    AllConnections.sort();
+    AllConnections.unique();
+}
+
+void Person::addAllConnectionHist(int id){
+    AllConnectionsHist.push_back(id);
+    AllConnectionsHist.sort();
+    AllConnectionsHist.unique();
 }
 
 Person::~Person(){

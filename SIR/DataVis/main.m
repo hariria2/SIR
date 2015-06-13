@@ -1,5 +1,5 @@
 clear all; close all; clc;
-ver = '9';
+ver = '11';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -15,10 +15,9 @@ else
 end
 
 vis = Visualization(dataFolder, movieFolder,1,1,1);
-vis.DrawGraph(2,4);
-
 
 vis.FullScreen = 1;
+vis.ShowNodes  = 1;
 vis.MakeMovie();
 ResFolder = ['../../Results/res_',timestamp];
 if ~(isdir(ResFolder))

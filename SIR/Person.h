@@ -78,9 +78,10 @@ public:
     int getInfVar();
     int getIncVar();
     int getRecVar();
-    list<Person*> getConnections();
-    list<int> getConnectionIDs();
-
+    list<int> getSIConnections();
+    list<int> getSIConnectionsHist();
+    list<int> getAllConnections();
+    list<int> getAllConnectionsHist();
 
 	// Utilities
 	double Distance(Person* p);
@@ -89,8 +90,11 @@ public:
 	void ContractDisease(Disease d);
 	void UpdateDisease();
 	bool operator == (const Person& p) const;
-    void addConnection(Person* p);
-    void addConnectionID(int id);
+    
+    void addSIConnection(int id);
+    void addSIConnectionHist(int id);
+    void addAllConnection(int id);
+    void addAllConnectionHist(int id);
     
 
 
@@ -122,8 +126,10 @@ private:
     int InfectionVar;
     int IncubationVar;
     int RecoveryVar;
-    list<Person*> Connections;
-    list<int> ConnectionIDs;
+    list<int> SIConnections;
+    list<int> SIConnectionsHist;
+    list<int> AllConnections;
+    list<int> AllConnectionsHist;
 };
 
 #endif /* PERSON_H_ */

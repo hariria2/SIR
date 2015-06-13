@@ -132,7 +132,7 @@ void Example1_SingleLocation(bool SaveData){
     }
 }
 void Example2_SingleLocation(bool SaveData){
-    int maxdim = 500;
+    int maxdim = 250;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -174,7 +174,7 @@ void Example2_SingleLocation(bool SaveData){
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 100;
+    double EndTime = 50;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
