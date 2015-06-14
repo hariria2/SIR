@@ -26,6 +26,7 @@ classdef Visualization < handle
         graphFiles;
         Adj;
         Nodes;
+        GraphType = 'SI';
     end
     
     methods
@@ -110,13 +111,22 @@ classdef Visualization < handle
                     [work.xmin(ii), work.xmax(ii); work.ymin(ii), work.ymax(ii)];
             end
         end
-        function [A,C] = ProduceGraphData(obj, t)
+        function [A,C] = ProduceGraphData(obj, t, type)
             f = strcat(obj.MovieFolder,'/',obj.graphFiles(t));
             rawData = readtable(f{1});
             ids  = rawData.ID+1;
             xs   = rawData.x;
             ys   = rawData.y;
-            cons = rawData.SIConnectionsHist;
+            switch type
+                case 'SI'
+                    cons = rawData.SIConnections;
+                case 'SIHist'
+                    cons = rawData.SIConnectionsHist;
+                case 'All'
+                    cons = rawData.AllConnections;
+                otherwise 
+                    cons = rawData.AllConnectionsHist;
+            end
             A    = zeros(length(ids));
             C    = zeros(length(ids),2);
             
@@ -313,7 +323,7 @@ classdef Visualization < handle
             obj.Frames = frames;
         end
         function h = DrawGraph(obj, t, fignum, pad)
-            [A,C] = obj.ProduceGraphData(t);  
+            [A,C] = obj.ProduceGraphData(t, obj.GraphType);  
             obj.Adj = sparse(A);
             obj.Nodes = C;
             figure(fignum)

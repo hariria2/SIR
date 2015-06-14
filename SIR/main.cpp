@@ -132,7 +132,7 @@ void Example1_SingleLocation(bool SaveData){
     }
 }
 void Example2_SingleLocation(bool SaveData){
-    int maxdim = 250;
+    int maxdim = 50;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -152,7 +152,7 @@ void Example2_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 500;
+    int population = 50;
     
     Disease flu("Flu", 24, 15, 15);
     
@@ -174,7 +174,7 @@ void Example2_SingleLocation(bool SaveData){
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 50;
+    double EndTime = 15;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     

@@ -1,5 +1,5 @@
 clear all; close all; clc;
-ver = '11';
+ver = '1';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -14,11 +14,17 @@ else
     movieFolder = ['../../Data/movie_single_v',ver,'_',timestamp];
 end
 
+
+
 vis = Visualization(dataFolder, movieFolder,1,1,1);
 
 vis.FullScreen = 1;
-vis.ShowNodes  = 1;
+vis.ShowNodes  = 0;
+vis.GraphType = 'SIHist';
+
 vis.MakeMovie();
+
+
 ResFolder = ['../../Results/res_',timestamp];
 if ~(isdir(ResFolder))
     mkdir(ResFolder);
