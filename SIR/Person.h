@@ -85,7 +85,7 @@ public:
 
 	// Utilities
 	double Distance(Person* p);
-	void Move(double theta, double r);
+	void Move(double theta, double r, string type = "DailyMovement");
 	void Move2(double theta, double r);
 	void ContractDisease(Disease d);
 	void UpdateDisease();

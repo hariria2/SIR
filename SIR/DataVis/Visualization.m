@@ -27,6 +27,7 @@ classdef Visualization < handle
         Adj;
         Nodes;
         GraphType = 'SI';
+        TaggedPeople = [];
     end
     
     methods
@@ -233,7 +234,7 @@ classdef Visualization < handle
             obj.polyys = [obj.polyys,[A(2,1);A(2,1);A(2,2);A(2,2)]];
             obj.colors = [obj.colors;c];
         end        
-        function DrawPeople(~,person) 
+        function DrawPeople(obj,person) 
             if strcmpi(person.State,'S')
                 plot(person.Coordinates(1),person.Coordinates(2),'.b', 'MarkerSize',20)
             elseif strcmpi(person.State,'I')
@@ -244,6 +245,9 @@ classdef Visualization < handle
                 plot(person.Coordinates(1),person.Coordinates(2),'.g', 'MarkerSize',20)
             else % Dead people
                 plot(person.Coordinates(1),person.Coordinates(2),'.k', 'MarkerSize',20)
+            end
+            if any(person.ID == obj.TaggedPeople)
+                text(person.Coordinates(1),person.Coordinates(2),['\bf',int2str(person.ID)], 'fontsize', 18, 'Color', 'm')
             end
         end
         function h = Render(obj,t)

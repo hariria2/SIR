@@ -1,15 +1,15 @@
 
 clear all; close all; clc;
-tend  = 200;
+tend  = 100;
 dt    = 0.1;
-ic    = [0.9995,1-0.9995,0];
+ic    = [0.6,1-0.6,0];
 
 %% === SIRDE(tend, dt, ic)=======================
 SIR1 = SIRDE(tend,0.2,ic, 2000);
 
 % ===== V26 =======
-SIR1.beta  = 1.0;
-SIR1.gamma = 0.05;
+SIR1.beta  = @(t) 0.3;
+SIR1.gamma = @(t) 0.1;
 SIR1.mu    = 0.5; 
 SIR1.f     = 0.15;
 % ===== V23 =======

@@ -242,7 +242,7 @@ list<int> Person:: getAllConnectionsHist(){
 }
 
 // Utilities
-void Person::Move(double theta, double r) {
+void Person::Move(double theta, double r, string motionType) {
 	int hour    = floor(Time);
 	double min  = Time - hour;
 	double DailyTime = ((hour % 24) + min);
@@ -252,17 +252,38 @@ void Person::Move(double theta, double r) {
         return;
     }
     
-    if (DailyTime <= 8 || DailyTime >= 18){
-		if (!(Location->getType() == "Home")){
-			setLocation(Home);
-		}
-	}
-	else{
-
-		if (Location->getType() == "Home" && getState() != 'P'){
-			(Age>22)? setLocation(Work):setLocation(School);
-		}
-	}
+    if (motionType == "DailyMovement"){
+        
+        if (DailyTime <= 8 || DailyTime >= 18){
+            if (!(Location->getType() == "Home")){
+                setLocation(Home);
+            }
+        }
+        else{
+            
+            if (Location->getType() == "Home" && getState() != 'P'){
+                (Age>22)? setLocation(Work):setLocation(School);
+            }
+        }
+        
+    }else if (motionType == "Travel"){
+        if (getID() == 1){
+            if (Time == 10){
+                setLocation(Work);
+            }
+            if (Time == 20){
+                setLocation(School);
+            }
+        }
+        if (getID() == 9){
+            if (Time == 30){
+                setLocation(Home);
+            }
+        }
+        
+    }
+    
+    
 	double x = Coordinates[0] + r*cos(theta);
 	double y = Coordinates[1] + r*sin(theta);
 	double xmin = Location->Perimeter[0][0];
@@ -271,17 +292,17 @@ void Person::Move(double theta, double r) {
 	double ymax = Location->Perimeter[1][1];
 
     if (x < xmin){
-        x = xmin + abs(x);
+        x = xmin;// + abs(x);
     }
     else if (x > xmax){
-        x = xmax - abs(x-xmax);
+        x = xmax;// - abs(x-xmax);
     }
     
     if (y <  ymin){
-        y = ymin + abs(y);
+        y = ymin;// + abs(y);
     }
     else if (y > ymax){
-        y = ymax - abs(y-ymax);
+        y = ymax;// - abs(y-ymax);
     }
 
 	Coordinates[0] = x;
@@ -327,7 +348,7 @@ void Person::UpdateDisease() {
 	
     
     list<Person*> peeps = Location->getOccupants();
-    int criticalDistance = 5;
+    int criticalDistance = 15;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         if (Distance(*ip) < criticalDistance){

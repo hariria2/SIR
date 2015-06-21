@@ -7,7 +7,7 @@ timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
 locnum = 1;
 
 if locnum > 1
-    dataFolder = ['../../Data/data_multi_v',ver,'_',ti5mestamp];
+    dataFolder = ['../../Data/data_multi_v',ver,'_',timestamp];
     movieFolder = ['../../Data/movie_multi_v',ver,'_',timestamp];
 else
     dataFolder = ['../../Data/data_single_v',ver,'_',timestamp];
@@ -17,7 +17,7 @@ end
 
 
 vis = Visualization(dataFolder, movieFolder,1,1,1);
-
+vis.TaggedPeople = [1, 9];
 vis.FullScreen = 1;
 vis.ShowNodes  = 0;
 vis.GraphType = 'SIHist';

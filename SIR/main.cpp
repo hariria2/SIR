@@ -32,6 +32,7 @@ void Example1_SingleLocation(bool SaveData=true);
 void Example2_SingleLocation(bool SaveData=true);
 void Example1_MultiLocation(bool SaveData=true);
 void Example2_MultiLocation(bool SaveData=true);
+void Example3_MultiLocation(bool SaveData=true);
 
 void Ex1_Eig_SingleLocation(bool SaveData=true);
 void Ex1_SparseEig_SingleLocation(bool SaveData=true);
@@ -59,6 +60,7 @@ int main(){
     Example2_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
+    //Example3_MultiLocation();
  	//Ex1_Eig_SingleLocation(true);
     //Ex1_SparseEig_SingleLocation(true);
     //Ex2_SparseEig_SingleLocation(true);
@@ -152,7 +154,7 @@ void Example2_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 50;
+    int population = 10;
     
     Disease flu("Flu", 24, 15, 15);
     
@@ -174,7 +176,7 @@ void Example2_SingleLocation(bool SaveData){
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 15;
+    double EndTime = 10;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
@@ -344,6 +346,152 @@ void Example2_MultiLocation(bool SaveData){
     
     double InitialTime = 0;
     double EndTime = 400;
+    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
+    int l = floor((EndTime-InitialTime)/TimeStep);
+    
+    if (SaveData) {
+        string ver;
+        cout << "Enter version number for single location simulation: ";
+        cin >> ver;
+        string dataFolder = "data_multi_v"+ver+"_";
+        string movieFolder = "movie_multi_v"+ver+"_";
+        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
+        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        archie.Simulate();
+        data.writeSIR();
+    }else{
+        Architect archie(InitialTime,EndTime,TimeStep, people);
+        archie.Simulate();
+    }
+}
+void Example3_MultiLocation(bool SaveData){
+    
+    int maxdim = 700;
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    Domain myCity("DiseasVille", cityBoundary);
+    
+    vector<Place*> homes;
+    vector<Place*> works;
+    vector<Place*> schools;
+    vector<Place*> cemeteries;
+    
+    //readCityData(&myCity, homes, works, schools, cemeteries);
+    
+    int h1p[2][2] = {{50, 250},{50, 300}};
+    int hp[2][2];
+    int w1p[2][2] = {{50, 250},{350, 600}};
+    int wp[2][2];
+    int s1p[2][2] = {{300, 600},{100, 600}};
+    int sp[2][2];
+    int c1p[2][2] = {{250, 450},{625, 650}};
+
+    
+    
+    ostringstream convert;
+    string hnum;
+    int a = 0;
+    while (a < 1){
+        for (int ii = 1; ii < 2; ii++){
+            for (int jj = 0; jj < 2; jj++){
+                hp[0][jj] = h1p[0][jj];
+                hp[ii][jj] = h1p[ii][jj] + a*360;
+            }
+        }
+        convert << a;
+        hnum = convert.str();
+        Place *h = new Place(1, "Home"+hnum, "Home", hp, myCity);
+        homes.push_back(h);
+        convert.str(string());
+        ++a;
+    }
+    
+    ostringstream wconvert;
+    string wnum;
+    int b = 0;
+    while (b < 1){
+        for (int ii = 1; ii < 2; ii++){
+            for (int jj = 0; jj < 2; jj++){
+                wp[0][jj] = w1p[0][jj];
+                wp[ii][jj] = w1p[ii][jj] + b*110;
+            }
+        }
+        convert << b;
+        wnum = wconvert.str();
+        Place *w = new Place(1, "Work"+wnum, "Work", wp, myCity);
+        works.push_back(w);
+        wconvert.str(string());
+        b++;
+    }
+    
+    ostringstream sconvert;
+    string snum;
+    int c = 0;
+    while (c < 1){
+        for (int ii = 0; ii < 2; ii++){
+            for (int jj = 0; jj < 2; jj++){
+                sp[ii][jj] = s1p[ii][jj] + c*110;
+            }
+        }
+        sconvert << c;
+        snum = wconvert.str();
+        Place *s = new Place(1, "School"+wnum, "School", sp, myCity);
+        schools.push_back(s);
+        wconvert.str(string());
+        c++;
+    }
+    
+    Place *ce = new Place(1, "Cemetery", "Cemetery", c1p, myCity);
+    cemeteries.push_back(ce);
+    
+    double hco[2];
+    double wco[2];
+    double sco[2];
+    double cco[2];
+    
+    int population = 800;
+    
+    Disease flu("Flu", 24, 30, 70);
+    
+    vector<Person*> people;
+    for (int i=0; i < population; i++){
+        
+        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        
+        string name = "randomName"+to_string(i);
+        
+        int randHIdx = rand() % homes.size();
+        int randWIdx = rand() % works.size();
+        int randSIdx = rand() % schools.size();
+        int randCIdx = rand() % cemeteries.size();
+        
+        getDefaultCoordinates(homes[randHIdx], hco);
+        getDefaultCoordinates(works[randWIdx], wco);
+        getDefaultCoordinates(schools[randSIdx], sco);
+        getDefaultCoordinates(cemeteries[randCIdx], cco);
+        
+        normal_distribution<double> ageDist(25,20);
+        double randage  = ageDist(generator);
+        int age = (randage < 0)? 0:floor(randage);
+        
+        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes[randHIdx],
+                               schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
+                               hco,wco,sco,cco,10,10,10);
+        
+        if (i%3 == 0){
+            p->setLocation(works[randWIdx]);
+        }else if (i%2 == 0){
+            p->setLocation(homes[randHIdx]);
+        }else {
+            p->setLocation(schools[randSIdx]);
+        }
+        people.push_back(p);
+    };
+    (people.front())->setState('I');
+    
+    
+    double InitialTime = 0;
+    double EndTime = 50;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     

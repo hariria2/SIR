@@ -22,9 +22,12 @@ classdef Visualization < handle
         MovieFolder;
         DataFolder;
         FullScreen = 0;
+        ShowNodes  = 0;
         graphFiles;
         Adj;
         Nodes;
+        GraphType = 'SI';
+        TaggedPeople = [];
     end
     
     methods
@@ -109,13 +112,22 @@ classdef Visualization < handle
                     [work.xmin(ii), work.xmax(ii); work.ymin(ii), work.ymax(ii)];
             end
         end
-        function [A,C] = ProduceGraphData(obj, t)
+        function [A,C] = ProduceGraphData(obj, t, type)
             f = strcat(obj.MovieFolder,'/',obj.graphFiles(t));
             rawData = readtable(f{1});
             ids  = rawData.ID+1;
             xs   = rawData.x;
             ys   = rawData.y;
-            cons = rawData.SIConnectionsHist;
+            switch type
+                case 'SI'
+                    cons = rawData.SIConnections;
+                case 'SIHist'
+                    cons = rawData.SIConnectionsHist;
+                case 'All'
+                    cons = rawData.AllConnections;
+                otherwise 
+                    cons = rawData.AllConnectionsHist;
+            end
             A    = zeros(length(ids));
             C    = zeros(length(ids),2);
             
@@ -234,6 +246,9 @@ classdef Visualization < handle
             else % Dead people
                 plot(person.Coordinates(1),person.Coordinates(2),'.k', 'MarkerSize',20)
             end
+            if any(person.ID == obj.TaggedPeople)
+                
+            end
         end
         function h = Render(obj,t)
             h = figure(1);
@@ -311,18 +326,20 @@ classdef Visualization < handle
             close(wbh)
             obj.Frames = frames;
         end
-        function h = DrawGraph(obj, t, fignum, ~)
-            [A,C] = obj.ProduceGraphData(t);  
+        function h = DrawGraph(obj, t, fignum, pad)
+            [A,C] = obj.ProduceGraphData(t, obj.GraphType);  
             obj.Adj = sparse(A);
             obj.Nodes = C;
             figure(fignum)
             gplot(obj.Adj,obj.Nodes,'k-*');
             
-%            [fn,sn,~] = find(obj.Adj);
-%             nodes = [fn;sn];
-%             for n = nodes
-%                 text(obj.Nodes(n,1),obj.Nodes(n,2)+pad,num2str(n-1,'%d'),'fontsize', 18)
-%             end
+            if obj.ShowNodes 
+               [fn,sn,~] = find(obj.Adj);
+                 nodes = [fn;sn];
+                 for n = nodes
+                     text(obj.Nodes(n,1),obj.Nodes(n,2)+pad,num2str(n-1,'%d'),'fontsize', 18)
+                 end
+            end
         end
 
     end

@@ -5,8 +5,8 @@ classdef SIRDE < handle
         ic;
         t;
         dim;
-        beta  = @(t) 1;
-        gamma = @(t) 1;
+        beta  = @(1;
+        gamma = 1;
         mu    = 1; 
         f     = 1;
         delta = @(r) 1;
@@ -38,11 +38,11 @@ classdef SIRDE < handle
         function dy = Update(obj,y)
             dy = y + obj.flow(obj.t,y)*obj.dt;
         end
-        function dy = flow(obj,t, y)  
+        function dy = flow(obj,~, y)  
             dy    =  zeros(size(y));   
-            dy(1) = -obj.beta(t)*y(1)*y(2);
-            dy(2) =  obj.beta(t)*y(1)*y(2) - obj.gamma(t)*y(2);
-            dy(3) =  obj.gamma(t)*y(2);
+            dy(1) = -obj.beta*y(1)*y(2);
+            dy(2) =  obj.beta*y(1)*y(2) - obj.gamma*y(2);
+            dy(3) =  obj.gamma*y(2);
         end
         function dy = flow_WBD(obj,~, y)  
             dy    =  zeros(size(y));   
@@ -75,8 +75,8 @@ classdef SIRDE < handle
             S  = obj.result(id,1);
             I  = obj.result(id,2);
             R  = obj.result(id,3);
-            a  = obj.beta(t0);
-            b  = obj.gamma(t0);
+            a  = obj.beta;
+            b  = obj.gamma;
             
             J = [-a*I*obj.delta(R)*S^(obj.delta(R)-1), ... 
                  -a*S^obj.delta(R),...
@@ -133,8 +133,8 @@ classdef SIRDE < handle
                 l = legend(p);
                 set(l,'FontSize',18)
             end
-            %ti = title(sprintf('\\beta = %3.2e, \\gamma = %3.2e',obj.beta, obj.gamma));
-            %set(ti, 'FontSize',20)
+            ti = title(sprintf('\\beta = %3.2e, \\gamma = %3.2e',obj.beta, obj.gamma));
+            set(ti, 'FontSize',20)
             xlabel('Time','FontSize',18)
             ylabel('S,I,R','FontSize',18)
         end    
@@ -146,8 +146,7 @@ classdef SIRDE < handle
                 plot(obj.t,real(obj.lam(ii,:)),'k','LineWidth',3); hold on
                 xlabel('Time','FontSize',18)
                 ylabel(['\lambda_',sprintf('%d',ii)],'FontSize',18)
-                %hold on 
-                %plot(obj.t, obj.beta(obj.t)./obj.gamma(obj.t));
+                
                 
                 subplot(obj.dim, 2, 2*ii) 
                 plot(obj.t,imag(obj.lam(ii,:)),'k','LineWidth',3); hold on
