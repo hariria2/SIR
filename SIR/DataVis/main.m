@@ -1,10 +1,10 @@
 clear all; close all; clc;
-ver = '1';
+ver = '2';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
 
-locnum = 1;
+locnum = 2;
 
 if locnum > 1
     dataFolder = ['../../Data/data_multi_v',ver,'_',timestamp];

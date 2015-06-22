@@ -15,7 +15,7 @@ else
     movieFolder = ['../../Data/movie_single_v',ver,'_',timestamp];
 end
 
-t = 5;
+t = 1;
 
 gs = GraphStuff(movieFolder, 1);
 gs.Directed = 0;
@@ -24,39 +24,29 @@ gs.ShowNodes = 1;
 gs.GraphType = 'SIHist';
 gs.ProduceGraphData(t, gs.GraphType); 
 gs.DrawGraph(1, 0.1)
+%gs.DrawGraphWithNodes();
+%gs.ProduceGraphData(3, gs.GraphType);
+gs.getAverageDistance()
+gs.MeanDistance
+gs.getDistanceFromTo(91,736)
+gs.getAverageClustering()
+gs.MeanClustering
 
 
-
-
-t = 2:49;
+t = 1:20;
 yl = zeros(1,length(t));
 yc = zeros(1,length(t));
-yd = zeros(1,length(t));
-ln = zeros(1,length(t));
-
-for ii = 1:length(t)
-    gs.ProduceGraphData(t(ii), gs.GraphType); 
+for ii = t
+    gs.ProduceGraphData(ii, gs.GraphType); 
     gs.getAverageDistance();
     gs.getAverageClustering();
     yl(ii) = gs.MeanDistance;
     yc(ii) = gs.MeanClustering;
-    yd(ii) = gs.MeanDegree;
-    ln(ii) = log(length(gs.ActiveIDs));
 end
 
 figure(2)
-plot(t, yl,'o', t, yc,'x', t, yd, '+');
-
-
-l=legend('Average Length','Average Clustering Coefficient','Average Degree','Location','NorthWest');
-set(l,'fontsize',18)
-
-xlabel('t','fontsize',18)
-
-hold on 
-plot(t,ln,'k--')
-
-% hold on
-% y1 = (yl(end)-yl(1))/(t(end)-t(1)) * t + yl(1);
-% y2 = (yc(end)-yc(2))/(t(end)-t(2)) * t + yc(2);
-% plot(t, y1,'k',t, y2,'k','linewidth',.2)
+plot(t, yl,'o', t, yc,'x');
+hold on
+y = (yl(end)-yl(2))/(t(end)-t(2)) * t + yl(2);
+plot(t, y,'k','linewidth',2)
+legend('Average Length','Average Clustering Coefficient','Location','NorthWest')

@@ -124,7 +124,7 @@ void Architect::Update(double t, Storage* data){
 		if ((*ip)->IsSingleLocation) {
 			(*ip)->Move2((rand() % 360),5);
 		}else{
-			(*ip)->Move((rand() % 360),5, "Travel");
+			(*ip)->Move((rand() % 360),2, "Travel");
 		}
 		(*ip)->UpdateDisease();
 	}

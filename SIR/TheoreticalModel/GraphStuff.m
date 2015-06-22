@@ -15,12 +15,16 @@ classdef GraphStuff < handle
         ShowNodes  = 0;
         graphFiles;
         Adj;
+        IDs;
+        ActiveIDs;
         Nodes;
+        ActiveNodes;
         GraphType = 'SI';
         DistanceMatrix;
         WeinerIndex;
         MeanDistance;
         MeanClustering;
+        MeanDegree = 0;
         Directed = 0;
     end
     
@@ -34,17 +38,6 @@ classdef GraphStuff < handle
                 files = cell(1, length(directoryfiles)-2);
                 for ii = 1:length(files)
                     files{ii} = directoryfiles(ii + 2).name;
-                    
-%                     people = readtable([obj.MovieFolder,'/',files{ii}]);
-%                     obj.People = cell(1,length(people.ID));
-%                     for jj = 1:length(people.ID)
-%                         obj.People{jj}.ID = people.ID(jj);
-%                         obj.People{jj}.Name = people.Name(jj);
-%                         obj.People{jj}.Time = people.Time(jj);
-%                         obj.People{jj}.Coordinates = [people.x(jj), people.y(jj)];
-%                         obj.People{jj}.Location = people.Location(jj);
-%                         obj.People{jj}.State = people.State(jj);
-%                     end
                 end
                gs.graphFiles = files;
             end
@@ -54,6 +47,7 @@ classdef GraphStuff < handle
             f = strcat(obj.MovieFolder,'/',obj.graphFiles(t));
             rawData = readtable(f{1});
             ids  = rawData.ID+1;
+            obj.IDs = ids;
             xs   = rawData.x;
             ys   = rawData.y;
             switch type
@@ -66,9 +60,11 @@ classdef GraphStuff < handle
                 otherwise 
                     cons = rawData.AllConnectionsHist;
             end
+            activeids = [];
+        
             A    = zeros(length(ids));
             C    = zeros(length(ids),2);
-            
+            n = 1;
             for ii = 1:length(ids)
                 c = eval(char(cons(ii)))+1;
                 for jj = c
@@ -78,10 +74,21 @@ classdef GraphStuff < handle
                         A(ii,jj) = 1;
                     end
                 end
-                C(ii,:) =[xs(ii), ys(ii)]; 
+                C(ii,:) =[xs(ii), ys(ii)];
+                if ~isempty(c)
+                    obj.ActiveNodes(n,:) = [xs(ii), ys(ii)];
+                    n = n + 1;
+                    activeids = [activeids, ii];
+                    activeids = [activeids, c];
+                    obj.MeanDegree = obj.MeanDegree + length(unique(c));
+                end
             end
+            obj.ActiveIDs = sort(unique(activeids));
+            obj.ActiveNodes = zeros(length(obj.ActiveIDs),2);
+            obj.MeanDegree = obj.MeanDegree/length(obj.ActiveIDs);
+            
             % TODO: Should I really do this? 
-            if obj.Directed
+            if obj.Directed == 1
                 obj.Adj = sparse(A);  
             else
                 A = (A + A');
@@ -123,8 +130,7 @@ classdef GraphStuff < handle
             title(sprintf('Time = %d',obj.People{1}.Time),'fontsize',22)
            
         end
-        function DrawGraph(obj, t, fignum, pad)
-            obj.ProduceGraphData(t, obj.GraphType);  
+        function DrawGraph(obj, fignum, pad) 
             figure(fignum)
             if obj.FullScreen
                 set(gcf,'units','normalized','outerposition',[0 0 1 1])
@@ -147,13 +153,17 @@ classdef GraphStuff < handle
         [S, C] = conncomp(bgo);
         end
         function getAverageDistance(obj)
-            obj.DistanceMatrix = graphallshortestpaths(obj.Adj);
-            n = length(obj.DistanceMatrix);
+            if obj.Directed
+                obj.DistanceMatrix = graphallshortestpaths(obj.Adj,'Directed', true);
+            else
+                obj.DistanceMatrix = graphallshortestpaths(obj.Adj,'Directed', false);
+            end
+            n = length(obj.ActiveIDs);
             s = 1;
             for ii = 1:n
                 for jj = 1:n
                     if ii ~= jj
-                        s = s + obj.DistanceMatrix(ii,jj);
+                        s = s + obj.DistanceMatrix(obj.ActiveIDs(ii),obj.ActiveIDs(jj));
                     end
                 end
             end
@@ -162,10 +172,10 @@ classdef GraphStuff < handle
             obj.MeanDistance = obj.WeinerIndex/(n*(n-1));
         end
         function getAverageClustering(obj)
-            N = length(obj.Nodes);
+            N = length(obj.ActiveIDs);
             C = 0;
             for ii = 1:N
-                c = obj.getLocalClusteringCoeff(ii);
+                c = obj.getLocalClusteringCoeff(obj.ActiveIDs(ii));
                 C = C + c; 
             end
             obj.MeanClustering = C/N;
@@ -198,5 +208,6 @@ classdef GraphStuff < handle
             end
             
         end
+        
     end
 end

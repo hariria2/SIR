@@ -57,10 +57,10 @@ void Rectangle::set_values (int x, int y) {
 int main(){
     
     //Example1_SingleLocation();
-    Example2_SingleLocation();
+    //Example2_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
-    //Example3_MultiLocation();
+    Example3_MultiLocation();
  	//Ex1_Eig_SingleLocation(true);
     //Ex1_SparseEig_SingleLocation(true);
     //Ex2_SparseEig_SingleLocation(true);
@@ -134,7 +134,7 @@ void Example1_SingleLocation(bool SaveData){
     }
 }
 void Example2_SingleLocation(bool SaveData){
-    int maxdim = 50;
+    int maxdim = 500;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -154,7 +154,7 @@ void Example2_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 10;
+    int population = 500;
     
     Disease flu("Flu", 24, 15, 15);
     
@@ -176,7 +176,7 @@ void Example2_SingleLocation(bool SaveData){
     (people.front())->setState('I');
     
     double InitialTime = 0;
-    double EndTime = 10;
+    double EndTime = 50;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
