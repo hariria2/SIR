@@ -22,9 +22,11 @@ classdef GraphStuff < handle
         GraphType = 'SI';
         DistanceMatrix;
         WeinerIndex;
-        MeanDistance;
-        MeanClustering;
+        MeanDistance = 0;
+        MeanClustering = 0;
         MeanDegree = 0;
+        DegreeDistribution = [];
+        LocalClustering = [];
         Directed = 0;
     end
     
@@ -57,26 +59,18 @@ classdef GraphStuff < handle
                     cons = rawData.SIConnectionsHist;
                 case 'All'
                     cons = rawData.AllConnections;
-                otherwise 
+                case 'AllHist' 
                     cons = rawData.AllConnectionsHist;
+                otherwise
+                    disp('error: choose the right case of network type.')
             end
             activeids = [];
-            n = 1;
-            for ii = 1:length(ids);
-                c = eval(char(cons(ii)))+1;
-                if ~isempty(c)
-                    n = n + 1;
-                    activeids = [activeids, ii];
-                    activeids = [activeids, c];
-                end
-            end
-            obj.ActiveIDs = sort(unique(activeids));
-            obj.ActiveNodes = zeros(length(obj.ActiveIDs),2);
-            
-            
+        
             A    = zeros(length(ids));
             C    = zeros(length(ids),2);
             n = 1;
+            md = 0;
+            dd = []; % degree distribution
             for ii = 1:length(ids)
                 c = eval(char(cons(ii)))+1;
                 for jj = c
@@ -90,19 +84,19 @@ classdef GraphStuff < handle
                 if ~isempty(c)
                     obj.ActiveNodes(n,:) = [xs(ii), ys(ii)];
                     n = n + 1;
-                    obj.MeanDegree = obj.MeanDegree + length(c);
-                    n = n + 1;
                     activeids = [activeids, ii];
                     activeids = [activeids, c];
+                    md = md + length(unique(c));
+                    dd = [dd, length(unique(c))];
+                    
+                    %obj.MeanDegree = obj.MeanDegree + length(unique(c));
                 end
-                if any(ii == obj.ActiveIDs)
-                    obj.ActiveNodes(n,:) = [xs(ii), ys(ii)];
-                    n = n + 1;
-                    obj.MeanDegree = obj.MeanDegree + length(c);
-                end
-                
             end
-
+            obj.ActiveIDs = sort(unique(activeids));
+            obj.ActiveNodes = zeros(length(obj.ActiveIDs),2);
+            obj.MeanDegree = md/length(obj.ActiveIDs);
+            obj.DegreeDistribution = dd;
+            
             % TODO: Should I really do this? 
             if obj.Directed == 1
                 obj.Adj = sparse(A);  
@@ -190,6 +184,8 @@ classdef GraphStuff < handle
         function getAverageClustering(obj)
             N = length(obj.ActiveIDs);
             C = 0;
+            obj.LocalClustering = zeros(size(obj.ActiveIDs));
+            
             for ii = 1:N
                 c = obj.getLocalClusteringCoeff(obj.ActiveIDs(ii));
                 C = C + c; 

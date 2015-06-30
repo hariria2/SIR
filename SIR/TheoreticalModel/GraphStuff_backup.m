@@ -24,9 +24,7 @@ classdef GraphStuff < handle
         WeinerIndex;
         MeanDistance = 0;
         MeanClustering = 0;
-        ClusteringVar = 0;
         MeanDegree = 0;
-        DegreeVar = 0;
         DegreeDistribution = [];
         LocalClustering = [];
         Directed = 0;
@@ -98,7 +96,6 @@ classdef GraphStuff < handle
             obj.ActiveNodes = zeros(length(obj.ActiveIDs),2);
             obj.MeanDegree = md/length(obj.ActiveIDs);
             obj.DegreeDistribution = dd;
-            obj.DegreeVar = var(dd);
             
             % TODO: Should I really do this? 
             if obj.Directed == 1
@@ -195,7 +192,6 @@ classdef GraphStuff < handle
                 C = C + c; 
             end
             obj.MeanClustering = C/N;
-            obj.ClusteringVar = var(obj.LocalClustering);
         end
         function r = getDistanceFromTo(obj,a,b)
             r = obj.DistanceMatrix(a,b);
@@ -203,7 +199,7 @@ classdef GraphStuff < handle
         function c = getLocalClusteringCoeff(obj, v)
             [~, neighbors, vals] = find(obj.Adj(v,:));
             N = length(vals);
-            tc = 0;
+            tc = N;
             AA = [];
             for ii = 1:length(neighbors)
                 [~, Nn, ~] = find(obj.Adj(neighbors(ii),:));
@@ -211,7 +207,7 @@ classdef GraphStuff < handle
                 for jj = 1:length(Nn)     
                     if sum(neighbors==Nn(jj))
                         AA = [AA; sort([Nn(jj), neighbors(ii)])];
-                    end
+                    %end
                 end
             end
             nc = size(unique(AA, 'rows'));
@@ -221,14 +217,8 @@ classdef GraphStuff < handle
             if N == 1
                 c = 0;
             else
-                if obj.Directed
-                	c = tc/(N*(N-1));
-                else
-                    c = 2*tc/(N*(N-1));
-                end
+                c = tc/(N*(N-1));
             end
-            
-            
             
         end
         

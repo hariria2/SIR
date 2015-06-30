@@ -228,16 +228,16 @@ Place* Person::getLocation(){
 Disease Person::getDisease() const{
     return disease;
 }
-list<int> Person:: getSIConnections(){
+list<int> Person::getSIConnections(){
     return SIConnections;
 }
-list<int> Person:: getSIConnectionsHist(){
+list<int> Person::getSIConnectionsHist(){
     return SIConnectionsHist;
 }
-list<int> Person:: getAllConnections(){
+list<int> Person::getAllConnections(){
     return AllConnections;
 }
-list<int> Person:: getAllConnectionsHist(){
+list<int> Person::getAllConnectionsHist(){
     return AllConnectionsHist;
 }
 
@@ -275,12 +275,34 @@ void Person::Move(double theta, double r, string motionType) {
                 setLocation(School);
             }
         }
+//        if (getID() == 2){
+//            if (Time == 10){
+//                setLocation(Work);
+//            }
+//            if (Time == 20){
+//                setLocation(School);
+//            }
+//        }
         if (getID() == 9){
             if (Time == 30){
                 setLocation(Home);
             }
         }
-        
+//        if (getID() == 3){
+//            if (Time == 25){
+//                setLocation(Home);
+//            }
+//        }
+//        if (getID() == 202){
+//            if (Time == 50){
+//                setLocation(School);
+//            }
+//        }
+//        if (getID() == 631){
+//            if (Time == 50){
+//                setLocation(School);
+//            }
+//        }
     }
     
     
@@ -348,7 +370,7 @@ void Person::UpdateDisease() {
 	
     
     list<Person*> peeps = Location->getOccupants();
-    int criticalDistance = 15;
+    int criticalDistance = 23;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
@@ -403,6 +425,23 @@ double Person::Distance(Person* p){
     
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
+void Person::UpdateWithinHost(double dt){
+    
+    for (int tau = 0; tau <= 1; tau = tau + dt){
+        DDTWithinHost(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        V = V + dt*dV;
+        I = I + dt*dI;
+        N = N + dt*dN;
+        P = P + dt*dP;
+    }
+    
+}
+void Person::DDTWithinHost(double k_V, double k_I, double k_P, double k_N, double a_I, double b_I, double r, double a_N, double a_P, double d_N, double c, double Theta){
+    dV = r*V - V*(r*V/k_V + k_I*I + k_N*N + k_P);
+    dI = a_I*V + b_I*(1 - I/k_I);
+    dN = a_N*V*Theta - d_N*N;
+    dP = a_P *V*P + c*N;
+}
 bool Person::operator == (const Person& p) const {
 	return (p.ID == this->ID);
 }
@@ -411,7 +450,6 @@ void Person::addSIConnection(int id){
     SIConnections.sort();
     SIConnections.unique();
 }
-
 void Person::addSIConnectionHist(int id){
     SIConnectionsHist.push_back(id);
     SIConnectionsHist.sort();
@@ -422,7 +460,6 @@ void Person::addAllConnection(int id){
     AllConnections.sort();
     AllConnections.unique();
 }
-
 void Person::addAllConnectionHist(int id){
     AllConnectionsHist.push_back(id);
     AllConnectionsHist.sort();

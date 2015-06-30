@@ -89,6 +89,8 @@ public:
 	void Move2(double theta, double r);
 	void ContractDisease(Disease d);
 	void UpdateDisease();
+    void UpdateWithinHost(double dt);
+    void DDTWithinHost(double k_V, double k_I, double k_P, double k_N, double a_I, double b_I, double r, double a_N, double a_P, double d_N, double c, double Theta);
 	bool operator == (const Person& p) const;
     
     void addSIConnection(int id);
@@ -112,6 +114,14 @@ private:
     double WorkCoordinates[2];
     double SchoolCoordinates[2];
     double CemeteryCoordinates[2];
+    double V;
+    double I;
+    double N;
+    double P;
+    double dV;
+    double dI;
+    double dN;
+    double dP;
 	Disease disease;
 	char State;
 	Domain* City;
