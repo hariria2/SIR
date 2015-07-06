@@ -11,6 +11,7 @@
 #include "Domain.h"
 #include "Place.h"
 #include "Disease.h"
+#include "InHostDynamics.h"
 #include "Person.h"
 #include "Architect.h"
 #include "Storage.h"
@@ -96,6 +97,7 @@ void Example1_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 24, 24, 1);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -108,7 +110,7 @@ void Example1_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
 
         people.push_back(p);
     };
@@ -159,6 +161,7 @@ void Example2_SingleLocation(bool SaveData){
     int population = 50;
     
     Disease flu("Flu", 24, 15, 15);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -171,7 +174,7 @@ void Example2_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,5,5, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,5,5, true);
         
         people.push_back(p);
     };
@@ -244,6 +247,7 @@ void Example1_MultiLocation(bool SaveData){
     int population = 1000;
     
     Disease flu("Flu", 24, 34, 40);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -263,7 +267,7 @@ void Example1_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes.front(),
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, homes.front(),
                                &school, &work, &cemetery, homes.front(),
                                hco,wco,sco,cco,5,5,5);
         
@@ -314,6 +318,7 @@ void Example2_MultiLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 24, 30, 30);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -337,7 +342,7 @@ void Example2_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes[randHIdx],
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
                                hco,wco,sco,cco,10,10,10);
         
@@ -453,6 +458,7 @@ void Example3_MultiLocation(bool SaveData){
     int population = 800;
     
     Disease flu("Flu", 24, 30, 70);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -476,7 +482,7 @@ void Example3_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes[randHIdx],
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
                                hco,wco,sco,cco,10,10,10);
         
@@ -599,6 +605,7 @@ void Example4_MultiLocation(bool SaveData){
     int population = 800;
     
     Disease flu("Flu", 24, 30, 70);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -622,7 +629,7 @@ void Example4_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes[randHIdx],
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
                                hco,wco,sco,cco,10,10,10);
         
@@ -683,6 +690,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 25, 40, 200);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -695,7 +703,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 25,40,15, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 25,40,15, true);
         people.push_back(p);
     };
     (people.front())->setState('I');
@@ -848,6 +856,7 @@ void Ex1_SparseEig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 25, 15, 24);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -860,7 +869,7 @@ void Ex1_SparseEig_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,10,5, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,10,5, true);
         people.push_back(p);
     };
     (people.front())->setState('I');
@@ -937,16 +946,16 @@ void Ex1_SparseEig_SingleLocation(bool SaveData){
         cout << "Time " << tt << " of " << EndTime << endl;
         
         
-        Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
         Architect archie1 = archie;
         archie1.AddPerson(p1);
         
         
-        Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, ihd, &myCity, &home, hco, 5,0,0, true);
         Architect archie2 = archie;
         archie2.AddPerson(p2);
         
-        Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, ihd, &myCity, &home, hco, 5,0,0, true);
         Architect archie3 = archie;
         archie3.AddPerson(p3);
         
@@ -1018,6 +1027,7 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 5, 0, 0);
+    InHostDynamics ihd(1, 0.1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -1030,7 +1040,7 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
         people.push_back(p);
     };
     (people.front())->setState('I');
@@ -1139,15 +1149,15 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
         for (int ii = 1; ii <= total_iter; ii++){
             getDefaultCoordinates(&home, hco);
             cout << hco[0] << endl;
-            Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, &myCity, &home, hco, 5,0,0, true);
+            Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
             Architect archie1 = archie;
             archie1.AddPerson(p1);
         
-            Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, &myCity, &home, hco, 5,0,0, true);
+            Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, ihd, &myCity, &home, hco, 5,0,0, true);
             Architect archie2 = archie;
             archie2.AddPerson(p2);
         
-            Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, &myCity, &home, hco, 5,0,0, true);
+            Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, ihd, &myCity, &home, hco, 5,0,0, true);
             Architect archie3 = archie;
             archie3.AddPerson(p3);
         
@@ -1370,6 +1380,7 @@ void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
         (*ip) -> getAge(),
         (*ip) -> getState(),
         (*ip) -> getDisease(),
+        (*ip) -> getInHostDynamics(),
         (*ip) -> getDomain(),
         (*ip) -> getHome(),
         (*ip) -> getHomeCoordinates(),
@@ -1393,6 +1404,7 @@ void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
                            age,
                            s,
                            (p1.front()->getDisease()),
+                           (p1.front()->getInHostDynamics()),
                            (p1.front()->getDomain()),
                            (p1.front())->getHome(),
                            (p1.front())->getHomeCoordinates(),

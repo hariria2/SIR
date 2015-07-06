@@ -15,16 +15,17 @@
 #include "Place.h"
 #include "Disease.h"
 #include "Person.h"
+#include "InHostDynamics.h"
 
 Person::Person(int id, string name, int age,
-               char state, Disease dis,
+               char state, Disease dis, InHostDynamics ihd,
                Domain* city,    Place* home,
                Place* school,   Place* work,
                Place* cemetery, Place* location,
                double homeco[2],  double workco[2],
                double schoolco[2],double cemeteryco[2],
                int inf_var, int inc_var, int rec_var)
-		:disease(dis), City(city),
+		:disease(dis),ihdynamics(ihd), City(city),
          Home(home), School(school),
          Work(work), Cemetery(cemetery), Location(location)
 {
@@ -49,12 +50,12 @@ Person::Person(int id, string name, int age,
 
 
 Person::Person(int id, string name, int age,
-               char state, Disease dis,
+               char state, Disease dis, InHostDynamics ihd,
                Domain* city, Place* home,
                double homeco[2],
                int inf_var, int inc_var, int rec_var,
                bool isSingleLocation)
-		:disease(dis), City(city), Home(home), Location(home)
+		:disease(dis), ihdynamics(ihd), City(city), Home(home), Location(home)
 {
  	setID(id);
     setAge(age);
@@ -228,6 +229,9 @@ Place* Person::getLocation(){
 Disease Person::getDisease() const{
     return disease;
 }
+InHostDynamics Person::getInHostDynamics() const{
+    return ihdynamics;
+}
 list<int> Person::getSIConnections(){
     return SIConnections;
 }
@@ -374,6 +378,7 @@ void Person::UpdateDisease() {
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
+            neigbors.push_back(*ip);
             addAllConnection((*ip)->getID());
             addAllConnectionHist((*ip)->getID());
         }
@@ -425,23 +430,18 @@ double Person::Distance(Person* p){
     
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
-void Person::UpdateWithinHost(double dt){
+void Person::UpdateWithinHost(list<Person*> ngbrs){
     
-    for (int tau = 0; tau <= 1; tau = tau + dt){
-        DDTWithinHost(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-        V = V + dt*dV;
-        I = I + dt*dI;
-        N = N + dt*dN;
-        P = P + dt*dP;
+    for(auto ip = ngbrs.cbegin(); ip != ngbrs.cend(); ++ip){
+        
     }
+    ihdynamics.setdt(Time);
+    // everything gets set
+    
+    ihdynamics.Simulate();
     
 }
-void Person::DDTWithinHost(double k_V, double k_I, double k_P, double k_N, double a_I, double b_I, double r, double a_N, double a_P, double d_N, double c, double Theta){
-    dV = r*V - V*(r*V/k_V + k_I*I + k_N*N + k_P);
-    dI = a_I*V + b_I*(1 - I/k_I);
-    dN = a_N*V*Theta - d_N*N;
-    dP = a_P *V*P + c*N;
-}
+
 bool Person::operator == (const Person& p) const {
 	return (p.ID == this->ID);
 }

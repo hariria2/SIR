@@ -15,6 +15,7 @@
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
 		D8B403E71AB36B3A00726652 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DD1AB36B3A00726652 /* README.md */; };
 		D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DE1AB36B3A00726652 /* Storage.cpp */; };
+		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,8 @@
 		D8B403DD1AB36B3A00726652 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8B403DE1AB36B3A00726652 /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
 		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
+		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InHostDynamics.h; path = SIR/InHostDynamics.h; sourceTree = "<group>"; };
+		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InHostDynamics.cpp; path = SIR/InHostDynamics.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +64,8 @@
 		D87484171AB36A78007EC18E = {
 			isa = PBXGroup;
 			children = (
+				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
+				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484221AB36A78007EC18E /* SIR */,
 				D87484211AB36A78007EC18E /* Products */,
 			);
@@ -152,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D87484241AB36A78007EC18E /* main.cpp in Sources */,
+				D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */,
 				D8B403E51AB36B3A00726652 /* Person.cpp in Sources */,
 				D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */,
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
