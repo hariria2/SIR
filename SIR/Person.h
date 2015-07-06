@@ -92,6 +92,7 @@ public:
 	void Move2(double theta, double r);
 	void ContractDisease(Disease d);
 	void UpdateDisease();
+    void UpdateDiseaseWithInHost();
     void UpdateWithinHost(list<Person*> ngbrs);
     
 	bool operator == (const Person& p) const;

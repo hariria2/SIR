@@ -62,8 +62,8 @@ int main(){
     //Example2_SingleLocation();
     //Example1_MultiLocation();
     //Example2_MultiLocation();
-    Example3_MultiLocation();
-    //Example4_MultiLocation();
+    //Example3_MultiLocation();
+    Example4_MultiLocation();
  	//Ex1_Eig_SingleLocation(true);
     //Ex1_SparseEig_SingleLocation(true);
     //Ex2_SparseEig_SingleLocation(true);
@@ -74,7 +74,7 @@ int main(){
 
 // ========================= Example Simulations ==============================
 void Example1_SingleLocation(bool SaveData){
-    int maxdim = 2000;
+    int maxdim = 200;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -94,10 +94,10 @@ void Example1_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 2000;
+    int population = 200;
     
     Disease flu("Flu", 24, 24, 1);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -110,14 +110,17 @@ void Example1_SingleLocation(bool SaveData){
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
+        
+        
         Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
-
+        
         people.push_back(p);
     };
     (people.front())->setState('I');
     
+    
     double InitialTime = 0;
-    double EndTime = 200;
+    double EndTime = 20;
     double TimeStep = 1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
@@ -161,7 +164,7 @@ void Example2_SingleLocation(bool SaveData){
     int population = 50;
     
     Disease flu("Flu", 24, 15, 15);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0,0,0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -247,7 +250,7 @@ void Example1_MultiLocation(bool SaveData){
     int population = 1000;
     
     Disease flu("Flu", 24, 34, 40);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -318,7 +321,7 @@ void Example2_MultiLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 24, 30, 30);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -458,7 +461,7 @@ void Example3_MultiLocation(bool SaveData){
     int population = 800;
     
     Disease flu("Flu", 24, 30, 70);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -602,10 +605,11 @@ void Example4_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 800;
+    int population = 700;
     
     Disease flu("Flu", 24, 30, 70);
-    InHostDynamics ihd(1, 0.1);
+    char state = 'S';
+    double VirLev = 0.1;
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -629,7 +633,18 @@ void Example4_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, homes[randHIdx],
+        if (i == 0){
+            VirLev = 0.1;
+            state = 'I';
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
+        InHostDynamics ihd = InHostDynamics(i,0.1,1,0,VirLev);
+        ihd.setBeta(1);
+        ihd.setDelta(0.5);
+        ihd.setP(5);
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
                                hco,wco,sco,cco,10,10,10);
         
@@ -642,8 +657,9 @@ void Example4_MultiLocation(bool SaveData){
         }
         people.push_back(p);
     };
-    (people.front())->setState('I');
-    
+   
+     // (people.front())->setState('I');
+    ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
     double EndTime = 100;
@@ -690,7 +706,7 @@ void Ex1_Eig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 25, 40, 200);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -856,7 +872,7 @@ void Ex1_SparseEig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 25, 15, 24);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -1027,7 +1043,7 @@ void Ex2_SparseEig_SingleLocation(bool SaveData){
     int population = 2000;
     
     Disease flu("Flu", 5, 0, 0);
-    InHostDynamics ihd(1, 0.1);
+    InHostDynamics ihd(1, 0.1, 0, 0, 0);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){

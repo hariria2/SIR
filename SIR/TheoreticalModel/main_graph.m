@@ -1,9 +1,11 @@
 clear all; close all; clc;
 
-for pii = 10:18
+%for pii = 10:18
     
-    wbh = waitbar(0,'Please wait...');
-ver = num2str(pii);
+% wbh = waitbar(0,'Please wait...');
+% ver = num2str(pii);
+
+ver = '11';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -18,12 +20,12 @@ else
     movieFolder = ['../../Data/movie_single_v',ver,'_',timestamp];
 end
 
-tend = 99;
+tend = 19;
 
 gs = GraphStuff(movieFolder, 1);
 gs.Directed = 0;
 gs.FullScreen = 1;
-gs.ShowNodes = 0;
+gs.ShowNodes = 1;
 gs.GraphType = 'SIHist';
 gs.ProduceGraphData(tend, gs.GraphType); 
 %gs.DrawGraph(1, 0.1)
@@ -76,7 +78,7 @@ for ii = 1:length(t)
 end
 
 f1 = figure(1);
-subplot(3,3,pii-9)
+% subplot(3,3,pii-9)
 % ccolor = [0.1,0.95,0.9];
 % fh = fill_between_lines(t, cv(1,:),cv(2,:),ccolor);
 % set(fh,'edgecolor', ccolor)
@@ -99,28 +101,22 @@ hold on
 plot(t,ln,'k--','linewidth', 3)
 
 f2 = figure(2);
-subplot(3,3,pii-9)
+%subplot(3,3,pii-9)
 hist(gs.DegreeDistribution,10)
 
-waitbar(pii/9,wbh,sprintf('%2.1f %% of this step complete...',100 * pii/9))
+%waitbar(pii/9,wbh,sprintf('%2.1f %% of this step complete...',100 * pii/9))
 
 
-end
-close(wbh)
+% close(wbh)
 
-ResFolder = ['../../Results/res_',timestamp];
-if ~(isdir(ResFolder))
-    mkdir(ResFolder);
-end
-
-dataFile_mean = [ResFolder,'/mean_v',ver];
-saveas(f1,dataFile_mean,'fig')
-
-
-dataFile_Dist= [ResFolder,'/dist_v',ver];
-saveas(f2,dataFile_Dist,'fig')
-
-% hold on
-% y1 = (yl(end)-yl(1))/(t(end)-t(1)) * t + yl(1);
-% y2 = (yc(end)-yc(2))/(t(end)-t(2)) * t + yc(2);
-% plot(t, y1,'k',t, y2,'k','linewidth',.2)
+% ResFolder = ['../../Results/res_',timestamp];
+% if ~(isdir(ResFolder))
+%     mkdir(ResFolder);
+% end
+% 
+% dataFile_mean = [ResFolder,'/mean_v',ver];
+% saveas(f1,dataFile_mean,'fig')
+% 
+% 
+% dataFile_Dist= [ResFolder,'/dist_v',ver];
+% saveas(f2,dataFile_Dist,'fig')

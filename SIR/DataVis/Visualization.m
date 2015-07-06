@@ -21,6 +21,7 @@ classdef Visualization < handle
         Peopy   = [];
         MovieFolder;
         DataFolder;
+        MaxInfLev = 0.01;
         FullScreen = 0;
         ShowNodes  = 0;
         graphFiles;
@@ -250,6 +251,19 @@ classdef Visualization < handle
                 text(person.Coordinates(1),person.Coordinates(2),['\bf',int2str(person.ID)], 'fontsize', 18, 'Color', 'm')
             end
         end
+        function DrawPeople_InHost(obj,person)
+            b = abs(person.InfLev);
+            cval = b/obj.MaxInfLev;
+            if isnan(cval)
+                cval = 0;
+            end
+            if cval > 1
+                cval = 1;
+            end
+            color = [cval,0,1-cval];
+            p = plot(person.Coordinates(1),person.Coordinates(2), '.', 'MarkerSize',20);
+            set(p,'Color', color);
+        end
         function h = Render(obj,t)
             h = figure(1);
             if obj.FullScreen
@@ -275,7 +289,7 @@ classdef Visualization < handle
             hold on
             obj.DrawGraph(t,1,0.01);
             for ii = 1:length(obj.People)
-                obj.DrawPeople(obj.People{ii})
+                obj.DrawPeople_InHost(obj.People{ii})
                 hold on
             end
             
@@ -309,6 +323,7 @@ classdef Visualization < handle
             for ii = 1:loops
                 people = readtable([obj.MovieFolder,'/',files{ii}]);
                 obj.People = cell(1,length(people.ID));
+                maxInfLev = 0;
                 for jj = 1:length(people.ID)
                     obj.People{jj}.ID = people.ID(jj);
                     obj.People{jj}.Name = people.Name(jj);
@@ -316,7 +331,17 @@ classdef Visualization < handle
                     obj.People{jj}.Coordinates = [people.x(jj), people.y(jj)];
                     obj.People{jj}.Location = people.Location(jj);
                     obj.People{jj}.State = people.State(jj);
+                    obj.People{jj}.InfLev = people.InfectionLevel(jj);
+                    if obj.People{jj}.InfLev > maxInfLev
+                        maxInfLev = obj.People{jj}.InfLev;
+                    end
                 end
+                if maxInfLev > obj.MaxInfLev
+                        obj.MaxInfLev = maxInfLev;
+                end
+            %end
+            
+            %for ii = 1:loops    
                 h = obj.Render(ii);
                 frames(ii) = getframe(h);
                 % close(h);

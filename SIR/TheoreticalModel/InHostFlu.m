@@ -36,9 +36,9 @@ classdef InHostFlu < handle
             cy = obj.ic;
             for ii = 1:length(obj.t)
                 y(ii,:) = cy; 
-                if obj.t(ii) == 2
-                    y(ii,2) = 0.1;
-                end
+%                 if obj.t(ii) == 2
+%                     y(ii,2) = 0.1;
+%                 end
                 cy = obj.Update(y(ii,:));
             end
         obj.result = y;

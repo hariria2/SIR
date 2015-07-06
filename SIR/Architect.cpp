@@ -115,6 +115,9 @@ void Architect::Update(double t, Storage* data){
                         (*ip)->getCoordinates(),
                        ((*ip)->getLocation())->getName(),
                         (*ip)->getState(),
+                       ((*ip)->getInHostDynamics()).getT(),
+                       ((*ip)->getInHostDynamics()).getI(),
+                       ((*ip)->getInHostDynamics()).getV(),
                         ((*ip)->getSIConnections()),
                         ((*ip)->getSIConnectionsHist()),
                         ((*ip)->getAllConnections()),
@@ -126,7 +129,7 @@ void Architect::Update(double t, Storage* data){
 		}else{
 			(*ip)->Move((rand() % 360),2, "Travel");
 		}
-		(*ip)->UpdateDisease();
+		(*ip)->UpdateDiseaseWithInHost();
 	}
 	data->endMovieSave();
     PopulationData();

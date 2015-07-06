@@ -2,7 +2,7 @@
 clear all; close all; clc;
 tend  = 50;
 dt    = 0.1;
-ic    = [1,0,0];
+ic    = [1,0,0.1];
 
 %% === SIRDE(tend, dt, ic)=======================
 ihf = InHostFlu(tend,0.2,ic, 2000);

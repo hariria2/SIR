@@ -158,6 +158,9 @@ void Person::setRecoveryPeriod(){
 void Person::setDisease(Disease d){
 	disease = d;
 }
+void Person::setInHostDynamics(InHostDynamics ihd){
+    ihdynamics = ihd;
+}
 void Person::setInfVar(int var){
     InfectionVar = var;
 };
@@ -419,6 +422,31 @@ void Person::UpdateDisease() {
     }else{
         return;
     }
+}
+void Person::UpdateDiseaseWithInHost() {
+    
+    list<Person*> peeps = Location->getOccupants();
+    int criticalDistance = 23;
+    
+    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        if (Distance(*ip) < criticalDistance){
+            neigbors.push_back(*ip);
+            addAllConnection((*ip)->getID());
+            addAllConnectionHist((*ip)->getID());
+        }
+    }
+    double totalVirion = 0;
+    double pV;
+    
+    for(auto ip = neigbors.cbegin(); ip != neigbors.cend(); ++ip){
+        totalVirion += (*ip)->ihdynamics.getV();
+    }
+    
+    ihdynamics.setT0(Time);
+    ihdynamics.setV(pV+0.1*totalVirion);
+    ihdynamics.Simulate();
+    
+    
 }
 double Person::Distance(Person* p){
     
