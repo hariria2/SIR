@@ -9,7 +9,7 @@ ihf = InHostFlu(tend,0.2,ic, 2000);
 
 % ===== V26 =======
 ihf.beta  = @(t) 1;
-ihf.delta = @(t) 0.5;
+ihf.delta = @(t) 2;
 ihf.p     = @(t) 5;
 
 ihf.Simulate(0);

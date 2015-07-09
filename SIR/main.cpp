@@ -662,7 +662,7 @@ void Example4_MultiLocation(bool SaveData){
     ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
-    double EndTime = 100;
+    double EndTime = 50;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     

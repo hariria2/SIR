@@ -121,7 +121,7 @@ classdef InHostFlu < handle
             %ti = title(sprintf('\\beta = %3.2e, \\gamma = %3.2e',obj.beta, obj.gamma));
             %set(ti, 'FontSize',20)
             xlabel('Time','FontSize',18)
-            ylabel('S,I,R','FontSize',18)
+            ylabel('S, I, V','FontSize',18)
         end    
         function timePlotEigen(obj,fignum) 
             

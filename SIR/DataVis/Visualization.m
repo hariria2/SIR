@@ -251,8 +251,8 @@ classdef Visualization < handle
                 text(person.Coordinates(1),person.Coordinates(2),['\bf',int2str(person.ID)], 'fontsize', 18, 'Color', 'm')
             end
         end
-        function DrawPeople_InHost(obj,person)
-            b = abs(person.InfLev);
+        function DrawPeople_InHost(obj,person, t)
+            b = abs(person.InfLev(t));
             cval = b/obj.MaxInfLev;
             if isnan(cval)
                 cval = 0;
@@ -289,7 +289,7 @@ classdef Visualization < handle
             hold on
             obj.DrawGraph(t,1,0.01);
             for ii = 1:length(obj.People)
-                obj.DrawPeople_InHost(obj.People{ii})
+                obj.DrawPeople_InHost(obj.People{ii}, t)
                 hold on
             end
             
@@ -309,6 +309,7 @@ classdef Visualization < handle
              end
             text(50,1870,sprintf('Day: %d',day),'FontSize',16)
             text(50,1750,[sprintf('Time: %d:00 ',hour),AmPm],'FontSize',16)
+            colorbar
         end
         function MakeMovie(obj)
             directoryfiles = dir(['../Data/', obj.MovieFolder]);
@@ -319,21 +320,36 @@ classdef Visualization < handle
             loops  = length(files);
             frames(loops) = struct('cdata',[],'colormap',[]);
             wbh = waitbar(0,'Making a movie. Please wait...');
-            files(1)
+            
+            people = readtable([obj.MovieFolder,'/',files{1}]);
+            
+            for jj = 1:length(people.ID)
+                obj.People = cell(1,length(people.ID));
+                obj.People{jj}.InfLev = zeros(1,loops);
+                obj.People{jj}.SusLev = zeros(1,loops);
+                obj.People{jj}.VirLev = zeros(1,loops);
+            end
+                
+            
+            
             for ii = 1:loops
                 people = readtable([obj.MovieFolder,'/',files{ii}]);
-                obj.People = cell(1,length(people.ID));
+                
                 maxInfLev = 0;
+                
                 for jj = 1:length(people.ID)
+                    
                     obj.People{jj}.ID = people.ID(jj);
                     obj.People{jj}.Name = people.Name(jj);
                     obj.People{jj}.Time = people.Time(jj);
                     obj.People{jj}.Coordinates = [people.x(jj), people.y(jj)];
                     obj.People{jj}.Location = people.Location(jj);
                     obj.People{jj}.State = people.State(jj);
-                    obj.People{jj}.InfLev = people.InfectionLevel(jj);
+                    obj.People{jj}.InfLev(ii) = people.InfectionLevel(jj);
+                    obj.People{jj}.SusLev(ii) = people.SusceptibleCells(jj);
+                    obj.People{jj}.VirLev(ii) = people.VirionLevel(jj);
                     if obj.People{jj}.InfLev > maxInfLev
-                        maxInfLev = obj.People{jj}.InfLev;
+                        maxInfLev = obj.People{jj}.InfLev(ii);
                     end
                 end
                 if maxInfLev > obj.MaxInfLev

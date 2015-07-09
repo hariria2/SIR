@@ -443,7 +443,7 @@ void Person::UpdateDiseaseWithInHost() {
     }
     
     ihdynamics.setT0(Time);
-    ihdynamics.setV(pV+0.1*totalVirion);
+    ihdynamics.setV(pV+0.001*totalVirion);
     ihdynamics.Simulate();
     
     
