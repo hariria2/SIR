@@ -24,6 +24,7 @@ classdef Visualization < handle
         MaxInfLev = 0.01;
         FullScreen = 0;
         ShowNodes  = 0;
+        MakeMovie  = 0;
         graphFiles;
         Adj;
         Nodes;
@@ -311,15 +312,13 @@ classdef Visualization < handle
             text(50,1750,[sprintf('Time: %d:00 ',hour),AmPm],'FontSize',16)
             colorbar
         end
-        function MakeMovie(obj)
+        function ReadData(obj)
             directoryfiles = dir(['../Data/', obj.MovieFolder]);
             files = cell(1, length(directoryfiles)-2);
             for ii = 1:length(files)
                 files{ii} = directoryfiles(ii + 2).name;
             end
             loops  = length(files);
-            frames(loops) = struct('cdata',[],'colormap',[]);
-            wbh = waitbar(0,'Making a movie. Please wait...');
             
             people = readtable([obj.MovieFolder,'/',files{1}]);
             
@@ -329,8 +328,13 @@ classdef Visualization < handle
                 obj.People{jj}.SusLev = zeros(1,loops);
                 obj.People{jj}.VirLev = zeros(1,loops);
             end
-                
+            wbh = waitbar(0,'Reading all the data. Please wait...');
             
+            if obj.MakeMovie
+                frames(loops) = struct('cdata',[],'colormap',[]);
+                wbhm = waitbar(0,'Making a movie. Please wait...');
+            end
+           
             
             for ii = 1:loops
                 people = readtable([obj.MovieFolder,'/',files{ii}]);
@@ -355,18 +359,23 @@ classdef Visualization < handle
                 if maxInfLev > obj.MaxInfLev
                         obj.MaxInfLev = maxInfLev;
                 end
-            %end
-            
-            %for ii = 1:loops    
-                h = obj.Render(ii);
-                frames(ii) = getframe(h);
-                % close(h);
-                clear obj.People
                 waitbar(ii/loops,wbh,sprintf('%2.1f %% of this step complete...',100 * ii/loops))
+                
+                if obj.MakeMovie
+                    h = obj.Render(ii);
+                    frames(ii) = getframe(h);
+                    % close(h);
+                    waitbar(ii/loops,wbhm,sprintf('%2.1f %% of this step complete...',100 * ii/loops))
+                end
+                
             end
             close(wbh)
+            if obj.MakeMovie
+                close(wbhm)
+            end
             obj.Frames = frames;
         end
+       
         function h = DrawGraph(obj, t, fignum, pad)
             [A,C] = obj.ProduceGraphData(t, obj.GraphType);  
             obj.Adj = sparse(A);

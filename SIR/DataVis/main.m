@@ -22,18 +22,21 @@ vis.FullScreen = 1;
 vis.ShowNodes  = 0;
 vis.GraphType = 'SIHist';
 
-vis.MakeMovie();
+vis.MakeMovie = 1;
+
+vis.ReadData();
 
 
-ResFolder = ['../../Results/res_',timestamp];
-if ~(isdir(ResFolder))
-    mkdir(ResFolder);
-end
-movieFile = [ResFolder,'/mov_v',ver];
-dataFile = [ResFolder,'/sim_v',ver];
-SaveVid(vis.Frames, movieFile, 3)
-h = vis.PlotHistory('SIR');
-saveas(h,dataFile,'pdf')
-saveas(h,dataFile,'fig')
+% 
+% ResFolder = ['../../Results/res_',timestamp];
+% if ~(isdir(ResFolder))
+%     mkdir(ResFolder);
+% end
+% movieFile = [ResFolder,'/mov_v',ver];
+% dataFile = [ResFolder,'/sim_v',ver];
+% SaveVid(vis.Frames, movieFile, 3)
+% h = vis.PlotHistory('SIR');
+% saveas(h,dataFile,'pdf')
+% saveas(h,dataFile,'fig')
 
 % h = vis.PlotPhase();
