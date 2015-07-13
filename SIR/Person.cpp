@@ -426,25 +426,49 @@ void Person::UpdateDisease() {
 void Person::UpdateDiseaseWithInHost() {
     
     list<Person*> peeps = Location->getOccupants();
-    int criticalDistance = 23;
+    int criticalDistance = 25;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
-            neigbors.push_back(*ip);
-            addAllConnection((*ip)->getID());
-            addAllConnectionHist((*ip)->getID());
+            if (getID() != ((*ip)->getID())){
+                neigbors.push_back(*ip);
+                addAllConnection((*ip)->getID());
+                addAllConnectionHist((*ip)->getID());
+            }
         }
     }
     double totalVirion = 0;
-    double pV;
-    
+//    double pV;
+    double dist;
     for(auto ip = neigbors.cbegin(); ip != neigbors.cend(); ++ip){
-        totalVirion += (*ip)->ihdynamics.getV();
+        dist = Distance(*ip);
+        if (dist != 0){
+            totalVirion += ((*ip)->ihdynamics.getV())/pow(dist,2);
+        }
+    }
+    ihdynamics.setT0(Time);
+//    ihdynamics.setV(pV+1000*totalVirion);
+    ihdynamics.setNE(0.001*totalVirion);
+    ihdynamics.Simulate();
+    
+    if (getState() == 'S'){
+        if (ihdynamics.getV() > 0.01){
+            setState('I');
+        }
     }
     
-    ihdynamics.setT0(Time);
-    ihdynamics.setV(pV+0.001*totalVirion);
-    ihdynamics.Simulate();
+    if (getState() == 'I'){
+        if (ihdynamics.getI() > 0.3){
+            setState('P');
+        }else if (ihdynamics.getV() < 0.01){
+            setState('R');
+        }
+    }else if (getState() == 'P'){
+        if (ihdynamics.getI() < 0.3){
+            setState('I');
+        }
+    }
+    
     
     
 }

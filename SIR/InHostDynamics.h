@@ -33,6 +33,8 @@ public:
     void setT(double sc);
     void setI(double ic);
     void setV(double vi);
+    void setMaxInfLev(double mil);
+    void setNE(double ne);
     
     // getters
     int getID();
@@ -45,6 +47,9 @@ public:
     double getT();
     double getI();
     double getV();
+    double getMaxInfLev();
+    double getNE();
+    
     
     // utilities
     void Simulate();
@@ -66,6 +71,8 @@ private:
     double dV;
     double dI;
     double dT;
+    double MaxInfLev;
+    double NE;     // Neighbor Effects
     
     // parameters
     double Beta;

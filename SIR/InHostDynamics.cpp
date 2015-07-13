@@ -55,6 +55,12 @@ void InHostDynamics::setI(double ic){
 void InHostDynamics::setV(double vi){
     V = vi;
 }
+void InHostDynamics::setMaxInfLev(double mil){
+    MaxInfLev = mil;
+}
+void InHostDynamics::setNE(double ne){
+    NE = ne;
+}
 
 // getters
 int InHostDynamics::getID(){
@@ -87,12 +93,20 @@ double InHostDynamics::getI(){
 double InHostDynamics::getV(){
     return V;
 }
+double InHostDynamics::getMaxInfLev(){
+    return MaxInfLev;
+}
+double InHostDynamics::getNE(){
+    return NE;
+}
 
 //utilities
 void InHostDynamics::Simulate(){
-    
     for (double tt = t0; tt <= t0+1; tt = tt+dt){
         Update();
+        if (getI() > getMaxInfLev()){
+            setMaxInfLev(getI());
+        }
     }
     
 }
@@ -109,10 +123,10 @@ void InHostDynamics::Update(){
 }
 
 void InHostDynamics::Flow(){
-    
     dT = -Beta*T*V;
     dI =  Beta*T*V - Delta*I;
-    dV =  P*I - C*V;
+    double cv = P*I - C*V + NE;
+    dV =  cv; // cv*(1-cv)
     
     
     

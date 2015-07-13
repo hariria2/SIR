@@ -261,6 +261,9 @@ classdef Visualization < handle
             if cval > 1
                 cval = 1;
             end
+            if cval < 0
+                cval = 0;
+            end
             color = [cval,0,1-cval];
             p = plot(person.Coordinates(1),person.Coordinates(2), '.', 'MarkerSize',20);
             set(p,'Color', color);
@@ -310,7 +313,7 @@ classdef Visualization < handle
              end
             text(50,1870,sprintf('Day: %d',day),'FontSize',16)
             text(50,1750,[sprintf('Time: %d:00 ',hour),AmPm],'FontSize',16)
-            colorbar
+            
         end
         function ReadData(obj)
             directoryfiles = dir(['../Data/', obj.MovieFolder]);
@@ -320,8 +323,8 @@ classdef Visualization < handle
             end
             loops  = length(files);
             
-            people = readtable([obj.MovieFolder,'/',files{1}]);
-            
+            people = readtable([obj.MovieFolder,'/',files{end}]);
+            obj.MaxInfLev = max(people.MaxInfLev);
             for jj = 1:length(people.ID)
                 obj.People = cell(1,length(people.ID));
                 obj.People{jj}.InfLev = zeros(1,loops);
@@ -339,7 +342,6 @@ classdef Visualization < handle
             for ii = 1:loops
                 people = readtable([obj.MovieFolder,'/',files{ii}]);
                 
-                maxInfLev = 0;
                 
                 for jj = 1:length(people.ID)
                     
@@ -352,19 +354,15 @@ classdef Visualization < handle
                     obj.People{jj}.InfLev(ii) = people.InfectionLevel(jj);
                     obj.People{jj}.SusLev(ii) = people.SusceptibleCells(jj);
                     obj.People{jj}.VirLev(ii) = people.VirionLevel(jj);
-                    if obj.People{jj}.InfLev > maxInfLev
-                        maxInfLev = obj.People{jj}.InfLev(ii);
-                    end
+                    
                 end
-                if maxInfLev > obj.MaxInfLev
-                        obj.MaxInfLev = maxInfLev;
-                end
+                
                 waitbar(ii/loops,wbh,sprintf('%2.1f %% of this step complete...',100 * ii/loops))
                 
                 if obj.MakeMovie
                     h = obj.Render(ii);
                     frames(ii) = getframe(h);
-                    % close(h);
+                    
                     waitbar(ii/loops,wbhm,sprintf('%2.1f %% of this step complete...',100 * ii/loops))
                 end
                 
@@ -372,10 +370,10 @@ classdef Visualization < handle
             close(wbh)
             if obj.MakeMovie
                 close(wbhm)
+            
+                obj.Frames = frames;
             end
-            obj.Frames = frames;
         end
-       
         function h = DrawGraph(obj, t, fignum, pad)
             [A,C] = obj.ProduceGraphData(t, obj.GraphType);  
             obj.Adj = sparse(A);
@@ -391,6 +389,20 @@ classdef Visualization < handle
                  end
             end
         end
-
+        function h = PlotIndividual(obj,fignum, id)
+           
+            p = obj.People{id};
+            S = p.SusLev;
+            I = p.InfLev;
+            V = p.VirLev;
+            
+            t = 1:length(S);
+            
+            h = figure(fignum);
+            plot(t, S, 'b', t, I, 'r', t, V, 'g', 'linewidth', 3)
+            grid on
+            l = legend ('Susceptible cells','Infected Cells', 'Free Virion');
+            set(l, 'FontSize', 18)
+        end
     end
 end

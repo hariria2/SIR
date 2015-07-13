@@ -102,6 +102,7 @@ void Architect::Simulate(){
 			Update(t);
 		}
 	}
+    cout << "Stick a fork in my sucker!" << endl;
 }
 void Architect::Update(double t, Storage* data){
     
@@ -109,6 +110,7 @@ void Architect::Update(double t, Storage* data){
 	data->startMovieSave(CurrentTime);
 	IncrementTime();
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
 		data->movieSave((*ip)->getID(),
                         (*ip)->getName(),
                         (*ip)->getTime(),
@@ -118,6 +120,7 @@ void Architect::Update(double t, Storage* data){
                        ((*ip)->getInHostDynamics()).getT(),
                        ((*ip)->getInHostDynamics()).getI(),
                        ((*ip)->getInHostDynamics()).getV(),
+                       ((*ip)->getInHostDynamics()).getMaxInfLev(),
                         ((*ip)->getSIConnections()),
                         ((*ip)->getSIConnectionsHist()),
                         ((*ip)->getAllConnections()),

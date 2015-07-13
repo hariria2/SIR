@@ -640,10 +640,11 @@ void Example4_MultiLocation(bool SaveData){
             VirLev = 0;
             state = 'S';
         }
-        InHostDynamics ihd = InHostDynamics(i,0.1,1,0,VirLev);
+        InHostDynamics ihd = InHostDynamics(i,0.05,2,0,VirLev);
         ihd.setBeta(1);
         ihd.setDelta(0.5);
         ihd.setP(5);
+        ihd.setC(2);
         Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
                                hco,wco,sco,cco,10,10,10);
@@ -662,7 +663,7 @@ void Example4_MultiLocation(bool SaveData){
     ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
-    double EndTime = 50;
+    double EndTime = 100;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
