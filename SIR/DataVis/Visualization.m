@@ -389,20 +389,32 @@ classdef Visualization < handle
                  end
             end
         end
-        function h = PlotIndividual(obj,fignum, id)
+        function h = PlotIndividual(obj,fignum, pltnum, ppl)
            
-            p = obj.People{id};
-            S = p.SusLev;
-            I = p.InfLev;
-            V = p.VirLev;
-            
-            t = 1:length(S);
-            
             h = figure(fignum);
-            plot(t, S, 'b', t, I, 'r', t, V, 'g', 'linewidth', 3)
-            grid on
+            if obj.FullScreen
+                set(gcf,'units','normalized','outerposition',[0 0 1 1])
+            end
+            for ii = 1:pltnum
+                p = obj.People{ppl(ii)};
+                S = p.SusLev;
+                I = p.InfLev;
+                V = p.VirLev;
+                t = 1:length(S);
+                subplot(pltnum,1,ii)
+                plot(t, S, 'b', t, I, 'r', t, V, 'g', 'linewidth', 3)
+                ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
+                grid on
+            end
+            %subplot(pltnum,1,1)
             l = legend ('Susceptible cells','Infected Cells', 'Free Virion');
-            set(l, 'FontSize', 18)
+            newPosition = [0.31 0.6 0.4 0.73];
+            newUnits = 'normalized';
+            set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
+            %set(l, 'FontSize', 18, 'Location', 'NorthOutside','Orientation','horizontal')
+            
+            subplot(pltnum,1,pltnum)
+            xlabel('Time', 'FontSize', 16)
         end
     end
 end

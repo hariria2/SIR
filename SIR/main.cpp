@@ -640,11 +640,40 @@ void Example4_MultiLocation(bool SaveData){
             VirLev = 0;
             state = 'S';
         }
-        InHostDynamics ihd = InHostDynamics(i,0.05,2,0,VirLev);
-        ihd.setBeta(1);
-        ihd.setDelta(0.5);
-        ihd.setP(5);
-        ihd.setC(2);
+        
+        normal_distribution<double> icDist(2,1);
+        double randic  = icDist(generator);
+        
+        double ict = (randic < 0.5)? 0.5:randic;
+        
+        
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
+        
+        normal_distribution<double> betaDist(3,1);
+        double randbeta  = betaDist(generator);
+        double beta = (randbeta < 0)? 0:randbeta;
+        
+        ihd.setBeta(beta);
+        
+        normal_distribution<double> deltaDist(0.1,0.0);
+        double randdelta  = deltaDist(generator);
+        double delta = (randdelta < 0)? 0:randdelta;
+        
+        ihd.setDelta(delta);
+        
+        normal_distribution<double> PDist(3,0);
+        double randP  = PDist(generator);
+        double P = (randP < 0)? 0:randP;
+        
+        ihd.setP(P);
+        
+        normal_distribution<double> CDist(1,0);
+        double randC  = CDist(generator);
+        double C = (randC < 0)? 0:randC;
+        
+        ihd.setC(C);
+        
+        
         Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
                                hco,wco,sco,cco,10,10,10);
@@ -660,7 +689,7 @@ void Example4_MultiLocation(bool SaveData){
     };
    
      // (people.front())->setState('I');
-    ((people.front())->getInHostDynamics()).setV(0.1);
+     // ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
     double EndTime = 100;
