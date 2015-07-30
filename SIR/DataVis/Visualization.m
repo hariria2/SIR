@@ -395,6 +395,17 @@ classdef Visualization < handle
             if obj.FullScreen
                 set(gcf,'units','normalized','outerposition',[0 0 1 1])
             end
+            
+            ymax = 0;
+            
+            for ii = 1:pltnum
+                p = obj.People{ppl(ii)};
+                S = p.SusLev;
+                I = p.InfLev;
+                V = p.VirLev;
+                ymax = max(ymax,max([max(S),max(I), max(V)]));
+            end
+            
             for ii = 1:pltnum
                 p = obj.People{ppl(ii)};
                 S = p.SusLev;
@@ -405,6 +416,7 @@ classdef Visualization < handle
                 plot(t, S, 'b', t, I, 'r', t, V, 'g', 'linewidth', 3)
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
+                ylim([0, ymax])
             end
             %subplot(pltnum,1,1)
             l = legend ('Susceptible cells','Infected Cells', 'Free Virion');

@@ -5,7 +5,7 @@ clear all; close all; clc;
 % wbh = waitbar(0,'Please wait...');
 % ver = num2str(pii);
 
-ver = '11';
+ver = '7';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];

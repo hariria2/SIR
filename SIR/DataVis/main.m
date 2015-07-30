@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-ver = '7';
+ver = '8';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];
@@ -19,11 +19,11 @@ end
 
 vis = Visualization(dataFolder, movieFolder,1,1,1);
 vis.TaggedPeople = [1, 9];
-vis.FullScreen = 1;
+vis.FullScreen = 0;
 vis.ShowNodes  = 0;
 vis.GraphType = 'SIHist';
 
-vis.MakeMovie = 0;
+vis.MakeMovie = 1;
 
 vis.ReadData();
 
@@ -32,9 +32,9 @@ ResFolder = ['../../Results/res_',timestamp];
 if ~(isdir(ResFolder))
     mkdir(ResFolder);
 end
-% movieFile = [ResFolder,'/mov_v',ver];
+movieFile = [ResFolder,'/mov_v',ver];
 dataFile = [ResFolder,'/sim_v',ver];
-% SaveVid(vis.Frames, movieFile, 3)
+SaveVid(vis.Frames, movieFile, 3)
 
 h = vis.PlotHistory('SIR');
 
