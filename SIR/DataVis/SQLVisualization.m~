@@ -1,0 +1,17 @@
+classdef SQLVisualization < handle
+    
+    properties
+    Connection;
+    
+    
+    end
+    
+    
+    methods
+        function sv = SQLVisualization(db, usrnm, psswd, vndr, hst)
+            sv.Connection = database(db, usrnm, psswd, 'vendor', vndr, 'host', hst);
+        end
+        
+    end
+    
+end

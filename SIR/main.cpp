@@ -15,6 +15,7 @@
 #include "Person.h"
 #include "Architect.h"
 #include "Storage.h"
+#include "SQLStorage.h"
 #include <sys/stat.h>
 #include <sys/types.h>
  
@@ -132,9 +133,8 @@ void Example1_SingleLocation(bool SaveData){
         string dataFolder = "data_single_v"+ver+"_";
         string movieFolder = "movie_single_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         archie.Simulate();
-        data.writeSIR();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
@@ -196,9 +196,8 @@ void Example2_SingleLocation(bool SaveData){
         string dataFolder = "data_single_v"+ver+"_";
         string movieFolder = "movie_single_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         archie.Simulate();
-        data.writeSIR();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
@@ -292,9 +291,8 @@ void Example1_MultiLocation(bool SaveData){
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         archie.Simulate();
-        data.writeSIR();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
@@ -366,9 +364,8 @@ void Example2_MultiLocation(bool SaveData){
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         archie.Simulate();
-        data.writeSIR();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
@@ -513,9 +510,8 @@ void Example3_MultiLocation(bool SaveData){
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         archie.Simulate();
-        data.writeSIR();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
         archie.Simulate();
@@ -605,14 +601,14 @@ void Example4_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 700;
+    int population = 1000;
     
     Disease flu("Flu", 24, 30, 70);
     char state = 'S';
     double VirLev = 0.1;
     
     vector<Person*> people;
-    for (int i=0; i < population; i++){
+    for (int i=1; i <= population; i++){
         
         unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
         default_random_engine generator(seed);
@@ -631,11 +627,11 @@ void Example4_MultiLocation(bool SaveData){
         
         normal_distribution<double> ageDist(25,20);
         double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
+        int age = (randage < 1)? 1:floor(randage);
         
-        if (i == 0){
+        if (i == 1){
             VirLev = 0.1;
-            state = 'I';
+            // state = 'I';
         } else {
             VirLev = 0;
             state = 'S';
@@ -696,6 +692,8 @@ void Example4_MultiLocation(bool SaveData){
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
+    
+    
     if (SaveData) {
         string ver;
         cout << "Enter version number for multi location simulation: ";
@@ -703,11 +701,20 @@ void Example4_MultiLocation(bool SaveData){
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
+        SQLStorage sqldata("localhost", "root", "sHa136384", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, people, "MYSQL", &sqldata);
+        //Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
+        
+        archie.setDomain(myCity);
+        archie.setHomes(homes);
+        archie.setSchools(schools);
+        archie.setWorks(works);
+        archie.setCemetaries(cemeteries);
         archie.Simulate();
-        data.writeSIR();
+        
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people);
+        
         archie.Simulate();
     }
 }

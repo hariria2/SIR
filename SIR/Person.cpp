@@ -46,6 +46,7 @@ Person::Person(int id, string name, int age,
     setSchoolCoordinates(schoolco);
     setCemeteryCoordinates(cemeteryco);
 	IsSingleLocation = false;
+    setGender('M');
 }// end constructor
 
 
@@ -72,6 +73,7 @@ Person::Person(int id, string name, int age,
     setHomeCoordinates(homeco);
 	setLocation(Location);
 	IsSingleLocation = isSingleLocation;
+    setGender('M');
 }
 
 // Setters
@@ -80,6 +82,9 @@ void Person::setID(int id){
 }
 void Person::setAge(int age){
     Age = age;
+}
+void Person::setGender(char g){
+    Gender = g;
 }
 void Person::setName(string name){
 	Name = name;
@@ -177,6 +182,9 @@ int Person::getID(){
 }
 int Person::getAge(){
     return Age;
+}
+char Person::getGender(){
+    return Gender;
 }
 int Person::getInfectionPeriod(){
     return InfectionPeriod;

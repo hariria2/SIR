@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81C45A61B6A9353007007FA /* SQLStorage.cpp */; };
 		D87484241AB36A78007EC18E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D87484231AB36A78007EC18E /* main.cpp */; };
 		D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D01AB36B3A00726652 /* Architect.cpp */; };
 		D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D51AB36B3A00726652 /* Disease.cpp */; };
@@ -31,6 +32,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D81C45A61B6A9353007007FA /* SQLStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLStorage.cpp; sourceTree = "<group>"; };
+		D81C45A71B6A9353007007FA /* SQLStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLStorage.h; sourceTree = "<group>"; };
 		D87484201AB36A78007EC18E /* SIR */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SIR; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87484231AB36A78007EC18E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D8B403D01AB36B3A00726652 /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Architect.cpp; sourceTree = "<group>"; };
@@ -46,8 +49,8 @@
 		D8B403DD1AB36B3A00726652 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8B403DE1AB36B3A00726652 /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
 		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
-		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InHostDynamics.h; path = SIR/InHostDynamics.h; sourceTree = "<group>"; };
-		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InHostDynamics.cpp; path = SIR/InHostDynamics.cpp; sourceTree = "<group>"; };
+		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };
+		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InHostDynamics.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +67,6 @@
 		D87484171AB36A78007EC18E = {
 			isa = PBXGroup;
 			children = (
-				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
-				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484221AB36A78007EC18E /* SIR */,
 				D87484211AB36A78007EC18E /* Products */,
 			);
@@ -82,6 +83,10 @@
 		D87484221AB36A78007EC18E /* SIR */ = {
 			isa = PBXGroup;
 			children = (
+				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,
+				D81C45A71B6A9353007007FA /* SQLStorage.h */,
+				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
+				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484231AB36A78007EC18E /* main.cpp */,
 				D8B403D01AB36B3A00726652 /* Architect.cpp */,
 				D8B403D11AB36B3A00726652 /* Architect.h */,
@@ -162,6 +167,7 @@
 				D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */,
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
 				D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */,
+				D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */,
 				D8B403E71AB36B3A00726652 /* README.md in Sources */,
 				D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */,
 				D8B403E61AB36B3A00726652 /* Place.cpp in Sources */,
@@ -248,6 +254,17 @@
 		D87484281AB36A78007EC18E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/mysql/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/mysql/lib;
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lm",
+					"-lz",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -255,6 +272,17 @@
 		D87484291AB36A78007EC18E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/mysql/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/mysql/lib;
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lm",
+					"-lz",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

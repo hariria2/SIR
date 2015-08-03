@@ -13,6 +13,9 @@
 #include <list>
 #include <vector>
 #include "Storage.h"
+#include "SQLStorage.h"
+#include "Domain.h"
+#include "Place.h"
 
 using namespace std;
 
@@ -20,16 +23,22 @@ class Person;
 
 class Architect {
 public:
-    Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d, bool eig);
-	Architect(double t0, double tend, double ts, vector<Person *> pp, bool store, Storage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, bool store=false);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, string store, Storage* d, bool eig);
+	Architect(double t0, double tend, double ts, vector<Person *> pp, string store, Storage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, string store, SQLStorage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, string store="None");
 	
     
     virtual ~Architect();
     
 
 	// Setters
-
+    void setDomain(Domain city);
+    void setHomes(vector<Place*> homes);
+    void setSchools(vector<Place*> schools);
+    void setWorks(vector<Place*> works);
+    void setCemetaries(vector<Place*> cemetaries);
+    
 	// Getters
 	double getCurrentTime();
 	double getTimeStep();
@@ -44,10 +53,12 @@ public:
 	void IncrementTime();
 	void Simulate();
 	void Update(double t, Storage* dPtr);
+    void Update(double t, SQLStorage* dPtr);
 	void Update(double t);
 	void DisplayTime();
 	void PopulationData();
     void AddPerson(Person *p);
+    void PrepDB();
 
 private:
 	double InitialTime;
@@ -56,8 +67,14 @@ private:
 	double CurrentTime;
 	int TimeIndex;
 	vector<Person*> PeoplePtr;
+    Domain City;
+    vector<Place*> Homes;
+    vector<Place*> Schools;
+    vector<Place*> Works;
+    vector<Place*> Cemeteries;
+    SQLStorage* sqlDataPtr;
 	Storage* dataPtr;
-	bool Store;
+	string Store;
 	int S;
 	int I;
     int P;

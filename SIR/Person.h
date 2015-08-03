@@ -41,6 +41,7 @@ public:
 	// Setters
 	void setID(int id);
     void setAge(int id);
+    void setGender(char g);
 	void setName(string name);
 	void setCoordinates(double coordinates[2]);
     void setHomeCoordinates(double homeco[2]);
@@ -62,6 +63,7 @@ public:
 	// Getters
 	int getID();
     int getAge();
+    char getGender();
 	string getName() const;
 	double* getCoordinates();
     double* getHomeCoordinates();
@@ -126,6 +128,7 @@ private:
     list<Person*> neigbors;
     
 	char State;
+    char Gender;
 	Domain* City;
 	Place* Home;
 	Place* School;

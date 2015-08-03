@@ -17,7 +17,7 @@
 using namespace std;
 
 Architect::Architect(double t0, double te, double ts,
-		vector<Person *> pp, bool store, Storage* d):
+		vector<Person *> pp, string store, Storage* d):
 	dataPtr(d)
 {
 
@@ -31,8 +31,23 @@ Architect::Architect(double t0, double te, double ts,
     PopulationData();
 }
 
+Architect::Architect(double t0, double te, double ts,
+                     vector<Person *> pp, string store, SQLStorage* d):
+sqlDataPtr(d)
+{
+    
+    InitialTime  = t0;
+    EndTime      = te;
+    TimeStep     = ts;
+    CurrentTime  = t0;
+    TimeIndex    = 0;
+    PeoplePtr    = pp;
+    Store        = store;
+    PopulationData();
+}
 
-Architect::Architect(double t0, double te, double ts, vector<Person *> pp, bool store)
+
+Architect::Architect(double t0, double te, double ts, vector<Person *> pp, string store)
 {
     
     InitialTime  = t0;
@@ -51,6 +66,22 @@ Architect::~Architect() {
 
 }
 // Setters
+
+void Architect::setDomain(Domain city){
+    City = city;
+};
+void Architect::setHomes(vector<Place*> homes){
+    Homes = homes;
+};
+void Architect::setSchools(vector<Place*> schools){
+    Schools = schools;
+};
+void Architect::setWorks(vector<Place*> works){
+    Works = works;
+};
+void Architect::setCemetaries(vector<Place*> cemeteries){
+    Cemeteries = cemeteries;
+};
 
 // Getters
 double Architect::getCurrentTime(){
@@ -87,7 +118,7 @@ void Architect::IncrementTime(){
 	TimeIndex++;
 }
 void Architect::Simulate(){
-	if (Store){
+	if (Store == "FileSystem"){
 		dataPtr->citySave();
 		dataPtr->homeSave();
 		dataPtr->workSave();
@@ -96,13 +127,32 @@ void Architect::Simulate(){
 		for (double t = 0; t < EndTime; t += TimeStep){
 			Update(t, dataPtr);
 		}
+        dataPtr->writeSIR();
 	}
+    else if (Store == "MYSQL"){
+        PrepDB();
+        for (double t = 0; t < EndTime; t += TimeStep){
+            Update(t, sqlDataPtr);
+            cout << "=========>>>>> Time " << t << " of " << EndTime << " <<<<<=================="<< endl;
+            sqlDataPtr-> InsertValue("HistoryData",
+                                  "NULL, " +
+                                  to_string(t) + ", " +
+                                  to_string(S) + ", " +
+                                  to_string(I) + ", " +
+                                  to_string(P) + ", " +
+                                  to_string(R) + ", " +
+                                  to_string(D)
+                                  );
+            
+        }
+        
+    }
 	else{
 		for (double t = 0; t < EndTime; t += TimeStep){
 			Update(t);
 		}
 	}
-    cout << "Stick a fork in my sucker!" << endl;
+    cout << "Stick a fork in me sucker!" << endl;
 }
 void Architect::Update(double t, Storage* data){
     
@@ -135,6 +185,38 @@ void Architect::Update(double t, Storage* data){
 		(*ip)->UpdateDiseaseWithInHost();
 	}
 	data->endMovieSave();
+    PopulationData();
+}
+void Architect::Update(double t, SQLStorage* data){
+    
+    // HistoryData data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
+    
+    IncrementTime();
+    for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
+        data-> InsertValue("PersonValues",
+                           "NULL, " +
+                           to_string((*ip)->getID()) + ", " +
+                           to_string((*ip)->getTime()) + ", " +
+                           to_string((*ip)->getCoordinates()[0]) + ", " +
+                           to_string((*ip)->getCoordinates()[0]) + ", " +
+                           to_string(((*ip)->getLocation())->getID()) + ", '" +
+                           (*ip)->getState() + "', " +
+                           to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
+                           to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
+                           to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
+                           to_string(((*ip)->getInHostDynamics()).getMaxInfLev())
+                           );
+        
+        (*ip)->setTime(CurrentTime);
+        if ((*ip)->IsSingleLocation) {
+            (*ip)->Move2((rand() % 360),5);
+        }else{
+            (*ip)->Move((rand() % 360),2, "Travel");
+        }
+        (*ip)->UpdateDiseaseWithInHost();
+
+    }
     PopulationData();
 }
 void Architect::Update(double t){
@@ -194,4 +276,85 @@ void Architect::PopulationData(){
 void Architect::AddPerson(Person *p){
     PeoplePtr.push_back(p);
     PopulationData();
+}
+void Architect::PrepDB(){
+
+    
+    // ====================>>>>LocationData<<<========================== //
+    // Domain
+    sqlDataPtr->InsertValue("Location",
+                   "NULL, '" +
+                   City.getName() + "', " +
+                   "'Domain'"     + ", " +
+                   to_string((City.Boundary)[0][0]) + ", " +
+                   to_string((City.Boundary)[0][1]) + ", " +
+                   to_string((City.Boundary)[1][0]) + ", " +
+                   to_string((City.Boundary)[1][1]));
+    
+    // Homes
+    for(auto h = Homes.cbegin(); h != Homes.cend(); ++h) {
+        sqlDataPtr->InsertValue("Location",
+                       "NULL, '"        +
+                       (*h)->getName() + "', '" +
+                       (*h)->getType() + "', "  +
+                       to_string(((*h)->Perimeter)[0][0]) + ", " +
+                       to_string(((*h)->Perimeter)[0][1]) + ", " +
+                       to_string(((*h)->Perimeter)[1][0]) + ", " +
+                       to_string(((*h)->Perimeter)[1][1]));
+    }
+    // Works
+    for(auto h = Works.cbegin(); h != Works.cend(); ++h) {
+        sqlDataPtr->InsertValue("Location",
+                       "NULL, '"        +
+                       (*h)->getName() + "', '" +
+                       (*h)->getType() + "', "  +
+                       to_string(((*h)->Perimeter)[0][0]) + ", " +
+                       to_string(((*h)->Perimeter)[0][1]) + ", " +
+                       to_string(((*h)->Perimeter)[1][0]) + ", " +
+                       to_string(((*h)->Perimeter)[1][1]));
+    }
+    // Schools
+    for(auto h = Schools.cbegin(); h != Schools.cend(); ++h) {
+        sqlDataPtr->InsertValue("Location",
+                       "NULL, '"        +
+                       (*h)->getName() + "', '" +
+                       (*h)->getType() + "', "  +
+                       to_string(((*h)->Perimeter)[0][0]) + ", " +
+                       to_string(((*h)->Perimeter)[0][1]) + ", " +
+                       to_string(((*h)->Perimeter)[1][0]) + ", " +
+                       to_string(((*h)->Perimeter)[1][1]));
+    }
+    // Cemeteries
+    for(auto h = Cemeteries.cbegin(); h != Cemeteries.cend(); ++h) {
+        sqlDataPtr->InsertValue("Location",
+                       "NULL, '"       +
+                       (*h)->getName() + "', '" +
+                       (*h)->getType() + "', "  +
+                       to_string(((*h)->Perimeter)[0][0]) + ", " +
+                       to_string(((*h)->Perimeter)[0][1]) + ", " +
+                       to_string(((*h)->Perimeter)[1][0]) + ", " +
+                       to_string(((*h)->Perimeter)[1][1]));
+    }
+    
+    // =====================>>>End of LocationData<<<========================= //
+    
+    // =====================>>>People Data<<<================================= //
+    unsigned long ps = PeoplePtr.size();
+    
+    cout << "Prepping tables for " << ps << " people. Please wait..." << endl;
+    for(auto p = PeoplePtr.cbegin(); p != PeoplePtr.cend(); ++p) {
+
+        sqlDataPtr->InsertValue("People",
+                                "NULL, '"        +
+                                (*p)->getName() + "', " +
+                                to_string((*p)->getAge()) + ", '"  +
+                                (*p)->getGender() + "', " +
+                                to_string(((*p)->getHome())->getID()) + ", " +
+                                to_string(((*p)->getLocation())->getID()));
+    }
+    
+    
+    // =====================>>>End of People Data<<<========================== //
+    
+    
 }
