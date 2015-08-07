@@ -26,7 +26,7 @@ public:
 	void writeSIR();
 	void startMovieSave(double t);
 	void endMovieSave();
-	void movieSave(int ID, string name, double t, double coord[2], string location, char state, double inflev, double suscells, double virlev, double maxInfLev, list<int> SIconnections, list<int> SIconnectionsHist, list<int> Allconnections, list<int> AllconnectionsHist);
+	void movieSave(int ID, string name, double t, double coord[2], string location, char state, bool hbs, double inflev, double suscells, double virlev, double maxInfLev, list<int> SIconnections, list<int> SIconnectionsHist, list<int> Allconnections, list<int> AllconnectionsHist);
 	void citySave();
 	void homeSave();
 	void workSave();

@@ -601,7 +601,7 @@ void Example4_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 1000;
+    int population = 500;
     
     Disease flu("Flu", 24, 30, 70);
     char state = 'S';
@@ -688,7 +688,7 @@ void Example4_MultiLocation(bool SaveData){
      // ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
-    double EndTime = 100;
+    double EndTime = 30;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
@@ -701,7 +701,7 @@ void Example4_MultiLocation(bool SaveData){
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        SQLStorage sqldata("localhost", "root", "sHa136384", "anchorDB", ver);
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         Architect archie(InitialTime,EndTime,TimeStep, people, "MYSQL", &sqldata);
         //Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
         

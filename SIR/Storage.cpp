@@ -113,6 +113,7 @@ void Storage::startMovieSave(double t){
 		movieFile << setw(15) << "y,";
 		movieFile << setw(15) << "Location,";
         movieFile << setw(15) << "State,";
+        movieFile << setw(15) << "HasBeenSick,";
         movieFile << setw(17) << "SusceptibleCells,";
         movieFile << setw(17) << "InfectionLevel,";
         movieFile << setw(17) << "VirionLevel,";
@@ -130,7 +131,7 @@ void Storage::endMovieSave(){
 	movieFile.close();
 	cout << "File "+movieFolderName+" closed." << endl;
 }
-void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state, double inflev, double suscells, double virlev, double maxInfLev, list<int> SIconnections, list<int> SIconnectionsHist, list<int> Allconnections, list<int> AllconnectionsHist){
+void Storage::movieSave(int ID, string name, double t, double coord[2], string location, char state, bool hbs, double inflev, double suscells, double virlev, double maxInfLev, list<int> SIconnections, list<int> SIconnectionsHist, list<int> Allconnections, list<int> AllconnectionsHist){
 	double x;
 	double y;
 	x = coord[0];
@@ -145,6 +146,7 @@ void Storage::movieSave(int ID, string name, double t, double coord[2], string l
 		movieFile << setw(14) << y << ",";
 		movieFile << setw(14) << location << ",";
 		movieFile << setw(14) << state  << ",";
+        movieFile << setw(14) << hbs << ",";
         movieFile << setw(16) << inflev << ",";
         movieFile << setw(16) << suscells << ",";
         movieFile << setw(16) << virlev << ",";

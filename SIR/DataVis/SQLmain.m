@@ -1,6 +1,10 @@
-clear all; close all; clc;
-vis = SQLVisualization('sim_v3_8_3_2015','root','sHa136384','MySQL','localhost');
+close all; clc;
+vis = SQLVisualization('sim_v1_8_6_2015','root','','MySQL','localhost');
 
-vis.readHistoryData();
+vis.getHistoryData();
+vis.PlotHistory(1);
 
-plot(vis.T, vis.S);
+
+vis.getPerson(1:200);
+vis.getLocation('All');
+vis.MakeMovie(2);

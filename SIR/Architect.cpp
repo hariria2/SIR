@@ -167,6 +167,7 @@ void Architect::Update(double t, Storage* data){
                         (*ip)->getCoordinates(),
                        ((*ip)->getLocation())->getName(),
                         (*ip)->getState(),
+                        (*ip)->getHastBeenSick(),
                        ((*ip)->getInHostDynamics()).getT(),
                        ((*ip)->getInHostDynamics()).getI(),
                        ((*ip)->getInHostDynamics()).getV(),
@@ -189,8 +190,6 @@ void Architect::Update(double t, Storage* data){
 }
 void Architect::Update(double t, SQLStorage* data){
     
-    // HistoryData data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
-    
     IncrementTime();
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
@@ -199,9 +198,10 @@ void Architect::Update(double t, SQLStorage* data){
                            to_string((*ip)->getID()) + ", " +
                            to_string((*ip)->getTime()) + ", " +
                            to_string((*ip)->getCoordinates()[0]) + ", " +
-                           to_string((*ip)->getCoordinates()[0]) + ", " +
+                           to_string((*ip)->getCoordinates()[1]) + ", " +
                            to_string(((*ip)->getLocation())->getID()) + ", '" +
                            (*ip)->getState() + "', " +
+                           to_string((*ip)->getHastBeenSick()) + ", " +
                            to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
                            to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
                            to_string(((*ip)->getInHostDynamics()).getV()) + ", " +

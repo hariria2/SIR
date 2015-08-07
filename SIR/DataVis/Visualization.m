@@ -254,6 +254,7 @@ classdef Visualization < handle
         end
         function DrawPeople_InHost(obj,person, t)
             b = abs(person.InfLev(t));
+            hbs = person.HasBeenSick(t);
             cval = b/obj.MaxInfLev;
             if isnan(cval)
                 cval = 0;
@@ -264,7 +265,11 @@ classdef Visualization < handle
             if cval < 0
                 cval = 0;
             end
-            color = [cval,0,1-cval];
+            if hbs
+                color = [cval,1-cval, 0];
+            else
+                color = [cval,0,1-cval];
+            end
             p = plot(person.Coordinates(1),person.Coordinates(2), '.', 'MarkerSize',20);
             set(p,'Color', color);
         end
@@ -354,7 +359,8 @@ classdef Visualization < handle
                     obj.People{jj}.InfLev(ii) = people.InfectionLevel(jj);
                     obj.People{jj}.SusLev(ii) = people.SusceptibleCells(jj);
                     obj.People{jj}.VirLev(ii) = people.VirionLevel(jj);
-                    
+                    obj.People{jj}.HasBeenSick(ii) = people.HasBeenSick(ii);
+           
                 end
                 
                 waitbar(ii/loops,wbh,sprintf('%2.1f %% of this step complete...',100 * ii/loops))

@@ -83,6 +83,9 @@ void Person::setID(int id){
 void Person::setAge(int age){
     Age = age;
 }
+void Person::setHasBeenSick(int hbs){
+    HasBeenSick = hbs;
+}
 void Person::setGender(char g){
     Gender = g;
 }
@@ -182,6 +185,9 @@ int Person::getID(){
 }
 int Person::getAge(){
     return Age;
+}
+int Person::getHastBeenSick(){
+    return HasBeenSick;
 }
 char Person::getGender(){
     return Gender;
@@ -470,10 +476,12 @@ void Person::UpdateDiseaseWithInHost() {
             setState('P');
         }else if (ihdynamics.getV() < 0.01){
             setState('R');
+            setHasBeenSick(1);
         }
     }else if (getState() == 'P'){
         if (ihdynamics.getI() < 0.3){
             setState('I');
+            setHasBeenSick(1);
         }
     }
     

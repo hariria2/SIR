@@ -41,6 +41,7 @@ public:
 	// Setters
 	void setID(int id);
     void setAge(int id);
+    void setHasBeenSick(int hbs);
     void setGender(char g);
 	void setName(string name);
 	void setCoordinates(double coordinates[2]);
@@ -64,6 +65,7 @@ public:
 	int getID();
     int getAge();
     char getGender();
+    int getHastBeenSick();
 	string getName() const;
 	double* getCoordinates();
     double* getHomeCoordinates();
@@ -129,6 +131,7 @@ private:
     
 	char State;
     char Gender;
+    int HasBeenSick = 0;
 	Domain* City;
 	Place* Home;
 	Place* School;
