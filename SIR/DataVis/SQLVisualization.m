@@ -97,7 +97,7 @@ classdef SQLVisualization < handle
             Alltxy = cell2mat(myData(:,[2, 3, 4, 5, 6, 8, 9, 10, 11, 12]));
             
             
-            wbh = waitbar(0,'Reading all the data. Please wait...');
+            wbh = waitbar(0,'Loading People. Please wait...');
             for ii = 1:length(ids)
                 iah = cell2mat(curs1.data(ii, [1, 3, 5]));
                 ng  = cell2mat(curs1.data(ii, [2,4]));
@@ -130,7 +130,7 @@ classdef SQLVisualization < handle
                     obj.MaxInfLev = max(txy(:,10));
                 end
                 
-                waitbar(ii/l,wbh,sprintf('%2.1f %% of this step complete...',100 * ii/l))
+                waitbar(ii/l,wbh,sprintf('%2.1f %% of loading people data is done...',100 * ii/l))
                 clear p;
             end
             
@@ -298,8 +298,7 @@ classdef SQLVisualization < handle
             ymax = 0;
             
             for ii = 1:length(ppl)
-                
-                if obj.isMember(ppl(ii))
+                if obj.isMember(obj.PeopleIDs, ppl(ii))
                     p = obj.People(obj.PeopleIDs==ppl(ii));
                 else
                     obj.getPerson(ppl(ii));

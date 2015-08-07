@@ -601,7 +601,7 @@ void Example4_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 500;
+    int population = 700;
     
     Disease flu("Flu", 24, 30, 70);
     char state = 'S';
@@ -688,7 +688,7 @@ void Example4_MultiLocation(bool SaveData){
      // ((people.front())->getInHostDynamics()).setV(0.1);
     
     double InitialTime = 0;
-    double EndTime = 30;
+    double EndTime = 100;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
