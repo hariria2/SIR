@@ -20,6 +20,7 @@ classdef SQLVisualization < handle
         polyxs;
         polyys;
         colors;
+        TaggedPeople;
     end
     
     
@@ -185,8 +186,8 @@ classdef SQLVisualization < handle
             
         end
 
-        function PlotHistory(obj, fignum)
-           figure(fignum)
+        function h = PlotHistory(obj, fignum)
+           h = figure(fignum);
            p = plot(obj.T, obj.S,'b',...
                     obj.T, obj.I,'y',...
                     obj.T, obj.P,'r',...
@@ -218,7 +219,7 @@ classdef SQLVisualization < handle
         function DrawPeople_InHost(obj,person, t)
             b = abs(person.InfCells(t));
             hbs = person.HasBeenSick(t);
-            cval = b/obj.MaxInfLev;
+            cval = b; % /obj.MaxInfLev;
             if isnan(cval)
                 cval = 0;
             end
@@ -228,6 +229,7 @@ classdef SQLVisualization < handle
             if cval < 0
                 cval = 0;
             end
+            
             if hbs
                 color = [cval,1-cval,0];
             else
@@ -236,6 +238,9 @@ classdef SQLVisualization < handle
             
             p = plot(person.x(t),person.y(t), '.', 'MarkerSize',20);
             set(p,'Color', color);
+            if any(person.ID == obj.TaggedPeople)
+                text(person.x(t),person.y(t),['\bf',int2str(person.ID)], 'fontsize', 18, 'Color', 'm')
+            end
         end
         function DrawPlace(obj,place)
             
@@ -310,20 +315,27 @@ classdef SQLVisualization < handle
                 ymax = max(ymax,max([max(SC),max(IC), max(VL)]));
             end
             
+            
+            
             for ii = 1:length(ppl)
                 p = obj.People(obj.PeopleIDs==ppl(ii));
                 SC = p.SusCells;
                 IC = p.InfCells;
                 VL = p.VirLoads;
                 t = p.Time;
+                
                 subplot(length(ppl),1,ii)
-                plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3)
+                obj.ShadeMyFig(t, [0.01,0.3,ymax])
+                hold on
+                p = plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
                 ylim([0, ymax])
+                hold off
             end
+            
             %subplot(pltnum,1,1)
-            l = legend ('Susceptible cells','Infected Cells', 'Free Virion');
+            l = legend (p, 'Susceptible cells','Infected Cells', 'Free Virion');
             newPosition = [0.31 0.6 0.4 0.73];
             newUnits = 'normalized';
             set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
@@ -357,6 +369,29 @@ classdef SQLVisualization < handle
         end
         function r = isMember(~, list,  id)
             r = sum(list == id);
+        end
+        function ShadeMyFig(~, t, levels)
+            s = size(t);
+            if s(1) > 1
+                x = t';
+            end
+            c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0];
+            
+            X=[x,fliplr(x)];                %#create continuous x value array for plotting
+            for ii = 1:length(levels)
+                if ii == 1
+                    y1 = zeros(size(x));
+                else
+                    y1 = levels(ii-1)*ones(size(x));
+                end
+                y2 = levels(ii)*ones(size(x));
+                Y=[y1,fliplr(y2)];              %#create y values for out and then back
+                fill(X,Y,c(ii,:), 'FaceAlpha', 0.05,...
+                    'FaceLighting', 'gouraud', ...
+                    'EdgeColor', c(ii,:)); 
+                hold on
+            end
+            hold off
         end
     end
     

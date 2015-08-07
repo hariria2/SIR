@@ -472,19 +472,22 @@ void Person::UpdateDiseaseWithInHost() {
     }
     
     if (getState() == 'I'){
-        if (ihdynamics.getI() > 0.3){
+        if (ihdynamics.getI() > 0.2){
             setState('P');
-        }else if (ihdynamics.getV() < 0.01){
+            
+        }else if (ihdynamics.getI() < 0.01){
             setState('R');
-            setHasBeenSick(1);
+
         }
     }else if (getState() == 'P'){
-        if (ihdynamics.getI() < 0.3){
+        if (ihdynamics.getI() < 0.2){
             setState('I');
-            setHasBeenSick(1);
         }
     }
     
+    if (ihdynamics.getI() < ihdynamics.getMaxInfLev()){
+        setHasBeenSick(1);
+    }
     
     
 }

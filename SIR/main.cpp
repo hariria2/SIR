@@ -637,7 +637,7 @@ void Example4_MultiLocation(bool SaveData){
             state = 'S';
         }
         
-        normal_distribution<double> icDist(3,2);
+        normal_distribution<double> icDist(3,0);
         double randic  = icDist(generator);
         
         double ict = (randic < 0.5)? 0.5:randic;
@@ -645,25 +645,25 @@ void Example4_MultiLocation(bool SaveData){
         
         InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
         
-        normal_distribution<double> betaDist(2,.2);
+        normal_distribution<double> betaDist(0.1,0);
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         
         ihd.setBeta(beta);
         
-        normal_distribution<double> deltaDist(1.8,0.2);
+        normal_distribution<double> deltaDist(0.1,0);
         double randdelta  = deltaDist(generator);
         double delta = (randdelta < 0)? 0:randdelta;
         
         ihd.setDelta(delta);
         
-        normal_distribution<double> PDist(5,0.2);
+        normal_distribution<double> PDist(3,0);
         double randP  = PDist(generator);
         double P = (randP < 0)? 0:randP;
         
         ihd.setP(P);
         
-        normal_distribution<double> CDist(0.8,0.1);
+        normal_distribution<double> CDist(0.8,0);
         double randC  = CDist(generator);
         double C = (randC < 0)? 0:randC;
         
