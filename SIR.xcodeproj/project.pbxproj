@@ -17,6 +17,7 @@
 		D8B403E71AB36B3A00726652 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DD1AB36B3A00726652 /* README.md */; };
 		D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DE1AB36B3A00726652 /* Storage.cpp */; };
 		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
+		D8F1704A1B77F10600316080 /* Economy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8F170481B77F10600316080 /* Economy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +52,8 @@
 		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };
 		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InHostDynamics.cpp; sourceTree = "<group>"; };
+		D8F170481B77F10600316080 /* Economy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Economy.cpp; sourceTree = "<group>"; };
+		D8F170491B77F10600316080 /* Economy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Economy.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +88,8 @@
 			children = (
 				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,
 				D81C45A71B6A9353007007FA /* SQLStorage.h */,
+				D8F170481B77F10600316080 /* Economy.cpp */,
+				D8F170491B77F10600316080 /* Economy.h */,
 				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
 				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484231AB36A78007EC18E /* main.cpp */,
@@ -171,6 +176,7 @@
 				D8B403E71AB36B3A00726652 /* README.md in Sources */,
 				D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */,
 				D8B403E61AB36B3A00726652 /* Place.cpp in Sources */,
+				D8F1704A1B77F10600316080 /* Economy.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
