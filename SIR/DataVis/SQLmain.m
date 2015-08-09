@@ -1,11 +1,11 @@
 close all; clc;
 
-ver = '4';
+ver = '1';
 [y,m,d] = datevec(date());
 timestamp = [num2str(m),'_',num2str(d),'_',num2str(y)];
 
-saveResults = 1;
-makeMovie   = 1;
+saveResults = 0;
+makeMovie   = 0;
 
 vis = SQLVisualization(['sim_v',ver,'_',timestamp],'root','','MySQL','localhost');
 
@@ -22,6 +22,7 @@ if makeMovie
 end
 
 vis.FullScreen = 0;
+vis.ShowProgress = 0;
 h2 = vis.PlotIndividual(2, [1,2,3]);
 
 

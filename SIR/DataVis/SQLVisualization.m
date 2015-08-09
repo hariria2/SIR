@@ -20,7 +20,8 @@ classdef SQLVisualization < handle
         polyxs;
         polyys;
         colors;
-        TaggedPeople;
+        TaggedPeople = [];
+        ShowProgress = 0;
     end
     
     
@@ -43,7 +44,7 @@ classdef SQLVisualization < handle
             obj.D = data(:,7);
             
         end             
-        function getPerson(obj, ids)
+         function getPerson(obj, ids)
             
             query1 = '';
             query2 = '';
@@ -60,6 +61,7 @@ classdef SQLVisualization < handle
                 s = size(curs1.data);
                 l = s(1);
                 ids = 1:l;
+                obj.ShowProgress = 1;
             else 
                 l = length(ids);
                 
@@ -97,8 +99,9 @@ classdef SQLVisualization < handle
             myData = curs2.data;
             Alltxy = cell2mat(myData(:,[2, 3, 4, 5, 6, 8, 9, 10, 11, 12]));
             
-            
-            wbh = waitbar(0,'Loading People. Please wait...');
+            if obj.ShowProgress
+                wbh = waitbar(0,'Loading People. Please wait...');
+            end
             for ii = 1:length(ids)
                 iah = cell2mat(curs1.data(ii, [1, 3, 5]));
                 ng  = cell2mat(curs1.data(ii, [2,4]));
@@ -131,10 +134,14 @@ classdef SQLVisualization < handle
                     obj.MaxInfLev = max(txy(:,10));
                 end
                 
-                waitbar(ii/l,wbh,sprintf('%2.1f %% of loading people data is done...',100 * ii/l))
+                if obj.ShowProgress
+                    waitbar(ii/l,wbh,sprintf('%2.1f %% of loading people data is done...',100 * ii/l))
+                end
                 clear p;
             end
-            
+            if obj.ShowProgress
+                close(wbh)
+            end
         end
         function getLocation(obj, ids)
             
@@ -325,7 +332,7 @@ classdef SQLVisualization < handle
                 t = p.Time;
                 
                 subplot(length(ppl),1,ii)
-                obj.ShadeMyFig(t, [0.01,0.3,ymax])
+                obj.ShadeMyFig(t, [0.01,0.3,3,ymax])
                 hold on
                 p = plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
@@ -375,7 +382,7 @@ classdef SQLVisualization < handle
             if s(1) > 1
                 x = t';
             end
-            c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0];
+            c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
             
             X=[x,fliplr(x)];                %#create continuous x value array for plotting
             for ii = 1:length(levels)
