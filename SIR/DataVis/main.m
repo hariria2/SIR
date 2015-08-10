@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-ver = '1';
+ver = '2';
 [y,m,d] = datevec(date());
 
 timestamp = [num2str(m),'-',num2str(d),'-',num2str(y)];

@@ -16,6 +16,7 @@
 #include "SQLStorage.h"
 #include "Domain.h"
 #include "Place.h"
+#include "Economy.h"
 
 using namespace std;
 
@@ -23,10 +24,10 @@ class Person;
 
 class Architect {
 public:
-    Architect(double t0, double tend, double ts, vector<Person *> pp, string store, Storage* d, bool eig);
-	Architect(double t0, double tend, double ts, vector<Person *> pp, string store, Storage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, string store, SQLStorage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, string store="None");
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d, bool eig);
+	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, SQLStorage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store="None");
 	
     
     virtual ~Architect();
@@ -66,6 +67,7 @@ private:
 	double TimeStep;
 	double CurrentTime;
 	int TimeIndex;
+    Economy Econ;
 	vector<Person*> PeoplePtr;
     Domain City;
     vector<Place*> Homes;

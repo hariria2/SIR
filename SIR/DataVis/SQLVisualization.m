@@ -14,6 +14,7 @@ classdef SQLVisualization < handle
         P;
         R;
         D;
+        GDP;
         FullScreen = 0;
         TracePerson = 0;
         Frames;
@@ -42,9 +43,10 @@ classdef SQLVisualization < handle
             obj.P = data(:,5);
             obj.R = data(:,6);
             obj.D = data(:,7);
+            obj.GDP = data(:,8);
             
         end             
-         function getPerson(obj, ids)
+        function getPerson(obj, ids)
             
             query1 = '';
             query2 = '';
@@ -112,7 +114,8 @@ classdef SQLVisualization < handle
 
                 txy = Alltxy(Alltxy(:,1)==id,:);
                 
-                state = cell2mat(myData(:,7));
+                states = cell2mat(myData(:,7));
+                state = states(Alltxy(:,1)==id);
             
                 p.setTime(txy(:,2));
                 p.setx(txy(:,3));
@@ -198,14 +201,26 @@ classdef SQLVisualization < handle
            p = plot(obj.T, obj.S,'b',...
                     obj.T, obj.I,'y',...
                     obj.T, obj.P,'r',...
-                    obj.T, obj.R,'g');
+                    obj.T, obj.R,'g',...
+                    obj.T, obj.D,'k');
      
             set(p,'LineWidth', 3);
             grid on;
-            l = legend('Susceptible', 'Exposed', 'Infected', 'Recovered');
+            l = legend('Susceptible', 'Exposed', 'Infected', 'Recovered', 'Dead');
             set(l, 'FontSize', 16);
             xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
             ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
+        end
+        function h = PlotGDP(obj, fignum)
+            h = figure(fignum);
+            c = [0.9,0,0; 0.9,0.9,0.0; 0,0.9,0];
+            obj.ShadeMyFig(obj.T, [100, 500, max(obj.GDP)], c)
+            hold on
+            p = plot(obj.T, obj.GDP,'K');
+            set(p,'LineWidth', 3);
+            grid on;
+            xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
+            ylabel('GDP','Interpreter', 'Latex', 'FontSize', 16)
         end
         function DrawPeople(obj,person)
             if strcmpi(person.State,'S')
@@ -227,6 +242,10 @@ classdef SQLVisualization < handle
             b = abs(person.InfCells(t));
             hbs = person.HasBeenSick(t);
             cval = b; % /obj.MaxInfLev;
+            state = person.State(t);
+            
+            
+            
             if isnan(cval)
                 cval = 0;
             end
@@ -238,10 +257,17 @@ classdef SQLVisualization < handle
             end
             
             if hbs
-                color = [cval,1-cval,0];
+                
+                if strcmp(state, 'D')
+                    color = [0,0,0];
+                else
+                    color = [cval,1-cval,0];
+                end
             else
                 color = [cval,0,1-cval];
             end
+            
+            
             
             p = plot(person.x(t),person.y(t), '.', 'MarkerSize',20);
             set(p,'Color', color);
@@ -332,7 +358,8 @@ classdef SQLVisualization < handle
                 t = p.Time;
                 
                 subplot(length(ppl),1,ii)
-                obj.ShadeMyFig(t, [0.01,0.3,3,ymax])
+                c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
+                obj.ShadeMyFig(t, [0.01,0.3,3,ymax], c)
                 hold on
                 p = plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
@@ -377,13 +404,12 @@ classdef SQLVisualization < handle
         function r = isMember(~, list,  id)
             r = sum(list == id);
         end
-        function ShadeMyFig(~, t, levels)
+        function ShadeMyFig(~, t, levels, c)
             s = size(t);
             if s(1) > 1
                 x = t';
             end
-            c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
-            
+           
             X=[x,fliplr(x)];                %#create continuous x value array for plotting
             for ii = 1:length(levels)
                 if ii == 1

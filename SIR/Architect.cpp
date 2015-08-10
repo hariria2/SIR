@@ -13,12 +13,13 @@
 #include "Architect.h"
 #include "Person.h"
 #include "Storage.h"
+#include "Economy.h"
 
 using namespace std;
 
 Architect::Architect(double t0, double te, double ts,
-		vector<Person *> pp, string store, Storage* d):
-	dataPtr(d)
+		vector<Person *> pp, Economy econ, string store, Storage* d):
+	dataPtr(d), Econ(econ)
 {
 
 	InitialTime  = t0;
@@ -32,8 +33,8 @@ Architect::Architect(double t0, double te, double ts,
 }
 
 Architect::Architect(double t0, double te, double ts,
-                     vector<Person *> pp, string store, SQLStorage* d):
-sqlDataPtr(d)
+                     vector<Person *> pp, Economy econ, string store, SQLStorage* d):
+sqlDataPtr(d), Econ(econ)
 {
     
     InitialTime  = t0;
@@ -47,7 +48,7 @@ sqlDataPtr(d)
 }
 
 
-Architect::Architect(double t0, double te, double ts, vector<Person *> pp, string store)
+Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Economy econ, string store):Econ(econ)
 {
     
     InitialTime  = t0;
@@ -141,7 +142,8 @@ void Architect::Simulate(){
                                   to_string(I) + ", " +
                                   to_string(P) + ", " +
                                   to_string(R) + ", " +
-                                  to_string(D)
+                                  to_string(D) + ", " +
+                                  to_string(Econ.getGDP())
                                   );
             
         }
@@ -158,8 +160,11 @@ void Architect::Update(double t, Storage* data){
     
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
 	data->startMovieSave(CurrentTime);
-	IncrementTime();
-	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+	
+    Econ.computeGDP(PeoplePtr);
+    IncrementTime();
+	
+    for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
 		data->movieSave((*ip)->getID(),
                         (*ip)->getName(),
@@ -190,8 +195,16 @@ void Architect::Update(double t, Storage* data){
 }
 void Architect::Update(double t, SQLStorage* data){
     
+    vector<Person*> econList;
+    
+    
     IncrementTime();
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+        
+        if (((*ip)->getLocation())->getType()=="Work" | ((*ip)->getLocation())->getType()=="School") {
+            econList.push_back(*ip);
+        }
+        
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         data-> InsertValue("PersonValues",
                            "NULL, " +
@@ -217,10 +230,13 @@ void Architect::Update(double t, SQLStorage* data){
         (*ip)->UpdateDiseaseWithInHost();
 
     }
+    Econ.computeGDP(econList);
     PopulationData();
+    
 }
 void Architect::Update(double t){
 	
+    Econ.computeGDP(PeoplePtr);
     IncrementTime();
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(CurrentTime);

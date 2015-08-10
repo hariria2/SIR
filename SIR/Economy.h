@@ -12,20 +12,41 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#include <list>
-#include "Place.h"
-#include "Disease.h"
-#include "InHostDynamics.h"
+#include <vector>
+#include "Person.h"
 
 using namespace std;
 
 class Economy {
 public:
     
-    Economy();
+    Economy(double a, double alpha, double beta);
+   
+    
+    // Setters
+    void setA(double a);
+    void setAlpha(double alpha);
+    void setBeta(double beta);
+    
+    
+    // Getters
+    double getA();
+    double getAlpha();
+    double getBeta();
+    double getGDP();
+    
+    // Utilities
+    void computeGDP(vector<Person*> ppl);
     
     
 private:
+    
+    double A;
+    double Alpha;
+    double Beta;
+    double GDP;
+    double Demand;
+    
     
 };
 
