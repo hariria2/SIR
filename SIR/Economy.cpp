@@ -53,9 +53,13 @@ double Economy::getGDP(){
 
 // Utilities
 
-void Economy::computeGDP(vector<Person*> ppl){
+void Economy::computeGDP(vector<Person*> ppl, double oldGDP){
     
     unsigned long L = ppl.size();
+    if (L == 0) {
+        GDP = oldGDP;
+        return;
+    }
     double S_avg;
     double I_avg;
     double H_avg;
@@ -68,20 +72,24 @@ void Economy::computeGDP(vector<Person*> ppl){
     I_avg = I_avg/L;
     S_avg = S_avg/L;
     
+//    if (I_avg < 1e-100){
+//        H_avg = S_avg/0.001;
+//        cout << "I'm here " << endl;
+//    } else {
+//        H_avg = S_avg/I_avg;
+//        cout << "here is where I think I should be" << endl;
+//    }
+//
+    H_avg = 1/(I_avg + 0.0001);
     
-    if (I_avg < 1e-50){
-        H_avg = S_avg/0.001;
-    } else {
-        H_avg = S_avg/I_avg;
-    }
     
     GDP = A*pow(L,Alpha)*pow(H_avg,Beta);
     
-    if (GDP == 0){
-        Demand = 10;
-    }else {
-        Demand = 1/GDP;
-    }
+//    if (GDP == 0){
+//        Demand = 10;
+//    }else {
+//        Demand = 1/GDP;
+//    }
     
 };
 

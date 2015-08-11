@@ -273,9 +273,27 @@ void Person::Move(double theta, double r, string motionType) {
         return;
     }
     
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+
+    normal_distribution<double> WSTimeD(8,0);
+    double  WSTime = WSTimeD(generator);
+    normal_distribution<double> WETimeD(18,0);
+    double  WETime = WETimeD(generator);
+    
+    
+    int WSHour = floor(WSTime);
+    double WSMin = WSTime - WSHour;
+    double WSDailyTime = ((WSHour % 24)+WSMin);
+    
+    int WEHour = floor(WETime);;
+    double WEMin = WETime - WEHour;;
+    double WEDailyTime = ((WEHour % 24)+WEMin);
+    
+    
     if (motionType == "DailyMovement"){
         
-        if (DailyTime <= 8 || DailyTime >= 18){
+        if (DailyTime <= WSDailyTime || DailyTime >= WEDailyTime){
             if (!(Location->getType() == "Home")){
                 setLocation(Home);
             }
@@ -296,36 +314,25 @@ void Person::Move(double theta, double r, string motionType) {
                 setLocation(School);
             }
         }
-//        if (getID() == 2){
-//            if (Time == 10){
-//                setLocation(Work);
-//            }
-//            if (Time == 20){
-//                setLocation(School);
-//            }
-//        }
+
         if (getID() == 9){
             if (Time == 30){
                 setLocation(Home);
             }
         }
-//        if (getID() == 3){
-//            if (Time == 25){
-//                setLocation(Home);
-//            }
-//        }
-//        if (getID() == 202){
-//            if (Time == 50){
-//                setLocation(School);
-//            }
-//        }
-//        if (getID() == 631){
-//            if (Time == 50){
-//                setLocation(School);
-//            }
-//        }
     }
     
+    if (getID() == 1){
+        if (Time == 10){
+            setLocation(Work);
+        }
+    }
+    
+    if (getID() == 9){
+        if (Time == 30){
+            setLocation(Home);
+        }
+    }
     
 	double x = Coordinates[0] + r*cos(theta);
 	double y = Coordinates[1] + r*sin(theta);
@@ -452,16 +459,17 @@ void Person::UpdateDiseaseWithInHost() {
         }
     }
     double totalVirion = 0;
-//    double pV;
+
     double dist;
+    
     for(auto ip = neigbors.cbegin(); ip != neigbors.cend(); ++ip){
         dist = Distance(*ip);
         if (dist != 0){
             totalVirion += ((*ip)->ihdynamics.getV())/pow(dist,2);
         }
     }
+    
     ihdynamics.setT0(Time);
-//    ihdynamics.setV(pV+1000*totalVirion);
     ihdynamics.setNE(0.001*totalVirion);
     ihdynamics.Simulate();
     

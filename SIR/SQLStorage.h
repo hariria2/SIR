@@ -25,7 +25,7 @@ public:
     
     void CreateDB(string db);
     void CreateTable(string table);
-    void InsertValue(string table, string vals);
+    void InsertValue(string table, string vals, bool paren=false);
     
 private:
     string timeStamp;

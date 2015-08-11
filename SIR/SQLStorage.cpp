@@ -100,7 +100,7 @@ void SQLStorage::CreateTable(string table){
         "Infected    INT UNSIGNED NOT NULL, " +
         "Recovered   INT UNSIGNED NOT NULL, " +
         "Dead        INT UNSIGNED NOT NULL, " +
-        "GDP         INT UNSIGNED NOT NULL" +
+        "GDP         DOUBLE UNSIGNED NOT NULL" +
         ");";
         
     }
@@ -147,14 +147,16 @@ void SQLStorage::CreateTable(string table){
         cout<<mysql_error(conn)<<endl<<endl;
     }
 }
-void SQLStorage::InsertValue(string table, string vals){
+void SQLStorage::InsertValue(string table, string vals, bool paren){
     string statement;
     int query_states;
     
     
-    
-    statement = "INSERT INTO "+table+" VALUES(" + vals +");";
-    
+    if (paren){
+        statement = "INSERT INTO "+table+" VALUES " + vals +";";
+    } else {
+        statement = "INSERT INTO "+table+" VALUES (" + vals +");";
+    }
     // cout << statement << endl;
     
     query_states = mysql_query(conn, statement.c_str());

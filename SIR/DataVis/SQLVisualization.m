@@ -199,14 +199,14 @@ classdef SQLVisualization < handle
         function h = PlotHistory(obj, fignum)
            h = figure(fignum);
            p = plot(obj.T, obj.S,'b',...
-                    obj.T, obj.I,'y',...
-                    obj.T, obj.P,'r',...
+                    ...% obj.T, obj.I ,'y',...
+                    obj.T, obj.P + obj.I,'r',...
                     obj.T, obj.R,'g',...
                     obj.T, obj.D,'k');
      
             set(p,'LineWidth', 3);
             grid on;
-            l = legend('Susceptible', 'Exposed', 'Infected', 'Recovered', 'Dead');
+            l = legend('Susceptible', 'Infected', 'Recovered', 'Dead');
             set(l, 'FontSize', 16);
             xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
             ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
@@ -293,6 +293,7 @@ classdef SQLVisualization < handle
             obj.polyxs = [obj.polyxs,[A(1,1);A(1,2);A(1,2);A(1,1)]];
             obj.polyys = [obj.polyys,[A(2,1);A(2,1);A(2,2);A(2,2)]];
             obj.colors = [obj.colors;c];
+                
         end        
         function h = Render(obj,fignum, t)
             h = figure(fignum);
@@ -303,12 +304,13 @@ classdef SQLVisualization < handle
             set(p,'FaceColor','flat','FaceVertexCData',obj.colors)
             hold on
             
+            
             for ii = 1:length(obj.People)
                 obj.DrawPeople_InHost(obj.People(ii), t)
                 hold on
             end
             hold off
-            title(sprintf('Time = %d',t),'fontsize',22)
+            title(sprintf('Time = %d \n Total Time = %d', mod(t,24), t),'fontsize',22)
             
             day = floor(t/24);
             mhour = mod(t,24);

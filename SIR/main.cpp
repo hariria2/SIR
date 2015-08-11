@@ -32,15 +32,11 @@ void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s);
 void updatePop(vector<Person*> p1, char s);
 
 void Example1_SingleLocation(bool SaveData=true);
-void Example2_SingleLocation(bool SaveData=true);
-void Example1_MultiLocation(bool SaveData=true);
 void Example2_MultiLocation(bool SaveData=true);
-void Example3_MultiLocation(bool SaveData=true);
 void Example4_MultiLocation(bool SaveData=true);
 
 void Ex1_Eig_SingleLocation(bool SaveData=true);
 void Ex1_SparseEig_SingleLocation(bool SaveData=true);
-void Ex2_SparseEig_SingleLocation(bool SaveData);
 //=================
 
 class Rectangle {
@@ -61,7 +57,8 @@ void Rectangle::set_values (int x, int y) {
 int main(){
     
     //Example1_SingleLocation();
-    Example4_MultiLocation();
+    Example2_MultiLocation();
+    //Example4_MultiLocation();
  	//Ex1_Eig_SingleLocation(true);
     //Ex2_SparseEig_SingleLocation(true);
     return 0;
@@ -137,6 +134,144 @@ void Example1_SingleLocation(bool SaveData){
         archie.Simulate();
     }
 }
+void Example2_MultiLocation(bool SaveData){
+    
+    int maxdim = 700;
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    Domain myCity("DiseasVille", cityBoundary);
+    
+    vector<Place*> homes;
+    vector<Place*> works;
+    vector<Place*> schools;
+    vector<Place*> cemeteries;
+    
+    readCityData(&myCity, homes, works, schools, cemeteries);
+    
+    
+    
+    double hco[2];
+    double wco[2];
+    double sco[2];
+    double cco[2];
+    
+    int population = 700;
+    
+    Disease flu("Flu", 24, 30, 70);
+    char state = 'S';
+    double VirLev = 0.1;
+    
+    Economy econ(1,0.5,0.5);
+    
+    
+    vector<Person*> people;
+    for (int i=1; i <= population; i++){
+        
+        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        
+        string name = "randomName"+to_string(i);
+        
+        
+        
+        int randHIdx = rand() % homes.size();
+        int randWIdx = rand() % works.size();
+        int randSIdx = rand() % schools.size();
+        int randCIdx = rand() % cemeteries.size();
+        
+        getDefaultCoordinates(homes[randHIdx], hco);
+        getDefaultCoordinates(works[randWIdx], wco);
+        getDefaultCoordinates(schools[randSIdx], sco);
+        getDefaultCoordinates(cemeteries[randCIdx], cco);
+        
+        normal_distribution<double> ageDist(25,20);
+        double randage  = ageDist(generator);
+        int age = (randage < 1)? 1:floor(randage);
+        
+        if (i == 1){
+            VirLev = 0.1;
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
+        
+        normal_distribution<double> icDist(4,1);
+        double randic  = icDist(generator);
+        
+        double ict = (randic < 0.5)? 0.5:randic;
+        
+        
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
+        
+        normal_distribution<double> betaDist(1,0);
+        double randbeta  = betaDist(generator);
+        double beta = (randbeta < 0)? 0:randbeta;
+        
+        ihd.setBeta(beta);
+        
+        normal_distribution<double> deltaDist(0.1,0);
+        double randdelta  = deltaDist(generator);
+        double delta = (randdelta < 0)? 0:randdelta;
+        
+        ihd.setDelta(delta);
+        
+        normal_distribution<double> PDist(3,0);
+        double randP  = PDist(generator);
+        double P = (randP < 0)? 0:randP;
+        
+        ihd.setP(P);
+        
+        normal_distribution<double> CDist(0.8,0);
+        double randC  = CDist(generator);
+        double C = (randC < 0)? 0:randC;
+        
+        ihd.setC(C);
+        
+        
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
+                               schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
+                               hco,wco,sco,cco,10,10,10);
+        
+        if (i%3 == 0){
+            p->setLocation(works[randWIdx]);
+        }else if (i%2 == 0){
+            p->setLocation(homes[randHIdx]);
+        }else {
+            p->setLocation(schools[randSIdx]);
+        }
+        people.push_back(p);
+    };
+    
+    
+    double InitialTime = 0;
+    double EndTime = 100;
+    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
+    int l = floor((EndTime-InitialTime)/TimeStep);
+    
+    if (SaveData) {
+        string ver;
+        cout << "Enter version number for multi location simulation: ";
+        cin >> ver;
+        string dataFolder = "data_multi_v"+ver+"_";
+        string movieFolder = "movie_multi_v"+ver+"_";
+        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata);
+        //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
+        
+        archie.setDomain(myCity);
+        archie.setHomes(homes);
+        archie.setSchools(schools);
+        archie.setWorks(works);
+        archie.setCemetaries(cemeteries);
+        archie.Simulate();
+        
+    }else{
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ);
+        
+        archie.Simulate();
+    }
+}
+
 void Example4_MultiLocation(bool SaveData){
     
     int maxdim = 700;
@@ -737,7 +872,7 @@ void getDefaultCoordinates(Place* location, double co[2]){
     co[1] = y;
 }
 void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries){
-    string cityFileName = "../Source/cityPlan.csv";
+    string cityFileName = "../Source/CityPlan.csv";
     ifstream cityFile;
     cityFile.open(cityFileName, ios_base::in);
     
@@ -753,7 +888,6 @@ void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, ve
         string symax;
       
         while (cityFile.good()){
-            
             
             
             getline(cityFile, sID, ',');
@@ -778,25 +912,26 @@ void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, ve
             int ymin = atoi(symin.c_str());
             cout << "ymin: " << ymin << endl;
             
-            getline(cityFile, symax, '\r');
+            getline(cityFile, symax, '\n');
             int ymax = atoi(symax.c_str());
             cout << "ymax: " << ymax << endl;
             
             
             
             int boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-
-            if (type == "Home"){
+            string test = "Home";
+            
+            if (type=="Home"){
                 cout << "Im here" << endl;
                 Place *h = new Place(ID, name, type, boundary, *city);
                 homes.push_back(h);
-            }else if (type == "Work"){
+            }else if (type=="Work"){
                 Place *w = new Place(ID, name, type, boundary, *city);
                 works.push_back(w);
-            }else if (type == "School"){
+            }else if (type=="School"){
                 Place *s = new Place(ID, name, type, boundary, *city);
                 schools.push_back(s);
-            }else if (type == "Cemetery"){
+            }else if (type=="Cemetery"){
                 Place *c = new Place(ID, name, type, boundary, *city);
                 cemeteries.push_back(c);
             }

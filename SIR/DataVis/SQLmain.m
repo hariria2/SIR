@@ -4,29 +4,25 @@ ver = '1';
 [y,m,d] = datevec(date());
 timestamp = [num2str(m),'_',num2str(d),'_',num2str(y)];
 
-saveResults = 1;
-makeMovie   = 1;
+saveResults = 0;
+makeMovie   = 0;
 
 vis = SQLVisualization(['sim_v',ver,'_',timestamp],'root','','MySQL','localhost');
 
 vis.getHistoryData();
 h = vis.PlotHistory(1);
 h = vis.PlotGDP(2);
-
-
-if makeMovie
-    vis.FullScreen = 0;
-    vis.getLocation('All');
-    vis.TaggedPeople = [1, 107, 3,201];
-    vis.getPerson('All');
-    vis.MakeMovie(3);
-end
-
 vis.FullScreen = 0;
 vis.ShowProgress = 0;
 h2 = vis.PlotIndividual(3, [1, 107, 3, 201]);
 
-
+if makeMovie
+    vis.FullScreen = 1;
+    vis.getLocation('All');
+    vis.TaggedPeople = [1, 107, 3,201];
+    vis.getPerson(1:20);
+    vis.MakeMovie(4);
+end
 
 if saveResults 
     ResFolder = ['../../Results/res_',timestamp];

@@ -161,7 +161,7 @@ void Architect::Update(double t, Storage* data){
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
 	data->startMovieSave(CurrentTime);
 	
-    Econ.computeGDP(PeoplePtr);
+    Econ.computeGDP(PeoplePtr, Econ.getGDP());
     IncrementTime();
 	
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
@@ -196,7 +196,7 @@ void Architect::Update(double t, Storage* data){
 void Architect::Update(double t, SQLStorage* data){
     
     vector<Person*> econList;
-    
+    string SQLStatement;
     
     IncrementTime();
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
@@ -206,37 +206,40 @@ void Architect::Update(double t, SQLStorage* data){
         }
         
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-        data-> InsertValue("PersonValues",
-                           "NULL, " +
-                           to_string((*ip)->getID()) + ", " +
-                           to_string((*ip)->getTime()) + ", " +
-                           to_string((*ip)->getCoordinates()[0]) + ", " +
-                           to_string((*ip)->getCoordinates()[1]) + ", " +
-                           to_string(((*ip)->getLocation())->getID()) + ", '" +
-                           (*ip)->getState() + "', " +
-                           to_string((*ip)->getHastBeenSick()) + ", " +
-                           to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
-                           to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
-                           to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
-                           to_string(((*ip)->getInHostDynamics()).getMaxInfLev())
-                           );
+        
+        
+        SQLStatement = SQLStatement + "(NULL, " +
+        to_string((*ip)->getID()) + ", " +
+        to_string((*ip)->getTime()) + ", " +
+        to_string((*ip)->getCoordinates()[0]) + ", " +
+        to_string((*ip)->getCoordinates()[1]) + ", " +
+        to_string(((*ip)->getLocation())->getID()) + ", '" +
+        (*ip)->getState() + "', " +
+        to_string((*ip)->getHastBeenSick()) + ", " +
+        to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
+        to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
+        to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
+        to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
+        "),";
         
         (*ip)->setTime(CurrentTime);
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2((rand() % 360),5);
         }else{
-            (*ip)->Move((rand() % 360),2, "Travel");
+            (*ip)->Move((rand() % 360),2, "DailyMovement");
         }
         (*ip)->UpdateDiseaseWithInHost();
 
     }
-    Econ.computeGDP(econList);
+    SQLStatement.pop_back();
+    data -> InsertValue("PersonValues",SQLStatement, true);
+    Econ.computeGDP(econList, Econ.getGDP());
     PopulationData();
     
 }
 void Architect::Update(double t){
 	
-    Econ.computeGDP(PeoplePtr);
+    Econ.computeGDP(PeoplePtr, Econ.getGDP());
     IncrementTime();
 	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(CurrentTime);
