@@ -34,6 +34,7 @@ public:
     double getAlpha();
     double getBeta();
     double getGDP();
+    double getDemand();
     
     // Utilities
     void computeGDP(vector<Person*> ppl, double oldGDP);
@@ -45,7 +46,7 @@ private:
     double Alpha;
     double Beta;
     double GDP = 0;
-    double Demand;
+    double Demand = 0;
     
     
 };

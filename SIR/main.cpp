@@ -160,7 +160,7 @@ void Example2_MultiLocation(bool SaveData){
     char state = 'S';
     double VirLev = 0.1;
     
-    Economy econ(1,0.5,0.5);
+    Economy econ(0.0025,0.5,0.5);
     
     
     vector<Person*> people;
@@ -188,13 +188,13 @@ void Example2_MultiLocation(bool SaveData){
         int age = (randage < 1)? 1:floor(randage);
         
         if (i == 1){
-            VirLev = 0.1;
+            VirLev = 0.01;
         } else {
             VirLev = 0;
             state = 'S';
         }
         
-        normal_distribution<double> icDist(4,1);
+        normal_distribution<double> icDist(4,2);
         double randic  = icDist(generator);
         
         double ict = (randic < 0.5)? 0.5:randic;
@@ -202,13 +202,13 @@ void Example2_MultiLocation(bool SaveData){
         
         InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
         
-        normal_distribution<double> betaDist(1,0);
+        normal_distribution<double> betaDist(ict/8,0);
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         
         ihd.setBeta(beta);
         
-        normal_distribution<double> deltaDist(0.1,0);
+        normal_distribution<double> deltaDist(ict/20,0);
         double randdelta  = deltaDist(generator);
         double delta = (randdelta < 0)? 0:randdelta;
         
@@ -230,14 +230,14 @@ void Example2_MultiLocation(bool SaveData){
         Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
                                hco,wco,sco,cco,10,10,10);
-        
-        if (i%3 == 0){
-            p->setLocation(works[randWIdx]);
-        }else if (i%2 == 0){
-            p->setLocation(homes[randHIdx]);
-        }else {
-            p->setLocation(schools[randSIdx]);
-        }
+        p->setLocation(homes[randHIdx]);
+//        if (i%3 == 0){
+//            p->setLocation(works[randWIdx]);
+//        }else if (i%2 == 0){
+//            p->setLocation(homes[randHIdx]);
+//        }else {
+//            p->setLocation(schools[randSIdx]);
+//        }
         people.push_back(p);
     };
     
@@ -892,37 +892,28 @@ void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, ve
             
             getline(cityFile, sID, ',');
             int ID = atoi(sID.c_str());
-            cout << "ID: " << sID << endl;
             
             getline(cityFile, name, ',');
-            cout << "Name: " << name << endl;
-
+            
             getline(cityFile, type, ',');
-            cout << "Type: " << type << endl;
             
             getline(cityFile, sxmin, ',');
             int xmin = atoi(sxmin.c_str());
-            cout << "xmin: " << xmin << endl;
             
             getline(cityFile, sxmax, ',');
             int xmax = atoi(sxmax.c_str());
-            cout << "xmax: " << xmax << endl;
             
             getline(cityFile, symin, ',');
             int ymin = atoi(symin.c_str());
-            cout << "ymin: " << ymin << endl;
             
             getline(cityFile, symax, '\n');
             int ymax = atoi(symax.c_str());
-            cout << "ymax: " << ymax << endl;
-            
             
             
             int boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
             string test = "Home";
             
             if (type=="Home"){
-                cout << "Im here" << endl;
                 Place *h = new Place(ID, name, type, boundary, *city);
                 homes.push_back(h);
             }else if (type=="Work"){

@@ -143,7 +143,8 @@ void Architect::Simulate(){
                                   to_string(P) + ", " +
                                   to_string(R) + ", " +
                                   to_string(D) + ", " +
-                                  to_string(Econ.getGDP())
+                                  to_string(Econ.getGDP()) + ", " +
+                                  to_string(Econ.getDemand())
                                   );
             
         }
@@ -154,7 +155,7 @@ void Architect::Simulate(){
 			Update(t);
 		}
 	}
-    cout << "Stick a fork in me sucker!" << endl;
+    cout << "Simulation Complete. Thank you...!" << endl;
 }
 void Architect::Update(double t, Storage* data){
     
@@ -226,7 +227,7 @@ void Architect::Update(double t, SQLStorage* data){
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2((rand() % 360),5);
         }else{
-            (*ip)->Move((rand() % 360),2, "DailyMovement");
+            (*ip)->Move((rand() % 360),2, "DailyMovement",Econ.getDemand());
         }
         (*ip)->UpdateDiseaseWithInHost();
 

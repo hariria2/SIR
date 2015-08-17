@@ -263,7 +263,7 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 // Utilities
-void Person::Move(double theta, double r, string motionType) {
+void Person::Move(double theta, double r, string motionType, double demand) {
 	int hour    = floor(Time);
 	double min  = Time - hour;
 	double DailyTime = ((hour % 24) + min);
@@ -278,7 +278,7 @@ void Person::Move(double theta, double r, string motionType) {
 
     normal_distribution<double> WSTimeD(8,0);
     double  WSTime = WSTimeD(generator);
-    normal_distribution<double> WETimeD(18,0);
+    normal_distribution<double> WETimeD(22,0);
     double  WETime = WETimeD(generator);
     
     
@@ -299,8 +299,9 @@ void Person::Move(double theta, double r, string motionType) {
             }
         }
         else{
+            //ihdynamics.getI()<demand
             
-            if (Location->getType() == "Home" && getState() != 'P'){
+            if (Location->getType() == "Home" && ihdynamics.getI()<demand){
                 (Age>22)? setLocation(Work):setLocation(School);
             }
         }
@@ -322,17 +323,6 @@ void Person::Move(double theta, double r, string motionType) {
         }
     }
     
-    if (getID() == 1){
-        if (Time == 10){
-            setLocation(Work);
-        }
-    }
-    
-    if (getID() == 9){
-        if (Time == 30){
-            setLocation(Home);
-        }
-    }
     
 	double x = Coordinates[0] + r*cos(theta);
 	double y = Coordinates[1] + r*sin(theta);
@@ -494,7 +484,16 @@ void Person::UpdateDiseaseWithInHost() {
         if (ihdynamics.getI() < 0.2){
             setState('I');
         }
+        
     }
+    
+//    else if (getState() == 'R'){
+//        if (ihdynamics.getI() < 0.005){
+//            ihdynamics.setT(3);
+//        }
+//        
+//    }
+
     
     
     

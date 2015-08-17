@@ -10,17 +10,20 @@ makeMovie   = 0;
 vis = SQLVisualization(['sim_v',ver,'_',timestamp],'root','','MySQL','localhost');
 
 vis.getHistoryData();
+subplot(2,1,1)
 h = vis.PlotHistory(1);
-h = vis.PlotGDP(2);
+subplot(2,1,2)
+h = vis.PlotGDP(1);
 vis.FullScreen = 0;
 vis.ShowProgress = 0;
-h2 = vis.PlotIndividual(3, [1, 107, 3, 201]);
+vis.ShowDemand = 1;
+h2 = vis.PlotIndividual(3, [1, 89, 104, 200]);
 
 if makeMovie
     vis.FullScreen = 1;
     vis.getLocation('All');
-    vis.TaggedPeople = [1, 107, 3,201];
-    vis.getPerson(1:20);
+    vis.TaggedPeople = [];
+    vis.getPerson('All');
     vis.MakeMovie(4);
 end
 

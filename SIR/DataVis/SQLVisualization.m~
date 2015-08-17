@@ -15,7 +15,6 @@ classdef SQLVisualization < handle
         R;
         D;
         GDP;
-        Demand;
         FullScreen = 0;
         TracePerson = 0;
         Frames;
@@ -24,7 +23,6 @@ classdef SQLVisualization < handle
         colors;
         TaggedPeople = [];
         ShowProgress = 0;
-        ShowDemand = 0;
     end
     
     
@@ -46,7 +44,6 @@ classdef SQLVisualization < handle
             obj.R = data(:,6);
             obj.D = data(:,7);
             obj.GDP = data(:,8);
-            obj.Demand = data(:,9);
             
         end             
         function getPerson(obj, ids)
@@ -217,7 +214,7 @@ classdef SQLVisualization < handle
         function h = PlotGDP(obj, fignum)
             h = figure(fignum);
             c = [0.9,0,0; 0.9,0.9,0.0; 0,0.9,0];
-            obj.ShadeMyFig(obj.T, [.1, .4, max(obj.GDP)], c)
+            obj.ShadeMyFig(obj.T, [100, 500, max(obj.GDP)], c)
             hold on
             p = plot(obj.T, obj.GDP,'K');
             set(p,'LineWidth', 3);
@@ -370,11 +367,7 @@ classdef SQLVisualization < handle
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
                 ylim([0, ymax])
-                if obj.ShowDemand
-                    plot(t, obj.Demand, 'k-');
-                end
                 hold off
-                
             end
             
             %subplot(pltnum,1,1)

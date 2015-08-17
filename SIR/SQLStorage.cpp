@@ -100,7 +100,8 @@ void SQLStorage::CreateTable(string table){
         "Infected    INT UNSIGNED NOT NULL, " +
         "Recovered   INT UNSIGNED NOT NULL, " +
         "Dead        INT UNSIGNED NOT NULL, " +
-        "GDP         DOUBLE UNSIGNED NOT NULL" +
+        "GDP         DOUBLE UNSIGNED NOT NULL, " +
+        "Demand      DOUBLE UNSIGNED NOT NULL" +
         ");";
         
     }
