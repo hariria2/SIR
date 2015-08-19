@@ -33,24 +33,9 @@ void updatePop(vector<Person*> p1, char s);
 
 void Example1_SingleLocation(bool SaveData=true);
 void Example2_MultiLocation(bool SaveData=true);
-void Example4_MultiLocation(bool SaveData=true);
 
-void Ex1_Eig_SingleLocation(bool SaveData=true);
-void Ex1_SparseEig_SingleLocation(bool SaveData=true);
 //=================
 
-class Rectangle {
-    int width, height;
-public:
-    void set_values (int,int);
-    int area() {return width*height;}
-    int getHeight(){return height;}
-};
-
-void Rectangle::set_values (int x, int y) {
-    width = x;
-    height = y;
-}
 
 
 // ========================= Main ======================
@@ -92,7 +77,7 @@ void Example1_SingleLocation(bool SaveData){
     
     Disease flu("Flu", 24, 24, 1);
     InHostDynamics ihd(1, 0.1, 0, 0, 0);
-    Economy econ(1,0.5,0.5);
+    Economy econ(1,0.5,0.5,1000, 1, 1);
     
     vector<Person*> people;
     for (int i=0; i < population; i++){
@@ -158,9 +143,21 @@ void Example2_MultiLocation(bool SaveData){
     
     Disease flu("Flu", 24, 30, 70);
     char state = 'S';
-    double VirLev = 0.1;
+    double VirLev = 0.5;
     
-    Economy econ(0.0025,0.5,0.5);
+    
+    double A     = 0.01; //0.0025;
+    double alpha = 0.5;
+    double beta  = 0.5;
+    
+    unsigned long labor = 700;
+    double health = 1;
+    
+    double y0 = A*pow(labor,alpha)*pow(health,beta);
+    
+    cout << "y0: " << y0 << endl;
+    
+    Economy econ(A,alpha,beta, y0, labor, health);
     
     
     vector<Person*> people;
@@ -188,7 +185,7 @@ void Example2_MultiLocation(bool SaveData){
         int age = (randage < 1)? 1:floor(randage);
         
         if (i == 1){
-            VirLev = 0.01;
+            VirLev = 0.1;
         } else {
             VirLev = 0;
             state = 'S';
@@ -243,7 +240,7 @@ void Example2_MultiLocation(bool SaveData){
     
     
     double InitialTime = 0;
-    double EndTime = 100;
+    double EndTime = 150;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
@@ -272,547 +269,6 @@ void Example2_MultiLocation(bool SaveData){
     }
 }
 
-void Example4_MultiLocation(bool SaveData){
-    
-    int maxdim = 700;
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    Domain myCity("DiseasVille", cityBoundary);
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-    
-    //readCityData(&myCity, homes, works, schools, cemeteries);
-    
-    int h1p[2][2] = {{50, 250},{50, 300}};
-    int hp[2][2];
-    int w1p[2][2] = {{50, 250},{350, 600}};
-    int wp[2][2];
-    int s1p[2][2] = {{300, 600},{100, 600}};
-    int sp[2][2];
-    int c1p[2][2] = {{250, 450},{625, 650}};
-    
-    
-    
-    ostringstream convert;
-    string hnum;
-    int a = 0;
-    while (a < 1){
-        for (int ii = 1; ii < 2; ii++){
-            for (int jj = 0; jj < 2; jj++){
-                hp[0][jj] = h1p[0][jj];
-                hp[ii][jj] = h1p[ii][jj] + a*360;
-            }
-        }
-        convert << a;
-        hnum = convert.str();
-        Place *h = new Place(1, "Home"+hnum, "Home", hp, myCity);
-        homes.push_back(h);
-        convert.str(string());
-        ++a;
-    }
-    
-    ostringstream wconvert;
-    string wnum;
-    int b = 0;
-    while (b < 1){
-        for (int ii = 1; ii < 2; ii++){
-            for (int jj = 0; jj < 2; jj++){
-                wp[0][jj] = w1p[0][jj];
-                wp[ii][jj] = w1p[ii][jj] + b*110;
-            }
-        }
-        convert << b;
-        wnum = wconvert.str();
-        Place *w = new Place(1, "Work"+wnum, "Work", wp, myCity);
-        works.push_back(w);
-        wconvert.str(string());
-        b++;
-    }
-    
-    ostringstream sconvert;
-    string snum;
-    int c = 0;
-    while (c < 1){
-        for (int ii = 0; ii < 2; ii++){
-            for (int jj = 0; jj < 2; jj++){
-                sp[ii][jj] = s1p[ii][jj] + c*110;
-            }
-        }
-        sconvert << c;
-        snum = wconvert.str();
-        Place *s = new Place(1, "School"+wnum, "School", sp, myCity);
-        schools.push_back(s);
-        wconvert.str(string());
-        c++;
-    }
-    
-    Place *ce = new Place(1, "Cemetery", "Cemetery", c1p, myCity);
-    cemeteries.push_back(ce);
-    
-    double hco[2];
-    double wco[2];
-    double sco[2];
-    double cco[2];
-    
-    int population = 700;
-    
-    Disease flu("Flu", 24, 30, 70);
-    char state = 'S';
-    double VirLev = 0.1;
-    
-    Economy econ(1,0.9,0.1);
-    
-    
-    vector<Person*> people;
-    for (int i=1; i <= population; i++){
-        
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
-        
-        string name = "randomName"+to_string(i);
-        
-        int randHIdx = rand() % homes.size();
-        int randWIdx = rand() % works.size();
-        int randSIdx = rand() % schools.size();
-        int randCIdx = rand() % cemeteries.size();
-        
-        getDefaultCoordinates(homes[randHIdx], hco);
-        getDefaultCoordinates(works[randWIdx], wco);
-        getDefaultCoordinates(schools[randSIdx], sco);
-        getDefaultCoordinates(cemeteries[randCIdx], cco);
-        
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
-        int age = (randage < 1)? 1:floor(randage);
-        
-        if (i == 1){
-            VirLev = 0.1;
-            // state = 'I';
-        } else {
-            VirLev = 0;
-            state = 'S';
-        }
-        
-        normal_distribution<double> icDist(4,1);
-        double randic  = icDist(generator);
-        
-        double ict = (randic < 0.5)? 0.5:randic;
-        
-        
-        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
-        
-        normal_distribution<double> betaDist(1,0);
-        double randbeta  = betaDist(generator);
-        double beta = (randbeta < 0)? 0:randbeta;
-        
-        ihd.setBeta(beta);
-        
-        normal_distribution<double> deltaDist(0.1,0);
-        double randdelta  = deltaDist(generator);
-        double delta = (randdelta < 0)? 0:randdelta;
-        
-        ihd.setDelta(delta);
-        
-        normal_distribution<double> PDist(3,0);
-        double randP  = PDist(generator);
-        double P = (randP < 0)? 0:randP;
-        
-        ihd.setP(P);
-        
-        normal_distribution<double> CDist(0.8,0);
-        double randC  = CDist(generator);
-        double C = (randC < 0)? 0:randC;
-        
-        ihd.setC(C);
-        
-        
-        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
-                               schools[randSIdx], works[randWIdx], cemeteries[randCIdx], works[randWIdx],
-                               hco,wco,sco,cco,10,10,10);
-        
-        if (i%3 == 0){
-            p->setLocation(works[randWIdx]);
-        }else if (i%2 == 0){
-            p->setLocation(homes[randHIdx]);
-        }else {
-            p->setLocation(schools[randSIdx]);
-        }
-        people.push_back(p);
-    };
-   
-    
-    double InitialTime = 0;
-    double EndTime = 100;
-    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
-    int l = floor((EndTime-InitialTime)/TimeStep);
-    
-    if (SaveData) {
-        string ver;
-        cout << "Enter version number for multi location simulation: ";
-        cin >> ver;
-        string dataFolder = "data_multi_v"+ver+"_";
-        string movieFolder = "movie_multi_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata);
-        //Architect archie(InitialTime,EndTime,TimeStep, people, "FileSystem", &data);
-        
-        archie.setDomain(myCity);
-        archie.setHomes(homes);
-        archie.setSchools(schools);
-        archie.setWorks(works);
-        archie.setCemetaries(cemeteries);
-        archie.Simulate();
-        
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ);
-        
-        archie.Simulate();
-    }
-}
-
-void Ex1_Eig_SingleLocation(bool SaveData){
-    int maxdim = 2000;
-    
-    // Setting up parameters
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    
-    
-    // Instantiate Classes
-    Domain myCity("DiseasVille", cityBoundary);
-    Place home(1, "home", "Home", homeBoundary,myCity);
-    
-    double hco[2];
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-    
-    
-    homes.push_back(&home);
-    int population = 2000;
-    
-    Disease flu("Flu", 25, 40, 200);
-    InHostDynamics ihd(1, 0.1, 0, 0, 0);
-    Economy econ(1,0.5,0.5);
-    
-    vector<Person*> people;
-    for (int i=0; i < population; i++){
-        string name = "randomName"+to_string(i);
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
-        
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
-        
-        getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 25,40,15, true);
-        people.push_back(p);
-    };
-    (people.front())->setState('I');
-    
-    vector<Person*> people1;
-    vector<Person*> people2;
-    vector<Person*> people3;
-    
-    double InitialTime = 0;
-    double EndTime  = 200;
-    double TimeStep =  1;
-    //int l = floor((EndTime-InitialTime)/TimeStep);
- 
-    
-    Architect archie(InitialTime,EndTime,TimeStep, people, econ);
-
-    string ver;
-    cout << "Enter version number for single location simulation: ";
-    cin >> ver;
-    string dataFolderName = "eigdata_single_v"+ver+"_";
-    
-    time_t t = time(0);   // get time now
-    struct tm * now = localtime( & t );
-    string timeStamp = to_string((now->tm_mon + 1)) + "-" +
-    to_string(now->tm_mday) + "-" +
-    to_string((now->tm_year + 1900));
-    string eigdatafilename = "../Data/"+dataFolderName+timeStamp+"/eigHistoryData.dat";
-    
-    string folder = "../Data/"+dataFolderName+timeStamp;
-    
-    mode_t process_mask = umask(0);
-    mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
-    umask(process_mask);
-    cout << eigdatafilename << endl;
-    
-    ofstream eigdatafile;
-    eigdatafile.open(eigdatafilename, ios_base::out|ios_base::app);
-    
-    eigdatafile << "t,";
-    
-    eigdatafile << "x_1,";
-    eigdatafile << "x_2,";
-    eigdatafile << "x_3,";
-    
-    eigdatafile << "xj_1,";
-    eigdatafile << "xj_2,";
-    eigdatafile << "xj_3,";
-    eigdatafile << "xj_4,";
-    eigdatafile << "xj_5,";
-    eigdatafile << "xj_6,";
-    eigdatafile << "xj_7,";
-    eigdatafile << "xj_8,";
-    eigdatafile << "xj_9,";
-    
-    eigdatafile << "xbar_1,";
-    eigdatafile << "xbar_2,";
-    eigdatafile << "xbar_3,";
-    
-    eigdatafile << "xbarj_1,";
-    eigdatafile << "xbarj_2,";
-    eigdatafile << "xbarj_3,";
-    eigdatafile << "xbarj_4,";
-    eigdatafile << "xbarj_5,";
-    eigdatafile << "xbarj_6,";
-    eigdatafile << "xbarj_7,";
-    eigdatafile << "xbarj_8,";
-    eigdatafile << "xbarj_9,";
-    eigdatafile << endl;
-    
-    
-    
-    
-    for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
-        cout << "Time " << tt << " of " << EndTime << endl;
-        matchPeople(people, people1, 'S');
-        Architect archie1(archie.getCurrentTime(),EndTime,TimeStep,people1, econ);
-        matchPeople(people, people2,'P');
-        Architect archie2(archie.getCurrentTime(),EndTime,TimeStep,people2, econ);
-        matchPeople(people, people3,'R');
-        Architect archie3(archie.getCurrentTime(),EndTime,TimeStep,people3, econ);
-        
-        eigdatafile << tt << ",";
-        eigdatafile << archie.getS() << ",";
-        eigdatafile << archie.getI()+archie.getP() << ",";
-        eigdatafile << archie.getR() << ",";
-        
-        eigdatafile << archie1.getS() << ",";
-        eigdatafile << archie1.getI()+archie1.getP() << ",";
-        eigdatafile << archie1.getR() << ",";
-        eigdatafile << archie2.getS() << ",";
-        eigdatafile << archie2.getI()+archie2.getP() << ",";
-        eigdatafile << archie2.getR() << ",";
-        eigdatafile << archie3.getS() << ",";
-        eigdatafile << archie3.getI()+archie3.getP()<< ",";
-        eigdatafile << archie3.getR() << ",";
-        
-        archie.Update(tt);
-        archie1.Update(tt);
-        archie2.Update(tt);
-        archie3.Update(tt);
-        
-        eigdatafile << archie.getS() << ",";
-        eigdatafile << archie.getI()+archie.getP() << ",";
-        eigdatafile << archie.getR() << ",";
-        
-        eigdatafile << archie1.getS() << ",";
-        eigdatafile << archie1.getI()+archie1.getP() << ",";
-        eigdatafile << archie1.getR() << ",";
-        
-        eigdatafile << archie2.getS() << ",";
-        eigdatafile << archie2.getI()+archie2.getP() << ",";
-        eigdatafile << archie2.getR() << ",";
-        
-        eigdatafile << archie3.getS() << ",";
-        eigdatafile << archie3.getI()+archie3.getP() << ",";
-        eigdatafile << archie3.getR();
-        
-        eigdatafile << endl;
-
-        people1.clear();
-        people2.clear();
-        people3.clear();
-        
-        
-        
-    }
-    eigdatafile.close();
-}
-void Ex1_SparseEig_SingleLocation(bool SaveData){
-    int maxdim = 2000;
-    
-    // Setting up parameters
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    
-    
-    // Instantiate Classes
-    Domain myCity("DiseasVille", cityBoundary);
-    Place home(1, "home", "Home", homeBoundary,myCity);
-    
-    double hco[2];
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-    
-    
-    homes.push_back(&home);
-    int population = 2000;
-    
-    Disease flu("Flu", 25, 15, 24);
-    InHostDynamics ihd(1, 0.1, 0, 0, 0);
-    Economy econ(1, 0.5, 0.5);
-    
-    
-    vector<Person*> people;
-    for (int i=0; i < population; i++){
-        string name = "randomName"+to_string(i);
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
-        
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
-        
-        getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,10,5, true);
-        people.push_back(p);
-    };
-    (people.front())->setState('I');
-    
-    vector<Person*> people1;
-    vector<Person*> people2;
-    vector<Person*> people3;
-    
-    double InitialTime = 0;
-    double EndTime  = 100;
-    double TimeStep =  1;
-    //int l = floor((EndTime-InitialTime)/TimeStep);
-    
-    
-    Architect archie(InitialTime,EndTime,TimeStep, people, econ);
-    
-    string ver;
-    cout << "Enter version number for single location simulation: ";
-    cin >> ver;
-    string dataFolderName = "eigdata_single_v"+ver+"_";
-    
-    time_t t = time(0);   // get time now
-    struct tm * now = localtime( & t );
-    string timeStamp = to_string((now->tm_mon + 1)) + "-" +
-    to_string(now->tm_mday) + "-" +
-    to_string((now->tm_year + 1900));
-    string eigdatafilename = "../Data/"+dataFolderName+timeStamp+"/eigHistoryData.dat";
-    
-    string folder = "../Data/"+dataFolderName+timeStamp;
-    
-    mode_t process_mask = umask(0);
-    mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
-    umask(process_mask);
-    cout << eigdatafilename << endl;
-    
-    ofstream eigdatafile;
-    eigdatafile.open(eigdatafilename, ios_base::out|ios_base::app);
-    
-    eigdatafile << "t,";
-    
-    eigdatafile << "x_1,";
-    eigdatafile << "x_2,";
-    eigdatafile << "x_3,";
-    
-    eigdatafile << "xj_1,";
-    eigdatafile << "xj_2,";
-    eigdatafile << "xj_3,";
-    eigdatafile << "xj_4,";
-    eigdatafile << "xj_5,";
-    eigdatafile << "xj_6,";
-    eigdatafile << "xj_7,";
-    eigdatafile << "xj_8,";
-    eigdatafile << "xj_9,";
-    
-    eigdatafile << "xbar_1,";
-    eigdatafile << "xbar_2,";
-    eigdatafile << "xbar_3,";
-    
-    eigdatafile << "xbarj_1,";
-    eigdatafile << "xbarj_2,";
-    eigdatafile << "xbarj_3,";
-    eigdatafile << "xbarj_4,";
-    eigdatafile << "xbarj_5,";
-    eigdatafile << "xbarj_6,";
-    eigdatafile << "xbarj_7,";
-    eigdatafile << "xbarj_8,";
-    eigdatafile << "xbarj_9,";
-    eigdatafile << endl;
-    
-    
-    
-    
-    for (int tt = InitialTime; tt < EndTime; tt+=TimeStep){
-        cout << "Time " << tt << " of " << EndTime << endl;
-        
-        
-        Person *p1 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
-        Architect archie1 = archie;
-        archie1.AddPerson(p1);
-        
-        
-        Person *p2 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'I', flu, ihd, &myCity, &home, hco, 5,0,0, true);
-        Architect archie2 = archie;
-        archie2.AddPerson(p2);
-        
-        Person *p3 = new Person(archie.getPeople().size()+1, "dumbo", 5, 'R', flu, ihd, &myCity, &home, hco, 5,0,0, true);
-        Architect archie3 = archie;
-        archie3.AddPerson(p3);
-        
-        
-        eigdatafile << tt << ",";
-        eigdatafile << archie.getS() << ",";
-        eigdatafile << archie.getI()+archie.getP() << ",";
-        eigdatafile << archie.getR() << ",";
-        
-        eigdatafile << archie1.getS() << ",";
-        eigdatafile << archie1.getI()+archie1.getP() << ",";
-        eigdatafile << archie1.getR() << ",";
-        eigdatafile << archie2.getS() << ",";
-        eigdatafile << archie2.getI()+archie2.getP() << ",";
-        eigdatafile << archie2.getR() << ",";
-        eigdatafile << archie3.getS() << ",";
-        eigdatafile << archie3.getI()+archie3.getP()<< ",";
-        eigdatafile << archie3.getR() << ",";
-        
-        archie.Update(tt);
-        archie1.Update(tt);
-        archie2.Update(tt);
-        archie3.Update(tt);
-        
-        eigdatafile << archie.getS() << ",";
-        eigdatafile << archie.getI()+archie.getP() << ",";
-        eigdatafile << archie.getR() << ",";
-        
-        eigdatafile << archie1.getS() << ",";
-        eigdatafile << archie1.getI()+archie1.getP() << ",";
-        eigdatafile << archie1.getR() << ",";
-        
-        eigdatafile << archie2.getS() << ",";
-        eigdatafile << archie2.getI()+archie2.getP() << ",";
-        eigdatafile << archie2.getR() << ",";
-        
-        eigdatafile << archie3.getS() << ",";
-        eigdatafile << archie3.getI()+archie3.getP() << ",";
-        eigdatafile << archie3.getR();
-        
-        eigdatafile << endl;
-        
-        
-        
-    }
-    eigdatafile.close();
-}
 // ========================= End Examples ======================================
 
 // ========================= Utilities ===========================================

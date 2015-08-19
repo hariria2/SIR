@@ -470,6 +470,12 @@ void Person::UpdateDiseaseWithInHost() {
     }
     
     if (getState() == 'I'){
+        if (Location->getName() == "Home"){
+            ihdynamics.setDelta(1.1*ihdynamics.getDelta());
+        }else {
+            ihdynamics.setDelta(0.9*ihdynamics.getDelta());
+        }
+        
         if (ihdynamics.getI() > 0.2 & ihdynamics.getI() < 3){
             setState('P');
             

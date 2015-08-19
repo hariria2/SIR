@@ -15,6 +15,7 @@ classdef SQLVisualization < handle
         R;
         D;
         GDP;
+        Demand;
         FullScreen = 0;
         TracePerson = 0;
         Frames;
@@ -23,6 +24,7 @@ classdef SQLVisualization < handle
         colors;
         TaggedPeople = [];
         ShowProgress = 0;
+        ShowDemand = 0;
     end
     
     
@@ -44,6 +46,7 @@ classdef SQLVisualization < handle
             obj.R = data(:,6);
             obj.D = data(:,7);
             obj.GDP = data(:,8);
+            obj.Demand = data(:,9);
             
         end             
         function getPerson(obj, ids)
@@ -214,7 +217,7 @@ classdef SQLVisualization < handle
         function h = PlotGDP(obj, fignum)
             h = figure(fignum);
             c = [0.9,0,0; 0.9,0.9,0.0; 0,0.9,0];
-            obj.ShadeMyFig(obj.T, [100, 500, max(obj.GDP)], c)
+            obj.ShadeMyFig(obj.T, [.1, .4, max(obj.GDP)], c)
             hold on
             p = plot(obj.T, obj.GDP,'K');
             set(p,'LineWidth', 3);
@@ -347,7 +350,7 @@ classdef SQLVisualization < handle
                 SC = p.SusCells;
                 IC = p.InfCells;
                 VL = p.VirLoads;
-                ymax = max(ymax,max([max(SC),max(IC), max(VL)]));
+                ymax = max(ymax,max(SC));
             end
             
             
@@ -362,20 +365,26 @@ classdef SQLVisualization < handle
                 subplot(length(ppl),1,ii)
                 c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
                 obj.ShadeMyFig(t, [0.01,0.3,3,ymax], c)
-                hold on
-                p = plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3);
+                hold all
+                [~,sph,vph] = plotyy(t, SC, t, VL);
+                set(p1,'Color','b','LineWidth',3);
+                set(p2,'Color','g','LineWidth',3);
+                p = plot( t, IC);
+                set(p, 'Color','r', 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
                 ylim([0, ymax])
+                if obj.ShowDemand
+                    plot(t, obj.Demand, 'k-');
+                end
                 hold off
+                
             end
             
-            %subplot(pltnum,1,1)
-            l = legend (p, 'Susceptible cells','Infected Cells', 'Free Virion');
+            l = legend ([p1,p,p2], 'Susceptible cells', 'Infected Cells','Free Virion');
             newPosition = [0.31 0.6 0.4 0.73];
             newUnits = 'normalized';
             set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
-            %set(l, 'FontSize', 18, 'Location', 'NorthOutside','Orientation','horizontal')
             
             subplot(length(ppl),1,length(ppl))
             xlabel('Time', 'FontSize', 16)

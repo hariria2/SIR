@@ -17,11 +17,16 @@
 #include "Person.h"
 
 
-Economy::Economy(double a, double alpha, double beta){
+Economy::Economy(double a, double alpha, double beta, double Y0,unsigned long lc, double hc){
 
     setA(a);
     setAlpha(alpha);
     setBeta(beta);
+    setLc(lc);
+    setHc(hc);
+    Y = Y0;
+    GDP = Y;
+    Demand = 100/GDP;
     
 }
 
@@ -34,6 +39,18 @@ void Economy::setAlpha(double alpha){
 }
 void Economy::setBeta(double beta){
     Beta = beta;
+}
+void Economy::setLp(unsigned long lp){
+    Lp = lp;
+}
+void Economy::setLc(unsigned long lc){
+    Lc = lc;
+}
+void Economy::setHp(double hp){
+    Hp = hp;
+}
+void Economy::setHc(double hc){
+    Hc = hc;
 }
 
 
@@ -52,6 +69,29 @@ double Economy::getGDP(){
 }
 double Economy::getDemand(){
     return Demand;
+}
+void Economy::getParameters(vector<Person*> ppl){
+    setLp(Lc);
+    setHp(Hc);
+    
+    Lc = ppl.size();
+    
+    double S_avg;
+    double I_avg;
+    double H_avg;
+    
+    for (auto ip = ppl.cbegin(); ip != ppl.cend(); ++ip){
+        S_avg += ((*ip)->getInHostDynamics()).getT();
+        I_avg += ((*ip)->getInHostDynamics()).getI();
+    }
+    
+    I_avg = I_avg/Lc;
+    S_avg = S_avg/Lc;
+    
+    H_avg = 1/(I_avg + 0.0001);
+    
+    Hc = H_avg;
+    
 }
 
 // Utilities
@@ -92,4 +132,24 @@ void Economy::computeGDP(vector<Person*> ppl, double oldGDP){
     }
     
 };
+
+void Economy::Flow(){
+    if (Lp == 0 || Hp == 0){
+        dY = 0;
+    }else {
+        dY = Alpha * Y * (Lc-Lp)/Lp + Beta*Y*(Hc-Hp)/Hp;
+    }
+}
+
+void Economy::Update(double dt){
+    Flow();
+    Y = Y + dt*dY;
+    GDP = Y;
+    if (GDP == 0){
+        Demand = 0.001;
+    }else {
+        Demand = 100/GDP;
+    }
+    
+}
 

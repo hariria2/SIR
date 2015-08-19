@@ -162,7 +162,9 @@ void Architect::Update(double t, Storage* data){
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
 	data->startMovieSave(CurrentTime);
 	
-    Econ.computeGDP(PeoplePtr, Econ.getGDP());
+    //Econ.computeGDP(PeoplePtr, Econ.getGDP());
+    Econ.getParameters(PeoplePtr);
+    Econ.Update(TimeStep);
     IncrementTime();
 	
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
@@ -234,7 +236,10 @@ void Architect::Update(double t, SQLStorage* data){
     }
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
-    Econ.computeGDP(econList, Econ.getGDP());
+    
+    //Econ.computeGDP(econList, Econ.getGDP());
+    Econ.getParameters(PeoplePtr);
+    Econ.Update(TimeStep);
     PopulationData();
     
 }

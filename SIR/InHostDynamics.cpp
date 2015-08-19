@@ -115,10 +115,21 @@ void InHostDynamics::Update(){
     
     Flow();
     
+    if (isnan(V)){
+        cout << "V: " << V << endl;
+        cout << "I: " << I << endl;
+        cout << "T: " << T << endl;
+        cout << "dV: " << dV << endl;
+        cout << "dI: " << dI << endl;
+        cout << "dT: " << dT << endl;
+        exit(1);
+    }
+    
     T = T + dt*dT;
     I = I + dt*dI;
     V = V + dt*dV;
-   
+    
+    
     
 }
 
@@ -126,10 +137,7 @@ void InHostDynamics::Flow(){
     dT = -Beta*T*V;
     dI =  Beta*T*V - Delta*I;
     double cv = P*I - C*V + NE;
-    dV =  cv; // cv*(1-cv)
-    
-    
-    
+    dV =  cv;
 }
 
 void InHostDynamics::Jacobian(){

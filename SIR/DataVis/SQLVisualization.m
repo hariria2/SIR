@@ -25,6 +25,11 @@ classdef SQLVisualization < handle
         TaggedPeople = [];
         ShowProgress = 0;
         ShowDemand = 0;
+        % Colors
+        gr = [0.2, 0.8, 0.2];
+        re = [0.9, 0.2, 0.2];
+        bl = [0.2, 0.2, 0.8];
+        
     end
     
     
@@ -199,20 +204,25 @@ classdef SQLVisualization < handle
             
         end
 
-        function h = PlotHistory(obj, fignum)
-           h = figure(fignum);
-           p = plot(obj.T, obj.S,'b',...
-                    ...% obj.T, obj.I ,'y',...
-                    obj.T, obj.P + obj.I,'r',...
-                    obj.T, obj.R,'g',...
-                    obj.T, obj.D,'k');
+        function h = PlotHistory(obj, fignum)  
+            h = figure(fignum);
+            hold on;
+            ps = plot(obj.T, obj.S);
+            set(ps,'Color', obj.bl);
+            pt = plot(obj.T, obj.P + obj.I);
+            set(pt, 'Color', obj.re);
+            pr = plot(obj.T, obj.R);
+            set(pr, 'Color', obj.gr);
+            pd = plot(obj.T, obj.D);
+            set(pd, 'Color', 'k');
      
-            set(p,'LineWidth', 3);
+            set([ps,pt,pr,pd],'LineWidth', 3);
             grid on;
-            l = legend('Susceptible', 'Infected', 'Recovered', 'Dead');
+            l = legend([ps,pt,pr,pd],'Susceptible', 'Infected', 'Recovered', 'Dead');
             set(l, 'FontSize', 16);
             xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
             ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
+            hold off;
         end
         function h = PlotGDP(obj, fignum)
             h = figure(fignum);
@@ -337,7 +347,7 @@ classdef SQLVisualization < handle
             if obj.FullScreen
                 set(gcf,'units','normalized','outerposition',[0 0 1 1])
             end
-            
+           
             ymax = 0;
             
             for ii = 1:length(ppl)
@@ -350,7 +360,7 @@ classdef SQLVisualization < handle
                 SC = p.SusCells;
                 IC = p.InfCells;
                 VL = p.VirLoads;
-                ymax = max(ymax,max([max(SC),max(IC), max(VL)]));
+                ymax = max(ymax,max(SC));
             end
             
             
@@ -366,7 +376,14 @@ classdef SQLVisualization < handle
                 c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
                 obj.ShadeMyFig(t, [0.01,0.3,3,ymax], c)
                 hold on
-                p = plot(t, SC, 'b', t, IC, 'r', t, VL, 'g', 'linewidth', 3);
+                [ax,sph,vph] = plotyy(t, SC, t, VL);
+                set(ax(1),'ycolor','k','FontSize',14) 
+                set(ax(2),'ycolor',obj.gr,'FontSize',14)
+                set(sph,'Color',obj.bl,'LineWidth',3);
+                set(vph,'Color',obj.gr,'LineWidth',3);
+                
+                iph = plot( t, IC);
+                set(iph, 'Color',obj.re, 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
                 ylim([0, ymax])
@@ -374,17 +391,15 @@ classdef SQLVisualization < handle
                     plot(t, obj.Demand, 'k-');
                 end
                 hold off
-                
+                if ii == 1
+                    l = legend ([sph,iph,vph], 'Susceptible cells', 'Infected Cells','Free Virion');
+                    newPosition = [0.31 0.6 0.4 0.73];
+                    newUnits = 'normalized';
+                    set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
+                end
             end
             
-            %subplot(pltnum,1,1)
-            l = legend (p, 'Susceptible cells','Infected Cells', 'Free Virion');
-            newPosition = [0.31 0.6 0.4 0.73];
-            newUnits = 'normalized';
-            set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
-            %set(l, 'FontSize', 18, 'Location', 'NorthOutside','Orientation','horizontal')
-            
-            subplot(length(ppl),1,length(ppl))
+            %subplot(length(ppl),1,length(ppl))
             xlabel('Time', 'FontSize', 16)
         end
         function MakeMovie(obj, fignum)
