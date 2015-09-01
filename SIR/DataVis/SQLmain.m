@@ -6,16 +6,18 @@ ver = '1';
 
 timestamp = [num2str(m),'_',num2str(d),'_',num2str(y)];
 
-saveResults = 1;
-makeMovie   = 1;
+saveResults = 0;
+makeMovie   = 0;
 
 vis = SQLVisualization(['sim_v',ver,'_',timestamp],'root','','MySQL','localhost');
 
 vis.getHistoryData();
-subplot(2,1,1)
+subplot(3,1,1)
 h = vis.PlotHistory(1);
-subplot(2,1,2)
+subplot(3,1,2)
 h = vis.PlotGDP(1);
+subplot(3,1,3)
+h = vis.PlotLocalPopulation(1);
 vis.FullScreen = 0;
 vis.ShowProgress = 0;
 vis.ShowDemand = 1;

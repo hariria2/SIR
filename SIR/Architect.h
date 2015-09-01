@@ -48,6 +48,9 @@ public:
     int getI();
     int getP();
     int getR();
+    int getWo();
+    int getHo();
+    int getSc();
 	vector<Person*> getPeople();
 
 	// Utilities
@@ -82,6 +85,8 @@ private:
     int P;
 	int R;
     int D;
-    
+    int Wo;
+    int Sc;
+    int Ho;
 };
 #endif /* ARCHITECT_H_ */

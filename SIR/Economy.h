@@ -20,15 +20,15 @@ using namespace std;
 class Economy {
 public:
     
-    Economy(double a, double alpha, double beta, double Y0, unsigned long lc, double hc);
+    Economy(double a, double alpha, double beta, double Y0, double lc, double hc);
    
     
     // Setters
     void setA(double a);
     void setAlpha(double alpha);
     void setBeta(double beta);
-    void setLc(unsigned long lc);
-    void setLp(unsigned long lp);
+    void setLc(double lc);
+    void setLp(double lp);
     void setHc(double hc);
     void setHp(double hp);
     void setY(double Y);
@@ -59,8 +59,8 @@ private:
     double GDP = 0;
     double Demand = 0;
     
-    unsigned long Lc;
-    unsigned long  Lp;
+    double Lc;
+    double  Lp;
     double Hc;
     double Hp;
     double Y;

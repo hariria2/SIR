@@ -17,7 +17,7 @@
 
 using namespace std;
 
-class Person {
+class Person {      	
 public:
 	bool IsSingleLocation;
 

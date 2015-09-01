@@ -31,6 +31,7 @@ public:
     void setP(double p);
     void setC(double c);
     void setT(double sc);
+    void setTi(double sc);
     void setI(double ic);
     void setV(double vi);
     void setMaxInfLev(double mil);
@@ -45,6 +46,7 @@ public:
     double getP();
     double getC();
     double getT();
+    double getTi();
     double getI();
     double getV();
     double getMaxInfLev();
@@ -68,6 +70,7 @@ private:
     double V;
     double I;
     double T;
+    double Ti;
     double dV;
     double dI;
     double dT;

@@ -14,6 +14,9 @@ classdef SQLVisualization < handle
         P;
         R;
         D;
+        Ho;
+        Sc;
+        Wo;
         GDP;
         Demand;
         FullScreen = 0;
@@ -26,9 +29,10 @@ classdef SQLVisualization < handle
         ShowProgress = 0;
         ShowDemand = 0;
         % Colors
-        gr = [0.2, 0.8, 0.2];
-        re = [0.9, 0.2, 0.2];
-        bl = [0.2, 0.2, 0.8];
+        gr = [0.2, 0.7, 0.3];
+        re = [0.7, 0.2, 0.3];
+        bl = [0.2, 0.3, 0.7];
+        yl = [0.7, 0.7, 0.3];
         
     end
     
@@ -50,8 +54,11 @@ classdef SQLVisualization < handle
             obj.P = data(:,5);
             obj.R = data(:,6);
             obj.D = data(:,7);
-            obj.GDP = data(:,8);
-            obj.Demand = data(:,9);
+            obj.Ho = data(:,8);
+            obj.Wo = data(:,9);
+            obj.Sc = data(:,10);
+            obj.GDP = data(:,11);
+            obj.Demand = data(:,12);
             
         end             
         function getPerson(obj, ids)
@@ -209,16 +216,22 @@ classdef SQLVisualization < handle
             hold on;
             ps = plot(obj.T, obj.S);
             set(ps,'Color', obj.bl);
-            pt = plot(obj.T, obj.P + obj.I);
-            set(pt, 'Color', obj.re);
+            pe = plot(obj.T, obj.I);
+            set(pe, 'Color', obj.yl);
+            pi = plot(obj.T, obj.P);
+            set(pi, 'Color', obj.re);
             pr = plot(obj.T, obj.R);
             set(pr, 'Color', obj.gr);
             pd = plot(obj.T, obj.D);
             set(pd, 'Color', 'k');
      
-            set([ps,pt,pr,pd],'LineWidth', 3);
+            set([ps,pe,pi,pr,pd],'LineWidth', 3);
             grid on;
-            l = legend([ps,pt,pr,pd],'Susceptible', 'Infected', 'Recovered', 'Dead');
+            l = legend([ps,pe,pi,pr,pd],sprintf('Susceptible - %d',obj.S(end)),...
+                sprintf('Exposed - %d',obj.I(end)), ...
+                sprintf('Infected - %d',obj.P(end)), ...
+                sprintf('Recovered - %d',obj.R(end)),...
+                sprintf('Dead - %d',obj.D(end)));
             set(l, 'FontSize', 16);
             xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
             ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
@@ -227,7 +240,7 @@ classdef SQLVisualization < handle
         function h = PlotGDP(obj, fignum)
             h = figure(fignum);
             c = [0.9,0,0; 0.9,0.9,0.0; 0,0.9,0];
-            obj.ShadeMyFig(obj.T, [.1, .4, max(obj.GDP)], c)
+            obj.ShadeMyFig(obj.T, [100, 400, max(obj.GDP)], c)
             hold on
             p = plot(obj.T, obj.GDP,'K');
             set(p,'LineWidth', 3);
@@ -374,7 +387,7 @@ classdef SQLVisualization < handle
                 
                 subplot(length(ppl),1,ii)
                 c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
-                obj.ShadeMyFig(t, [0.01,0.3,3,ymax], c)
+                obj.ShadeMyFig(t, [0.01,0.3,2.8,ymax], c)
                 hold on
                 [ax,sph,vph] = plotyy(t, SC, t, VL);
                 set(ax(1),'ycolor','k','FontSize',14) 
@@ -392,7 +405,7 @@ classdef SQLVisualization < handle
                 end
                 hold off
                 if ii == 1
-                    l = legend ([sph,iph,vph], 'Susceptible cells', 'Infected Cells','Free Virion');
+                    l = legend ([sph,iph,vph], 'Susceptible cells', 'Infected Cells','Viral Load');
                     newPosition = [0.31 0.6 0.4 0.73];
                     newUnits = 'normalized';
                     set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
@@ -401,6 +414,27 @@ classdef SQLVisualization < handle
             
             %subplot(length(ppl),1,length(ppl))
             xlabel('Time', 'FontSize', 16)
+        end
+        function h = PlotLocalPopulation(obj, fignum)
+            h = figure(fignum);
+            hold on;
+            ph = plot(obj.T, obj.Ho);
+            set(ph,'Color', obj.bl);
+            pw = plot(obj.T, obj.Wo);
+            set(pw, 'Color', obj.yl);
+            ps = plot(obj.T, obj.Sc);
+            set(ps, 'Color', obj.re);
+                
+            set([ph,pw,ps],'LineWidth', 3);
+            grid on;
+            l = legend([ph,pw,ps],...
+                sprintf('At Home - %d',max(obj.Ho)), ...
+                sprintf('At Work - %d',max(obj.Wo)), ...
+                sprintf('At School - %d',max(obj.Sc)));
+            set(l, 'FontSize', 16);
+            xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
+            ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
+            hold off;
         end
         function MakeMovie(obj, fignum)
             

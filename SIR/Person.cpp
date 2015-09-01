@@ -276,9 +276,9 @@ void Person::Move(double theta, double r, string motionType, double demand) {
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
 
-    normal_distribution<double> WSTimeD(8,0);
+    normal_distribution<double> WSTimeD(8,.5);
     double  WSTime = WSTimeD(generator);
-    normal_distribution<double> WETimeD(22,0);
+    normal_distribution<double> WETimeD(22,.5);
     double  WETime = WETimeD(generator);
     
     
@@ -305,6 +305,7 @@ void Person::Move(double theta, double r, string motionType, double demand) {
                 (Age>22)? setLocation(Work):setLocation(School);
             }
         }
+        
         
     }else if (motionType == "Travel"){
         if (getID() == 1){
@@ -435,11 +436,19 @@ void Person::UpdateDisease() {
     }
 }
 void Person::UpdateDiseaseWithInHost() {
-    
+
     list<Person*> peeps = Location->getOccupants();
-    int criticalDistance = 25;
+    
+    if (Time == 10) {
+        if (ID == 1){
+            ihdynamics.setV(0.01);
+        }
+    }
+
+    int criticalDistance = 5;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
                 neigbors.push_back(*ip);
@@ -468,44 +477,51 @@ void Person::UpdateDiseaseWithInHost() {
             setState('I');
         }
     }
-    
-    if (getState() == 'I'){
+    else if (getState() == 'I'){
         if (Location->getName() == "Home"){
-            ihdynamics.setDelta(1.1*ihdynamics.getDelta());
+            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
         }else {
-            ihdynamics.setDelta(0.9*ihdynamics.getDelta());
+            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
         }
         
-        if (ihdynamics.getI() > 0.2 & ihdynamics.getI() < 3){
+        if (ihdynamics.getI() > 0.2 & ihdynamics.getI() < 3 & HasBeenSick==0){
             setState('P');
-            
         }else if (ihdynamics.getI() > 3){
             setState('D');
-            
-        }else if (ihdynamics.getI() < 0.01){
+        }
+//        if (ihdynamics.getI() > 2.8){
+//            setState('D');
+//        }
+        else if (ihdynamics.getI() < 0.01 & HasBeenSick == 1){
             setState('R');
-
         }
     }else if (getState() == 'P'){
-        if (ihdynamics.getI() < 0.2){
+        if (Location->getName() == "Home"){
+            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
+        }else {
+            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
+        }
+        if (ihdynamics.getI() > 3){
+            setState('D');
+        }
+        else if (ihdynamics.getI() < 0.2){
             setState('I');
         }
         
+    }else if (getState() == 'R'){
+        if (ihdynamics.getI() < 0.005){
+            ihdynamics.setT(ihdynamics.getTi());
+            setHasBeenSick(0);
+            setState('S');
+        }
+        
     }
-    
-//    else if (getState() == 'R'){
-//        if (ihdynamics.getI() < 0.005){
-//            ihdynamics.setT(3);
-//        }
-//        
-//    }
 
-    
-    
     
     if (ihdynamics.getI() + 0.01 < ihdynamics.getMaxInfLev()){
         setHasBeenSick(1);
     }
+    
     
     
 }
@@ -519,14 +535,16 @@ double Person::Distance(Person* p){
     
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
+
+//Not sure what this function is doing. Deprecated???!!!!
 void Person::UpdateWithinHost(list<Person*> ngbrs){
     
     for(auto ip = ngbrs.cbegin(); ip != ngbrs.cend(); ++ip){
         
     }
+    
     ihdynamics.setdt(Time);
     // everything gets set
-    
     ihdynamics.Simulate();
     
 }

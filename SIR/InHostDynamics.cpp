@@ -22,6 +22,7 @@ InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double v
     setT(sc);
     setI(ic);
     setV(vi);
+    setTi(sc);
 }
 
 // setters
@@ -48,6 +49,9 @@ void InHostDynamics::setC(double c){
 }
 void InHostDynamics::setT(double sc){
     T  = sc;
+}
+void InHostDynamics::setTi(double sc){
+    Ti = sc;
 }
 void InHostDynamics::setI(double ic){
     I = ic;
@@ -87,6 +91,9 @@ double InHostDynamics::getC(){
 double InHostDynamics::getT(){
     return T;
 }
+double InHostDynamics::getTi(){
+    return Ti;
+}
 double InHostDynamics::getI(){
     return I;
 }
@@ -124,6 +131,7 @@ void InHostDynamics::Update(){
         cout << "dT: " << dT << endl;
         exit(1);
     }
+    
     
     T = T + dt*dT;
     I = I + dt*dI;

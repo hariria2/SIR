@@ -112,6 +112,15 @@ int Architect::getP(){
 int Architect::getR(){
     return R;
 }
+int Architect::getSc(){
+    return Sc;
+}
+int Architect::getHo(){
+    return Ho;
+}
+int Architect::getWo(){
+    return Wo;
+}
 
 // Utilities
 void Architect::IncrementTime(){
@@ -133,7 +142,7 @@ void Architect::Simulate(){
     else if (Store == "MYSQL"){
         PrepDB();
         for (double t = 0; t < EndTime; t += TimeStep){
-            Update(t, sqlDataPtr);
+            
             cout << "=========>>>>> Time " << t << " of " << EndTime << " <<<<<=================="<< endl;
             sqlDataPtr-> InsertValue("HistoryData",
                                   "NULL, " +
@@ -143,9 +152,13 @@ void Architect::Simulate(){
                                   to_string(P) + ", " +
                                   to_string(R) + ", " +
                                   to_string(D) + ", " +
+                                  to_string(Ho) + ", " +
+                                  to_string(Wo) + ", " +
+                                  to_string(Sc) + ", " +
                                   to_string(Econ.getGDP()) + ", " +
                                   to_string(Econ.getDemand())
                                   );
+            Update(t, sqlDataPtr);
             
         }
         
@@ -204,7 +217,10 @@ void Architect::Update(double t, SQLStorage* data){
     IncrementTime();
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
         
-        if (((*ip)->getLocation())->getType()=="Work" | ((*ip)->getLocation())->getType()=="School") {
+        
+        
+       // if (((*ip)->getLocation())->getType()=="Work" || ((*ip)->getLocation())->getType()=="School") {
+        if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
             econList.push_back(*ip);
         }
         
@@ -226,19 +242,22 @@ void Architect::Update(double t, SQLStorage* data){
         "),";
         
         (*ip)->setTime(CurrentTime);
+        
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2((rand() % 360),5);
         }else{
             (*ip)->Move((rand() % 360),2, "DailyMovement",Econ.getDemand());
         }
-        (*ip)->UpdateDiseaseWithInHost();
+        if ((*ip)->getState() != 'D'){
+            (*ip)->UpdateDiseaseWithInHost();
+        }
 
     }
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
     
     //Econ.computeGDP(econList, Econ.getGDP());
-    Econ.getParameters(PeoplePtr);
+    Econ.getParameters(econList);
     Econ.Update(TimeStep);
     PopulationData();
     
@@ -280,6 +299,10 @@ void Architect::PopulationData(){
     P = 0;
     R = 0;
     D = 0;
+    Wo = 0;
+    Sc = 0;
+    Ho = 0;
+    
     for(auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip) {
         if (((*ip)->getState()) == 'I'){
             I += 1;
@@ -296,6 +319,16 @@ void Architect::PopulationData(){
         else{
             D += 1;
         }
+        if (((*ip)->getLocation())->getType() == "Work"){
+            Wo += 1;
+        }
+        else if(((*ip)->getLocation())->getType() == "Home"){
+            Ho += 1;
+        }
+        else if(((*ip)->getLocation())->getType() == "School"){
+            Sc += 1;
+        }
+        
     }
 }
 void Architect::AddPerson(Person *p){

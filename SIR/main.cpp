@@ -143,17 +143,17 @@ void Example2_MultiLocation(bool SaveData){
     
     Disease flu("Flu", 24, 30, 70);
     char state = 'S';
-    double VirLev = 0.5;
+    double VirLev = 0.0;
     
     
-    double A     = 0.01; //0.0025;
-    double alpha = 0.5;
-    double beta  = 0.5;
+    double A     = 0.02; //0.0025;
+    double alpha = 0.3;
+    double beta  = 0.7;
     
-    unsigned long labor = 700;
-    double health = 1;
+    double labor = 0;
+    double health = 0;
     
-    double y0 = A*pow(labor,alpha)*pow(health,beta);
+    double y0 = 500; //A*pow(labor,alpha)*pow(health,beta);
     
     cout << "y0: " << y0 << endl;
     
@@ -184,12 +184,12 @@ void Example2_MultiLocation(bool SaveData){
         double randage  = ageDist(generator);
         int age = (randage < 1)? 1:floor(randage);
         
-        if (i == 1){
-            VirLev = 0.1;
-        } else {
-            VirLev = 0;
-            state = 'S';
-        }
+//        if (i == 1){
+//            VirLev = 0.1;
+//        } else {
+//            VirLev = 0;
+//            state = 'S';
+//        }
         
         normal_distribution<double> icDist(4,2);
         double randic  = icDist(generator);
@@ -228,9 +228,10 @@ void Example2_MultiLocation(bool SaveData){
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
                                hco,wco,sco,cco,10,10,10);
         p->setLocation(homes[randHIdx]);
-//        if (i%3 == 0){
+//        if (i == 3){
 //            p->setLocation(works[randWIdx]);
-//        }else if (i%2 == 0){
+//        }
+//        else if (i%2 == 0){
 //            p->setLocation(homes[randHIdx]);
 //        }else {
 //            p->setLocation(schools[randSIdx]);
@@ -240,7 +241,7 @@ void Example2_MultiLocation(bool SaveData){
     
     
     double InitialTime = 0;
-    double EndTime = 150;
+    double EndTime = 200;
     double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     

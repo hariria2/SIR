@@ -17,13 +17,15 @@
 #include "Person.h"
 
 
-Economy::Economy(double a, double alpha, double beta, double Y0,unsigned long lc, double hc){
+Economy::Economy(double a, double alpha, double beta, double Y0,double lc, double hc){
 
     setA(a);
     setAlpha(alpha);
     setBeta(beta);
+    setLp(0);
     setLc(lc);
     setHc(hc);
+    dY = 0;
     Y = Y0;
     GDP = Y;
     Demand = 100/GDP;
@@ -40,10 +42,10 @@ void Economy::setAlpha(double alpha){
 void Economy::setBeta(double beta){
     Beta = beta;
 }
-void Economy::setLp(unsigned long lp){
+void Economy::setLp(double lp){
     Lp = lp;
 }
-void Economy::setLc(unsigned long lc){
+void Economy::setLc(double lc){
     Lc = lc;
 }
 void Economy::setHp(double hp){
@@ -134,21 +136,25 @@ void Economy::computeGDP(vector<Person*> ppl, double oldGDP){
 };
 
 void Economy::Flow(){
+    
+
     if (Lp == 0 || Hp == 0){
         dY = 0;
     }else {
         dY = Alpha * Y * (Lc-Lp)/Lp + Beta*Y*(Hc-Hp)/Hp;
     }
+    
 }
 
 void Economy::Update(double dt){
+
     Flow();
     Y = Y + dt*dY;
     GDP = Y;
     if (GDP == 0){
-        Demand = 0.001;
+        Demand = 2.8;
     }else {
-        Demand = 100/GDP;
+        Demand = fmin(1/GDP,2.8);
     }
     
 }
