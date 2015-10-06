@@ -146,9 +146,9 @@ void Example2_MultiLocation(bool SaveData){
     double VirLev = 0.0;
     
     
-    double A     = 0.02; //0.0025;
-    double alpha = 0.3;
-    double beta  = 0.7;
+    double A     = 2; //0.0025;
+    double alpha = 0.5;
+    double beta  = 0.5;
     
     double labor = 0;
     double health = 0;

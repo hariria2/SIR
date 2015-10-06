@@ -20,7 +20,7 @@ subplot(3,1,3)
 h = vis.PlotLocalPopulation(1);
 vis.FullScreen = 0;
 vis.ShowProgress = 0;
-vis.ShowDemand = 1;
+vis.ShowDemand = 0;
 h2 = vis.PlotIndividual(3, [1, 89, 575, 561]);
 
 if makeMovie

@@ -154,7 +154,7 @@ void Economy::Update(double dt){
     if (GDP == 0){
         Demand = 2.8;
     }else {
-        Demand = fmin(1/GDP,2.8);
+        Demand = fmin(10/GDP,2.8);
     }
     
 }
