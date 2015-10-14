@@ -7,7 +7,7 @@ ver = '1';
 timestamp = [num2str(m),'_',num2str(d),'_',num2str(y)];
 
 saveResults = 0;
-makeMovie   = 0;
+makeMovie   = 1;
 
 vis = SQLVisualization(['sim_v',ver,'_',timestamp],'root','','MySQL','localhost');
 

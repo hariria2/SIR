@@ -43,9 +43,6 @@ int main(){
     
     //Example1_SingleLocation();
     Example2_MultiLocation();
-    //Example4_MultiLocation();
- 	//Ex1_Eig_SingleLocation(true);
-    //Ex2_SparseEig_SingleLocation(true);
     return 0;
  }
 // ========================= End main =================
