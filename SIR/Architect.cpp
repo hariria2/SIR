@@ -47,6 +47,22 @@ sqlDataPtr(d), Econ(econ)
     PopulationData();
 }
 
+Architect::Architect(double t0, double te, double ts,
+                     vector<Person *> pp, Economy econ, string store, SQLStorage* d,Visualization* vis):
+sqlDataPtr(d), Econ(econ)
+{
+    
+    InitialTime  = t0;
+    EndTime      = te;
+    TimeStep     = ts;
+    CurrentTime  = t0;
+    TimeIndex    = 0;
+    PeoplePtr    = pp;
+    Store        = store;
+    setVisualization(vis);
+    PopulationData();
+}
+
 
 Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Economy econ, string store):Econ(econ)
 {
@@ -83,6 +99,9 @@ void Architect::setWorks(vector<Place*> works){
 void Architect::setCemetaries(vector<Place*> cemeteries){
     Cemeteries = cemeteries;
 };
+void Architect::setVisualization(Visualization *vis){
+    _Visualization = vis;
+}
 
 // Getters
 double Architect::getCurrentTime(){
@@ -94,6 +113,10 @@ double Architect::getTimeStep(){
 vector<Person*> Architect::getPeople(){
 	return PeoplePtr;
 }
+Visualization* Architect::getVisualization(){
+    return _Visualization;
+}
+
 double Architect::getDailyTime(){
 	int hour    = floor(CurrentTime);
 	double min  = CurrentTime - hour;
@@ -141,26 +164,55 @@ void Architect::Simulate(){
 	}
     else if (Store == "MYSQL"){
         PrepDB();
-        for (double t = 0; t < EndTime; t += TimeStep){
+        _Visualization->Init();
+        double Time = 0;
+        while (!glfwWindowShouldClose(_Visualization->getWindow())){
             
-            cout << "=========>>>>> Time " << t << " of " << EndTime << " <<<<<=================="<< endl;
+            if (Time - floor(Time) < TimeStep){
+                cout << "time " << Time << "!" << endl;
+            }
+            
+            _Visualization->Render(PeoplePtr);
+            
             sqlDataPtr-> InsertValue("HistoryData",
-                                  "NULL, " +
-                                  to_string(t) + ", " +
-                                  to_string(S) + ", " +
-                                  to_string(I) + ", " +
-                                  to_string(P) + ", " +
-                                  to_string(R) + ", " +
-                                  to_string(D) + ", " +
-                                  to_string(Ho) + ", " +
-                                  to_string(Wo) + ", " +
-                                  to_string(Sc) + ", " +
-                                  to_string(Econ.getGDP()) + ", " +
-                                  to_string(Econ.getDemand())
-                                  );
-            Update(t, sqlDataPtr);
-            
+                                     "NULL, " +
+                                     to_string(Time) + ", " +
+                                     to_string(S) + ", " +
+                                     to_string(I) + ", " +
+                                     to_string(P) + ", " +
+                                     to_string(R) + ", " +
+                                     to_string(D) + ", " +
+                                     to_string(Ho) + ", " +
+                                     to_string(Wo) + ", " +
+                                     to_string(Sc) + ", " +
+                                     to_string(Econ.getGDP()) + ", " +
+                                     to_string(Econ.getDemand())
+                                     );
+            Update(Time, sqlDataPtr);
+            Time += TimeStep;
+            usleep(static_cast<int>(TimeStep*1000000));
         }
+
+//        for (double t = 0; t < EndTime; t += TimeStep){
+//            
+//            cout << "=========>>>>> Time " << t << " of " << EndTime << " <<<<<=================="<< endl;
+//            sqlDataPtr-> InsertValue("HistoryData",
+//                                  "NULL, " +
+//                                  to_string(t) + ", " +
+//                                  to_string(S) + ", " +
+//                                  to_string(I) + ", " +
+//                                  to_string(P) + ", " +
+//                                  to_string(R) + ", " +
+//                                  to_string(D) + ", " +
+//                                  to_string(Ho) + ", " +
+//                                  to_string(Wo) + ", " +
+//                                  to_string(Sc) + ", " +
+//                                  to_string(Econ.getGDP()) + ", " +
+//                                  to_string(Econ.getDemand())
+//                                  );
+//            Update(t, sqlDataPtr);
+//            
+//        }
         
     }
 	else{

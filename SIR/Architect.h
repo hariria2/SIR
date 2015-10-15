@@ -17,6 +17,7 @@
 #include "Domain.h"
 #include "Place.h"
 #include "Economy.h"
+#include "Visualization.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ public:
     Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d, bool eig);
 	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d);
     Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, SQLStorage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, SQLStorage* d, Visualization* vis);
     Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store="None");
 	
     
@@ -39,6 +41,7 @@ public:
     void setSchools(vector<Place*> schools);
     void setWorks(vector<Place*> works);
     void setCemetaries(vector<Place*> cemetaries);
+    void setVisualization(Visualization* vis);
     
 	// Getters
 	double getCurrentTime();
@@ -52,6 +55,7 @@ public:
     int getHo();
     int getSc();
 	vector<Person*> getPeople();
+    Visualization* getVisualization();
 
 	// Utilities
 	void IncrementTime();
@@ -80,6 +84,7 @@ private:
     SQLStorage* sqlDataPtr;
 	Storage* dataPtr;
 	string Store;
+    Visualization* _Visualization;
 	int S;
 	int I;
     int P;

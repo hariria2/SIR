@@ -2,8 +2,8 @@
 #include <iomanip>
 #include <sstream> 
 #include <string>
-#include <list>
-#include <vector>
+//#include <list>
+//#include <vector>
 #include <cmath>
 #include <fstream>
 #include <random>
@@ -239,7 +239,7 @@ void Example2_MultiLocation(bool SaveData){
     
     double InitialTime = 0;
     double EndTime = 200;
-    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
+    double TimeStep = 0.1; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
     if (SaveData) {
@@ -250,7 +250,10 @@ void Example2_MultiLocation(bool SaveData){
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata);
+        int xdim = 640;
+        int ydim = 480;
+        Visualization vis(xdim,ydim);
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, &vis);
         //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
         
         archie.setDomain(myCity);

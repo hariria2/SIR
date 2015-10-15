@@ -41,6 +41,8 @@ public:
 	// Setters
 	void setID(int id);
     void setAge(int id);
+    void setX(int x);
+    void setY(int y);
     void setHasBeenSick(int hbs);
     void setGender(char g);
 	void setName(string name);
@@ -64,6 +66,7 @@ public:
 	// Getters
 	int getID();
     int getAge();
+
     char getGender();
     int getHastBeenSick();
 	string getName() const;
@@ -113,6 +116,8 @@ private:
     int Age;
 	string Name;
 	double Time;
+    double _X;
+    double _Y;
 	double TimeInfected;
 	double IncubationTime;
     double RecoveryTime;
