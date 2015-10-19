@@ -118,7 +118,7 @@ void Example1_SingleLocation(bool SaveData){
 }
 void Example2_MultiLocation(bool SaveData){
     
-    int maxdim = 700;
+    int maxdim = 1000;
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
     Domain myCity("DiseasVille", cityBoundary);
     
@@ -131,6 +131,7 @@ void Example2_MultiLocation(bool SaveData){
     
     
     
+    
     double hco[2];
     double wco[2];
     double sco[2];
@@ -138,7 +139,7 @@ void Example2_MultiLocation(bool SaveData){
     
     int population = 700;
     
-    Disease flu("Flu", 24, 30, 70);
+    Disease flu("Flu", 44, 40, 100);
     char state = 'S';
     double VirLev = 0.0;
     
@@ -156,12 +157,22 @@ void Example2_MultiLocation(bool SaveData){
     
     Economy econ(A,alpha,beta, y0, labor, health);
     
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+
+    normal_distribution<double> ageDist(25,20);
+
+    
+    normal_distribution<double> icDist(3,0.2);
+    normal_distribution<double> betaDist(0.05,0);
+    normal_distribution<double> deltaDist(3./50,0);
+    normal_distribution<double> PDist(3,0);
+    normal_distribution<double> CDist(0.8,0);
     
     vector<Person*> people;
     for (int i=1; i <= population; i++){
         
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
+        
         
         string name = "randomName"+to_string(i);
         
@@ -177,44 +188,43 @@ void Example2_MultiLocation(bool SaveData){
         getDefaultCoordinates(schools[randSIdx], sco);
         getDefaultCoordinates(cemeteries[randCIdx], cco);
         
-        normal_distribution<double> ageDist(25,20);
         double randage  = ageDist(generator);
         int age = (randage < 1)? 1:floor(randage);
         
-//        if (i == 1){
-//            VirLev = 0.1;
-//        } else {
-//            VirLev = 0;
-//            state = 'S';
-//        }
+        if (i == 1){
+            VirLev = 0.1;
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
         
-        normal_distribution<double> icDist(4,2);
+        
         double randic  = icDist(generator);
-        
         double ict = (randic < 0.5)? 0.5:randic;
         
         
-        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0,VirLev);
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
         
-        normal_distribution<double> betaDist(ict/8,0);
+    
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         
+        
         ihd.setBeta(beta);
         
-        normal_distribution<double> deltaDist(ict/20,0);
+
         double randdelta  = deltaDist(generator);
         double delta = (randdelta < 0)? 0:randdelta;
         
         ihd.setDelta(delta);
         
-        normal_distribution<double> PDist(3,0);
+        
         double randP  = PDist(generator);
         double P = (randP < 0)? 0:randP;
         
         ihd.setP(P);
         
-        normal_distribution<double> CDist(0.8,0);
+        
         double randC  = CDist(generator);
         double C = (randC < 0)? 0:randC;
         
@@ -225,21 +235,13 @@ void Example2_MultiLocation(bool SaveData){
                                schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
                                hco,wco,sco,cco,10,10,10);
         p->setLocation(homes[randHIdx]);
-//        if (i == 3){
-//            p->setLocation(works[randWIdx]);
-//        }
-//        else if (i%2 == 0){
-//            p->setLocation(homes[randHIdx]);
-//        }else {
-//            p->setLocation(schools[randSIdx]);
-//        }
         people.push_back(p);
     };
     
     
     double InitialTime = 0;
     double EndTime = 200;
-    double TimeStep = 0.1; // TODO Fix the naming of the time files for fractional times.
+    double TimeStep = 0.05; // TODO Fix the naming of the time files for fractional times.
     int l = floor((EndTime-InitialTime)/TimeStep);
     
     if (SaveData) {
@@ -250,9 +252,14 @@ void Example2_MultiLocation(bool SaveData){
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        int xdim = 640;
-        int ydim = 480;
+        int xdim = maxdim+200;
+        int ydim = maxdim;
         Visualization vis(xdim,ydim);
+        vis.setPlaces(homes);
+        vis.setPlaces(schools);
+        vis.setPlaces(works);
+        vis.setPlaces(cemeteries);
+        vis.setPeople(people);
         Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, &vis);
         //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
         

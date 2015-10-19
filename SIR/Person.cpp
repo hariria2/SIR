@@ -276,9 +276,9 @@ void Person::Move(double theta, double r, string motionType, double demand) {
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
 
-    normal_distribution<double> WSTimeD(8,.5);
+    normal_distribution<double> WSTimeD(8,.2);
     double  WSTime = WSTimeD(generator);
-    normal_distribution<double> WETimeD(22,.5);
+    normal_distribution<double> WETimeD(22,.2);
     double  WETime = WETimeD(generator);
     
     
@@ -486,7 +486,7 @@ void Person::UpdateDiseaseWithInHost() {
         
         if (ihdynamics.getI() > 0.2 & ihdynamics.getI() < 3 & HasBeenSick==0){
             setState('P');
-        }else if (ihdynamics.getI() > 3){
+        }else if (ihdynamics.getI() > 2.8){
             setState('D');
         }
 //        if (ihdynamics.getI() > 2.8){
@@ -510,9 +510,9 @@ void Person::UpdateDiseaseWithInHost() {
         
     }else if (getState() == 'R'){
         if (ihdynamics.getI() < 0.005){
-            ihdynamics.setT(ihdynamics.getTi());
-            setHasBeenSick(0);
-            setState('S');
+            //ihdynamics.setT(ihdynamics.getTi());
+            //setHasBeenSick(0);
+            //setState('S');
         }
         
     }

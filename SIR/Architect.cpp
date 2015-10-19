@@ -5,10 +5,6 @@
  *      Author: Sahand
  */
 
-#include <iostream>
-#include <string>
-#include <list>
-#include <vector>
 #include <cmath>
 #include "Architect.h"
 #include "Person.h"
@@ -151,6 +147,7 @@ void Architect::IncrementTime(){
 	TimeIndex++;
 }
 void Architect::Simulate(){
+    
 	if (Store == "FileSystem"){
 		dataPtr->citySave();
 		dataPtr->homeSave();
@@ -158,25 +155,24 @@ void Architect::Simulate(){
 		dataPtr->schoolSave();
         dataPtr->cemeterySave();
 		for (double t = 0; t < EndTime; t += TimeStep){
-			Update(t, dataPtr);
+			Update(dataPtr);
 		}
         dataPtr->writeSIR();
 	}
     else if (Store == "MYSQL"){
         PrepDB();
         _Visualization->Init();
-        double Time = 0;
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
             
-            if (Time - floor(Time) < TimeStep){
-                cout << "time " << Time << "!" << endl;
+            if (CurrentTime - floor(CurrentTime) < TimeStep){
+                cout << "time " << CurrentTime << "!" << endl;
             }
             
-            _Visualization->Render(PeoplePtr);
+            _Visualization->Render();
             
             sqlDataPtr-> InsertValue("HistoryData",
                                      "NULL, " +
-                                     to_string(Time) + ", " +
+                                     to_string(CurrentTime) + ", " +
                                      to_string(S) + ", " +
                                      to_string(I) + ", " +
                                      to_string(P) + ", " +
@@ -188,41 +184,19 @@ void Architect::Simulate(){
                                      to_string(Econ.getGDP()) + ", " +
                                      to_string(Econ.getDemand())
                                      );
-            Update(Time, sqlDataPtr);
-            Time += TimeStep;
+            Update(sqlDataPtr);
             usleep(static_cast<int>(TimeStep*1000000));
         }
-
-//        for (double t = 0; t < EndTime; t += TimeStep){
-//            
-//            cout << "=========>>>>> Time " << t << " of " << EndTime << " <<<<<=================="<< endl;
-//            sqlDataPtr-> InsertValue("HistoryData",
-//                                  "NULL, " +
-//                                  to_string(t) + ", " +
-//                                  to_string(S) + ", " +
-//                                  to_string(I) + ", " +
-//                                  to_string(P) + ", " +
-//                                  to_string(R) + ", " +
-//                                  to_string(D) + ", " +
-//                                  to_string(Ho) + ", " +
-//                                  to_string(Wo) + ", " +
-//                                  to_string(Sc) + ", " +
-//                                  to_string(Econ.getGDP()) + ", " +
-//                                  to_string(Econ.getDemand())
-//                                  );
-//            Update(t, sqlDataPtr);
-//            
-//        }
         
     }
 	else{
 		for (double t = 0; t < EndTime; t += TimeStep){
-			Update(t);
+			Update();
 		}
 	}
     cout << "Simulation Complete. Thank you...!" << endl;
 }
-void Architect::Update(double t, Storage* data){
+void Architect::Update(Storage* data){
     
 	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
 	data->startMovieSave(CurrentTime);
@@ -252,26 +226,24 @@ void Architect::Update(double t, Storage* data){
         
 		(*ip)->setTime(CurrentTime);
 		if ((*ip)->IsSingleLocation) {
-			(*ip)->Move2((rand() % 360),5);
+			(*ip)->Move2((rand() % 360),1);
 		}else{
-			(*ip)->Move((rand() % 360),2, "Travel");
+			(*ip)->Move((rand() % 360),1, "Travel");
 		}
 		(*ip)->UpdateDiseaseWithInHost();
 	}
 	data->endMovieSave();
     PopulationData();
 }
-void Architect::Update(double t, SQLStorage* data){
-    
+void Architect::Update(SQLStorage* data){
     vector<Person*> econList;
     string SQLStatement;
     
     IncrementTime();
+
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
         
         
-        
-       // if (((*ip)->getLocation())->getType()=="Work" || ((*ip)->getLocation())->getType()=="School") {
         if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
             econList.push_back(*ip);
         }
@@ -296,9 +268,9 @@ void Architect::Update(double t, SQLStorage* data){
         (*ip)->setTime(CurrentTime);
         
         if ((*ip)->IsSingleLocation) {
-            (*ip)->Move2((rand() % 360),5);
+            (*ip)->Move2(rand()%360+1 + 1,1);
         }else{
-            (*ip)->Move((rand() % 360),2, "DailyMovement",Econ.getDemand());
+            (*ip)->Move(rand()%360+1,1, "DailyMovement",Econ.getDemand());
         }
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
@@ -310,11 +282,11 @@ void Architect::Update(double t, SQLStorage* data){
     
     //Econ.computeGDP(econList, Econ.getGDP());
     Econ.getParameters(econList);
-    Econ.Update(TimeStep);
+    //Econ.Update(TimeStep);
     PopulationData();
     
 }
-void Architect::Update(double t){
+void Architect::Update(){
 	
     Econ.computeGDP(PeoplePtr, Econ.getGDP());
     IncrementTime();

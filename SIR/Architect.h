@@ -12,6 +12,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <random>
 #include "Storage.h"
 #include "SQLStorage.h"
 #include "Domain.h"
@@ -60,9 +61,9 @@ public:
 	// Utilities
 	void IncrementTime();
 	void Simulate();
-	void Update(double t, Storage* dPtr);
-    void Update(double t, SQLStorage* dPtr);
-	void Update(double t);
+	void Update(Storage* dPtr);
+    void Update(SQLStorage* dPtr);
+	void Update();
 	void DisplayTime();
 	void PopulationData();
     void AddPerson(Person *p);
