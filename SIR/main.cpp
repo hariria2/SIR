@@ -112,7 +112,7 @@ void Example1_SingleLocation(bool SaveData){
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
         // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,0.01);
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         ihd.setBeta(beta);
@@ -481,7 +481,7 @@ void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
     int age = (randage < 0)? 0:floor(randage);
     
     getDefaultCoordinates((p1.front())->getHome(), (p1.front())->getHomeCoordinates());
-    Person *np = new Person(p1.size()+1,
+    Person *np = new Person((int)p1.size()+1,
                            name,
                            age,
                            s,

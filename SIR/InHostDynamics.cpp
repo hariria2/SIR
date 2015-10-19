@@ -129,7 +129,9 @@ void InHostDynamics::Update(){
     I = I + dt*dI;
     V = V + dt*dV;
     
-    
+    if (V < 0.001){
+        setV(0);
+    }
     
 }
 

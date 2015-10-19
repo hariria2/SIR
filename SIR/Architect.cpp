@@ -307,7 +307,7 @@ void Architect::DisplayTime(){
 	int min   = floor((CurrentTime - floor(CurrentTime))*60);
 
 	string AmPm = ((mhour < 12)? "AM":"PM");
-	cout << "Day " << ((day < 10 )? " ":"") << day <<  " ";
+	cout << "Day " << ((day < 10 )? " ":"") << day <<  ", ";
 	cout << ((hour <  10 && hour > 0)? " ":"");
 	cout << ((hour ==  0)? 12:hour) << ":";
 	cout << ((min  <  10)? "0":"");
