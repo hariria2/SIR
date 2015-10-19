@@ -41,8 +41,8 @@ void Example2_MultiLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    //Example1_SingleLocation();
-    Example2_MultiLocation();
+    Example1_SingleLocation();
+    //Example2_MultiLocation();
     return 0;
  }
 // ========================= End main =================
@@ -50,7 +50,7 @@ int main(){
 
 // ========================= Example Simulations ==============================
 void Example1_SingleLocation(bool SaveData){
-    int maxdim = 200;
+    int maxdim = 700;
     
     // Setting up parameters
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
@@ -70,23 +70,73 @@ void Example1_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 200;
+    int population = 500;
     
     Disease flu("Flu", 24, 24, 1);
-    InHostDynamics ihd(1, 0.1, 0, 0, 0);
-    Economy econ(1,0.5,0.5,1000, 1, 1);
+    char state = 'S';
+    
+    //============Economy==================//
+    double A     = 2; //0.0025;
+    double alpha = 0.5;
+    double beta  = 0.5;
+    double labor = 0;
+    double health = 0;
+    double y0 = 500; //A*pow(labor,alpha)*pow(health,beta);
+    
+    Economy econ(A,alpha,beta, y0, labor, health);
+    //=======================================//
+    
+    
+    //============InHostDynamics=============//
+    normal_distribution<double> icDist(3,0.2);
+    normal_distribution<double> betaDist(0.05,0);
+    normal_distribution<double> deltaDist(3./50,0);
+    normal_distribution<double> PDist(3,0);
+    normal_distribution<double> CDist(0.8,0);
+    double VirLev = 0.0;
+    //=======================================//
+    
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+    
+    
     
     vector<Person*> people;
+    normal_distribution<double> ageDist(25,20);
+    double randage;
     for (int i=0; i < population; i++){
         string name = "randomName"+to_string(i);
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
         
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
+        
+        
+        randage  = ageDist(generator);
         int age = (randage < 0)? 0:floor(randage);
         
         getDefaultCoordinates(&home, hco);
+        
+        //=============InHostDynamics=================//
+        if (i == 1){
+            VirLev = 0.1;
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
+        double randic  = icDist(generator);
+        double ict = (randic < 0.5)? 0.5:randic;
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
+        double randbeta  = betaDist(generator);
+        double beta = (randbeta < 0)? 0:randbeta;
+        ihd.setBeta(beta);
+        double randdelta  = deltaDist(generator);
+        double delta = (randdelta < 0)? 0:randdelta;
+        ihd.setDelta(delta);
+        double randP  = PDist(generator);
+        double P = (randP < 0)? 0:randP;
+        ihd.setP(P);
+        double randC  = CDist(generator);
+        double C = (randC < 0)? 0:randC;
+        ihd.setC(C);
+        //====================================================//
         
         
         Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
@@ -98,7 +148,7 @@ void Example1_SingleLocation(bool SaveData){
     
     double InitialTime = 0;
     double EndTime = 20;
-    double TimeStep = 1;
+    double TimeStep = 0.05;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
     
@@ -109,7 +159,16 @@ void Example1_SingleLocation(bool SaveData){
         string dataFolder = "data_single_v"+ver+"_";
         string movieFolder = "movie_single_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        int xdim = maxdim+200;
+        int ydim = maxdim;
+        Visualization vis(xdim,ydim);
+        vis.setPlaces(homes);
+        vis.setPlaces(schools);
+        vis.setPlaces(works);
+        vis.setPlaces(cemeteries);
+        vis.setPeople(people);
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, &vis);
         archie.Simulate();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people, econ);

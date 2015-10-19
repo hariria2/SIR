@@ -69,7 +69,7 @@ void Visualization::Render(){
     glfwGetFramebufferSize(_window, &width, &height);
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.80f, 1.0f, 0.75f, 0.6f);
+    glClearColor(0.0f, 0.3f, 0.0f, 0.9f);
     
     DrawPlace();
     DrawPeople();
@@ -110,6 +110,10 @@ void Visualization::DrawPlace(){
             RR = 0.7;
             GG = 0.5;
             BB = 0.6;
+        } else {
+            RR = 1.;
+            GG = 1.;
+            BB = 1.;
         }
         
         glBegin(GL_POLYGON);
