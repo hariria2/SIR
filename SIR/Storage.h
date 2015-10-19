@@ -7,10 +7,15 @@
 
 #ifndef STORAGE_H_
 #define STORAGE_H_
+
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <sstream>
+#include <iomanip>
 #include <vector>
+#include <sys/stat.h>
+#include "Place.h"
+
 
 using namespace std;
 

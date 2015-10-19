@@ -6,14 +6,6 @@
 //  Copyright (c) 2015 Sahand Hariri. All rights reserved.
 //
 
-#include <stdio.h>
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <list>
-#include <vector>
-#include <random>
-#include <ctime>
 #include "InHostDynamics.h"
 
 InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi){

@@ -9,10 +9,7 @@
 #ifndef __SIR__Economy__
 #define __SIR__Economy__
 
-#include <stdio.h>
 #include <iostream>
-#include <string>
-#include <vector>
 #include "Person.h"
 
 using namespace std;

@@ -9,8 +9,8 @@
 #define PERSON_H_
 
 #include <iostream>
-#include <string>
-#include <list>
+#include <random>
+
 #include "Place.h"
 #include "Disease.h"
 #include "InHostDynamics.h"

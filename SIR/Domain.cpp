@@ -5,12 +5,9 @@
  *      Author: Sahand
  */
 
-#include <iostream>
-#include <string>
-//#include <list>
 
 #include "Domain.h"
-#include "Place.h"
+
 
 using namespace std;
 

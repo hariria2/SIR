@@ -4,13 +4,8 @@
  *  Created on: Dec 22, 2014
  *      Author: Sahand
  */
-#include <iostream>
-#include <string>
-#include <list>
 
-//#include "Domain.h"
 #include "Place.h"
-#include "Person.h"
 
 using namespace std;
 

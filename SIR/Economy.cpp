@@ -6,15 +6,7 @@
 //  Copyright (c) 2015 Sahand Hariri. All rights reserved.
 //
 
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <list>
-#include <vector>
-#include <random>
-#include <ctime>
 #include "Economy.h"
-#include "Person.h"
 
 
 Economy::Economy(double a, double alpha, double beta, double Y0,double lc, double hc){

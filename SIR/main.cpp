@@ -1,13 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <sstream> 
-#include <string>
-//#include <list>
-//#include <vector>
-#include <cmath>
-#include <fstream>
-#include <random>
-#include <ctime>
 #include "Domain.h"
 #include "Place.h"
 #include "Disease.h"
@@ -17,9 +7,7 @@
 #include "Storage.h"
 #include "SQLStorage.h"
 #include "Economy.h"
-#include <sys/stat.h>
-#include <sys/types.h>
- 
+
 using namespace std;
 
 // Function prototyping
@@ -89,10 +77,10 @@ void Example1_SingleLocation(bool SaveData){
     
     //============InHostDynamics=============//
     normal_distribution<double> icDist(3,0.2);
-    normal_distribution<double> betaDist(0.05,0);
-    normal_distribution<double> deltaDist(3./50,0);
-    normal_distribution<double> PDist(3,0);
-    normal_distribution<double> CDist(0.8,0);
+    normal_distribution<double> betaDist(0.05,0.005);
+    normal_distribution<double> deltaDist(3./50,0.005);
+    normal_distribution<double> PDist(3,0.5);
+    normal_distribution<double> CDist(0.8,0.05);
     double VirLev = 0.0;
     //=======================================//
     
@@ -123,7 +111,8 @@ void Example1_SingleLocation(bool SaveData){
         }
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
-        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
+        // ihd(id, ti, sc, ic, vi)
+        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,0.01);
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         ihd.setBeta(beta);

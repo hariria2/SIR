@@ -6,13 +6,6 @@
 //  Copyright (c) 2015 Sahand Hariri. All rights reserved.
 //
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <mysql.h>
-#include <vector>
-#include <fstream>
-#include <iomanip>
 #include "SQLStorage.h"
 
 

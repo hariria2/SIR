@@ -5,11 +5,8 @@
  *      Author: Sahand
  */
 
-#include <cmath>
+
 #include "Architect.h"
-#include "Person.h"
-#include "Storage.h"
-#include "Economy.h"
 
 using namespace std;
 

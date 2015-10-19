@@ -114,6 +114,7 @@ classdef SQLVisualization < handle
             % virloads, maxinflev
                 
             myData = curs2.data;
+    
             Alltxy = cell2mat(myData(:,[2, 3, 4, 5, 6, 8, 9, 10, 11, 12]));
             
             if obj.ShowProgress

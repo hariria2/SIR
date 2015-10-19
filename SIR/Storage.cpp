@@ -5,18 +5,7 @@
  *      Author: Sahand
  */
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-#include <vector>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include "Domain.h"
-#include "Place.h"
 #include "Storage.h"
-using namespace std;
 
 
 Storage::Storage(int len, Domain* city, vector<Place*> homes, vector<Place*> works, vector<Place*> schools, vector<Place*> cemeteries,

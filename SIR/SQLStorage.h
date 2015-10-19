@@ -9,9 +9,7 @@
 #ifndef __SIR__SQLStorage__
 #define __SIR__SQLStorage__
 
-
-#include <string>
-#include <stdio.h>
+#include <iostream>
 #include <mysql.h>
 
 using namespace std;

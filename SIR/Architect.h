@@ -9,10 +9,7 @@
 #define ARCHITECT_H_
 
 #include <iostream>
-#include <string>
 #include <list>
-#include <vector>
-#include <random>
 #include "Storage.h"
 #include "SQLStorage.h"
 #include "Domain.h"

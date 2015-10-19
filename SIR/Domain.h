@@ -8,8 +8,6 @@
 #define DOMAIN_H_
 
 #include <iostream>
-#include <string>
-//#include <list>
 
 using namespace std;
 

@@ -10,8 +10,7 @@
 #define SIR_InHostDynamics_h
 
 #include <iostream>
-#include <string>
-#include <list>
+#include <cmath>
 
 using namespace std;
 

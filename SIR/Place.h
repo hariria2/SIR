@@ -9,9 +9,7 @@
 #define PLACE_H_
 
 #include <iostream>
-#include <string>
 #include <list>
-
 #include "Domain.h"
 
 using namespace std;

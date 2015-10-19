@@ -4,18 +4,9 @@
  *  Created on: Jan 6, 2015
  *      Author: Sahand
  */
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <list>
-#include <vector>
-#include <random>
-#include <ctime>
-#include "Domain.h"
-#include "Place.h"
-#include "Disease.h"
+
+
 #include "Person.h"
-#include "InHostDynamics.h"
 
 Person::Person(int id, string name, int age,
                char state, Disease dis, InHostDynamics ihd,
