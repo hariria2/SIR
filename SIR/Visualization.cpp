@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 Visualization::Visualization(int x, int y){
     setX(x);
     setY(y);
@@ -61,6 +62,9 @@ void Visualization::Init(){
     glfwMakeContextCurrent(_window);
     glfwSwapInterval(1);
     glfwSetKeyCallback(_window, key_callback);
+    glfwSetInputMode(_window, GLFW_STICKY_MOUSE_BUTTONS, 1);
+    glfwSetCursorPosCallback(_window, cursor_pos_callback);
+    glfwSetMouseButtonCallback(_window, mouse_button_callback);
 }
 void Visualization::Render(){
     int width, height;
@@ -124,7 +128,6 @@ void Visualization::DrawPlace(){
         glEnd();
     }
 }
-
 void Visualization::DrawPeople(){
     glBegin(GL_POINTS);
     double X;
@@ -157,6 +160,11 @@ void Visualization::DrawPeople(){
     }
     glEnd();
 }
+void Visualization::DrawTestPoint(float x, float y){
+    glBegin(GL_POINTS);
+    glColor3f(0.5f, 0.5f, 0.5f); glVertex3f(2*x/700 - 1, 2*y/900. - 1, 0.);
+    glEnd();
+};
 
 void Visualization::error_callback(int error, const char* description)
 {
@@ -166,4 +174,22 @@ void Visualization::key_callback(GLFWwindow* window, int key, int scancode, int 
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+}
+void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    cout << "X: " << xpos << ", " << "Y: " << ypos << endl;
+}
+void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        Visualization* vis = getVisualization(700, 700);
+        vis->DrawTestPoint(450,400);
+    }
+}
+
+Visualization* getVisualization(int x, int y) {
+    if (_visualization==NULL){
+        _visualization = new Visualization(x,y);
+    }
+    return _visualization;
 }

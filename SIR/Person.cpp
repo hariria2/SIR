@@ -379,10 +379,10 @@ void Person::UpdateDisease() {
     
 	
     
-    list<Person*> peeps = Location->getOccupants();
+    list<Person*>* peeps = Location->getOccupants();
     int criticalDistance = 23;
     
-    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
             neigbors.push_back(*ip);
             addAllConnection((*ip)->getID());
@@ -391,7 +391,7 @@ void Person::UpdateDisease() {
     }
     
 	if (getState() == 'S'){
-		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+		for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
 			if ((*ip)->getState() == 'P' | (*ip)->getState() == 'I'){
 				if (Distance(*ip) < criticalDistance){
 					IncubationTime = Time;
@@ -428,7 +428,7 @@ void Person::UpdateDisease() {
 }
 void Person::UpdateDiseaseWithInHost() {
 
-    list<Person*> peeps = Location->getOccupants();
+    list<Person*>* peeps = Location->getOccupants();
     
     if (Time == 10) {
         if (ID == 1){
@@ -438,7 +438,7 @@ void Person::UpdateDiseaseWithInHost() {
 
     int criticalDistance = 5;
     
-    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){

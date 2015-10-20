@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
-#include <algorithm>
+//#include <algorithm>
 
 #include <GLFW/glfw3.h>
 #include "Person.h"
@@ -39,6 +39,7 @@ public:
     
     void DrawPeople();
     void DrawPlace();
+    void DrawTestPoint(float x, float y);
     
     GLFWwindow* getWindow();
     
@@ -57,8 +58,12 @@ private:
     
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-    
-    
+    static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
+    static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
 };
+
+static Visualization* _visualization = NULL;
+Visualization* getVisualization(int x, int y);
 
 #endif /* Visualization_h */

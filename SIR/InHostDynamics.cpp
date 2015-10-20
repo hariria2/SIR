@@ -129,17 +129,16 @@ void InHostDynamics::Update(){
     I = I + dt*dI;
     V = V + dt*dV;
     
-    if (V < 0.001){
-        setV(0);
-    }
     
 }
 
 void InHostDynamics::Flow(){
+    
     dT = -Beta*T*V;
     dI =  Beta*T*V - Delta*I;
     double cv = P*I - C*V + NE;
     dV =  cv;
+    
 }
 
 void InHostDynamics::Jacobian(){

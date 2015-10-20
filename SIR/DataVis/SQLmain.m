@@ -25,7 +25,7 @@ h2 = vis.PlotIndividual(3, [1, 89, 102, 343]);
 
 if makeMovie
     vis.FullScreen = 1;
-    vis.getLocation('All');
+    vis.getLocation('All');8
     vis.TaggedPeople = [];
     vis.getPerson('All');
     vis.MakeMovie(4);

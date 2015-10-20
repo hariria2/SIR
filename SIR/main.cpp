@@ -29,8 +29,8 @@ void Example2_MultiLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
-    //Example2_MultiLocation();
+    //Example1_SingleLocation();
+    Example2_MultiLocation();
     return 0;
  }
 // ========================= End main =================
@@ -58,7 +58,7 @@ void Example1_SingleLocation(bool SaveData){
     
     
     homes.push_back(&home);
-    int population = 500;
+    int population = 700;
     
     Disease flu("Flu", 24, 24, 1);
     char state = 'S';
@@ -112,7 +112,7 @@ void Example1_SingleLocation(bool SaveData){
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
         // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
+        InHostDynamics ihd = InHostDynamics(i,0.01,ict,0.0,VirLev);
         double randbeta  = betaDist(generator);
         double beta = (randbeta < 0)? 0:randbeta;
         ihd.setBeta(beta);
@@ -142,9 +142,9 @@ void Example1_SingleLocation(bool SaveData){
     
     
     if (SaveData) {
-        string ver;
+        string ver="1";
         cout << "Enter version number for single location simulation: ";
-        cin >> ver;
+        //cin >> ver;
         string dataFolder = "data_single_v"+ver+"_";
         string movieFolder = "movie_single_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
@@ -177,15 +177,12 @@ void Example2_MultiLocation(bool SaveData){
     
     readCityData(&myCity, homes, works, schools, cemeteries);
     
-    
-    
-    
     double hco[2];
     double wco[2];
     double sco[2];
     double cco[2];
     
-    int population = 700;
+    int population = 500;
     
     Disease flu("Flu", 44, 40, 100);
     char state = 'S';
@@ -224,8 +221,6 @@ void Example2_MultiLocation(bool SaveData){
         
         string name = "randomName"+to_string(i);
         
-        
-        
         int randHIdx = rand() % homes.size();
         int randWIdx = rand() % works.size();
         int randSIdx = rand() % schools.size();
@@ -250,7 +245,7 @@ void Example2_MultiLocation(bool SaveData){
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
         
-        
+        // ihd(id, ti, sc, ic, vi)
         InHostDynamics ihd = InHostDynamics(i,0.05,ict,0.0,VirLev);
         
     
@@ -293,22 +288,22 @@ void Example2_MultiLocation(bool SaveData){
     int l = floor((EndTime-InitialTime)/TimeStep);
     
     if (SaveData) {
-        string ver;
+        string ver = "1";
         cout << "Enter version number for multi location simulation: ";
-        cin >> ver;
+        //cin >> ver;
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         int xdim = maxdim+200;
         int ydim = maxdim;
-        Visualization vis(xdim,ydim);
-        vis.setPlaces(homes);
-        vis.setPlaces(schools);
-        vis.setPlaces(works);
-        vis.setPlaces(cemeteries);
-        vis.setPeople(people);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, &vis);
+        Visualization* vis = getVisualization(xdim, ydim);
+        vis->setPlaces(homes);
+        vis->setPlaces(schools);
+        vis->setPlaces(works);
+        vis->setPlaces(cemeteries);
+        vis->setPeople(people);
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
         //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
         
         archie.setDomain(myCity);

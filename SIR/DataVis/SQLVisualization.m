@@ -217,20 +217,20 @@ classdef SQLVisualization < handle
             hold on;
             ps = plot(obj.T, obj.S);
             set(ps,'Color', obj.bl);
-            pe = plot(obj.T, obj.I);
-            set(pe, 'Color', obj.yl);
-            pi = plot(obj.T, obj.P);
+            %pe = plot(obj.T, obj.I);
+            %set(pe, 'Color', obj.yl);
+            pi = plot(obj.T, obj.P+obj.I);
             set(pi, 'Color', obj.re);
             pr = plot(obj.T, obj.R);
             set(pr, 'Color', obj.gr);
             pd = plot(obj.T, obj.D);
             set(pd, 'Color', 'k');
      
-            set([ps,pe,pi,pr,pd],'LineWidth', 3);
+            set([ps,pi,pr,pd],'LineWidth', 3);
             grid on;
-            l = legend([ps,pe,pi,pr,pd],sprintf('Susceptible - %d',obj.S(end)),...
-                sprintf('Exposed - %d',obj.I(end)), ...
-                sprintf('Infected - %d',obj.P(end)), ...
+            %sprintf('Exposed - %d',obj.I(end)),...
+            l = legend([ps,pi,pr,pd],sprintf('Susceptible - %d',obj.S(end)),... 
+                sprintf('Infected - %d',obj.P(end)+obj.I(end)), ...
                 sprintf('Recovered - %d',obj.R(end)),...
                 sprintf('Dead - %d',obj.D(end)));
             set(l, 'FontSize', 16);
