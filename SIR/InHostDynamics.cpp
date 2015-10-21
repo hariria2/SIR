@@ -8,13 +8,14 @@
 
 #include "InHostDynamics.h"
 
-InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi){
+InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol){
     setID(id);
     setdt(ti);
     setT(sc);
     setI(ic);
     setV(vi);
     setTi(sc);
+    setTol(tol);
 }
 
 // setters
@@ -57,6 +58,12 @@ void InHostDynamics::setMaxInfLev(double mil){
 void InHostDynamics::setNE(double ne){
     NE = ne;
 }
+void InHostDynamics::setTol(double tol){
+    Tol = tol;
+}
+void InHostDynamics::setILRate(double ilrate){
+    ILRate = ilrate;
+}
 
 // getters
 int InHostDynamics::getID(){
@@ -98,6 +105,12 @@ double InHostDynamics::getMaxInfLev(){
 double InHostDynamics::getNE(){
     return NE;
 }
+double InHostDynamics::getTol(){
+    return Tol;
+}
+double InHostDynamics::getILRate(){
+    return ILRate;
+}
 
 //utilities
 void InHostDynamics::Simulate(){
@@ -134,10 +147,22 @@ void InHostDynamics::Update(){
 
 void InHostDynamics::Flow(){
     
-    dT = -Beta*T*V;
-    dI =  Beta*T*V - Delta*I;
-    double cv = P*I - C*V + NE;
-    dV =  cv;
+    
+    if (T<Tol){
+        if (!HasBeenSick){
+            dT = ILRate;
+            dI = 0.0;
+            dV = 0.0;
+        } else{
+            dT = -Beta*T*V;
+            dI = Beta*T*V - Delta*I;
+            dV = P*I - C*V + NE;
+        }
+    }else {
+        dT = -Beta*T*V;
+        dI = Beta*T*V - Delta*I;
+        dV = P*I - C*V + NE;
+    }
     
 }
 

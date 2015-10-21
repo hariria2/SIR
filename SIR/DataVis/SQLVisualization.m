@@ -388,7 +388,7 @@ classdef SQLVisualization < handle
                 
                 subplot(length(ppl),1,ii)
                 c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
-                obj.ShadeMyFig(t, [0.01,0.3,2.8,ymax], c)
+                obj.ShadeMyFig(t, [0.01,0.3,2.5,ymax], c)
                 hold on
                 [ax,sph,vph] = plotyy(t, SC, t, VL);
                 set(ax(1),'ycolor','k','FontSize',14) 
@@ -400,7 +400,10 @@ classdef SQLVisualization < handle
                 set(iph, 'Color',obj.re, 'linewidth', 3);
                 ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
                 grid on
-                ylim([0, ymax])
+                if ymax > 0
+                    ylim([0, ymax])
+                end
+                    
                 if obj.ShowDemand
                     plot(t, obj.Demand, 'k-');
                 end

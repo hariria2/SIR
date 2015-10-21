@@ -182,7 +182,7 @@ void Architect::Simulate(){
                                      to_string(Econ.getDemand())
                                      );
             Update(sqlDataPtr);
-            //usleep(static_cast<int>(TimeStep*1000000));
+            usleep(static_cast<int>(TimeStep*1000000));
         }
         
     }

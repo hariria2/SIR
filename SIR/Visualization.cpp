@@ -77,7 +77,7 @@ void Visualization::Render(){
     
     DrawPlace();
     DrawPeople();
-    
+    //DrawTestPoint(400, 400);
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
@@ -162,7 +162,7 @@ void Visualization::DrawPeople(){
 }
 void Visualization::DrawTestPoint(float x, float y){
     glBegin(GL_POINTS);
-    glColor3f(0.5f, 0.5f, 0.5f); glVertex3f(2*x/700 - 1, 2*y/900. - 1, 0.);
+    glColor3f(1.0f, 1.0f, 0.0f); glVertex3f(2*x/700 - 1, 2*y/900. - 1, 0.);
     glEnd();
 };
 
@@ -172,8 +172,9 @@ void Visualization::error_callback(int error, const char* description)
 }
 void Visualization::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 }
 void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -183,7 +184,7 @@ void Visualization::mouse_button_callback(GLFWwindow* window, int button, int ac
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         Visualization* vis = getVisualization(700, 700);
-        vis->DrawTestPoint(450,400);
+        vis->DrawTestPoint(400,400);
     }
 }
 

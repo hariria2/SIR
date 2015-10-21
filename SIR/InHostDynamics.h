@@ -17,7 +17,7 @@ using namespace std;
 class InHostDynamics {
 public:
     
-    InHostDynamics(int id, double ti, double sc, double ic, double vi);
+    InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol);
     
     ~InHostDynamics();
     
@@ -35,6 +35,8 @@ public:
     void setV(double vi);
     void setMaxInfLev(double mil);
     void setNE(double ne);
+    void setTol(double tol);
+    void setILRate(double ilrate);
     
     // getters
     int getID();
@@ -50,6 +52,8 @@ public:
     double getV();
     double getMaxInfLev();
     double getNE();
+    double getTol();
+    double getILRate();
     
     
     // utilities
@@ -58,7 +62,7 @@ public:
     void Flow();
     void Jacobian();
     
-    
+    int HasBeenSick = 0;
 private:
     
     int ID;
@@ -81,6 +85,9 @@ private:
     double Delta;
     double P;
     double C;
+    double Tol;
+    double ILRate;
+    
     
     
 };
