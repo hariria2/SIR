@@ -97,8 +97,8 @@
 		D87484221AB36A78007EC18E /* SIR */ = {
 			isa = PBXGroup;
 			children = (
-				D8E077A11BCF15E600FE27FA /* Visualization.h */,
 				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,
+				D8E077A11BCF15E600FE27FA /* Visualization.h */,
 				D8E0779E1BCF144C00FE27FA /* Visualization.cpp */,
 				D81C45A71B6A9353007007FA /* SQLStorage.h */,
 				D8F170481B77F10600316080 /* Economy.cpp */,
