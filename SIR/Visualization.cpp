@@ -61,17 +61,20 @@ void Visualization::Init(){
     setWindow();
     glfwMakeContextCurrent(_window);
     glfwSwapInterval(1);
+    
+    
+    int width, height;
+    glEnable(GL_POINT_SMOOTH);
+    glfwGetFramebufferSize(_window, &width, &height);
+    glViewport(0, 0, width, height);
+    
     glfwSetKeyCallback(_window, key_callback);
     glfwSetInputMode(_window, GLFW_STICKY_MOUSE_BUTTONS, 1);
     glfwSetCursorPosCallback(_window, cursor_pos_callback);
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
 }
 void Visualization::Render(){
-    int width, height;
     glPointSize(10.f);
-    glEnable(GL_POINT_SMOOTH);
-    glfwGetFramebufferSize(_window, &width, &height);
-    glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.3f, 0.0f, 0.9f);
     

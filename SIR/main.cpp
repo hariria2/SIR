@@ -213,7 +213,7 @@ void Example2_MultiLocation(bool SaveData){
     normal_distribution<double> deltaDist(3./100,0);
     normal_distribution<double> PDist(.5,0);
     normal_distribution<double> CDist(0.8,0);
-    normal_distribution<double> ILDist(0.01,0.02);
+    normal_distribution<double> ILDist(0.01,0.01);
     
     vector<Person*> people;
     for (int i=1; i <= population; i++){

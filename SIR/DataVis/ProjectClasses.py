@@ -2,7 +2,7 @@
 class Location:
 
 
-    def __init__(self, name, ltype, id, xmin, xmax, ymin, ymax):
+    def __init__(self, id, name, ltype, xmin, xmax, ymin, ymax):
         self._ID = id
         self._xmin = xmin
         self._xmax = xmax
@@ -40,4 +40,4 @@ class Person:
     def setVC(self, vc):
         self._VC = vc
     def setVL(self, vl):
-        self.VL = vl
+        self._VL = vl

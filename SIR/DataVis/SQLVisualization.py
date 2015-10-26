@@ -20,10 +20,16 @@ class SQLVisualization:
         self._Locations = []
         self._LocationIDs = []
 
-        self.gr = [0.2, 0.7, 0.3];
-        self.re = [0.7, 0.2, 0.3];
-        self.bl = [0.2, 0.3, 0.7];
-        self.yl = [0.7, 0.7, 0.3];
+        self.gr = '#32AF4B'
+        self.re = '#AF324B'
+        self.bl = '#323BAF'
+        self.yl = '#AFAF4B'
+
+    def isMember(self,list, elt):
+        for m in list:
+            if elt == m:
+                return True
+        return False
 
     def getHistoryData(self):
         sqlquery = 'SELECT * FROM HistoryData';
@@ -41,7 +47,7 @@ class SQLVisualization:
         self.Sc = [row[9] for row in data]
         self.GDP = [row[10] for row in data]
         self.Demand = [row[11] for row in data]
-    def getPerson(self, ids, t):
+    def getPerson(self, ids):
         query1 = '';
         query2 = '';
         if ids == 'All':
@@ -160,8 +166,6 @@ class SQLVisualization:
 
     def PlotHistory(self, fignum):
         h = plt.figure(fignum);
-        print len(self.T)
-        print len(self.S)
         ps = plt.plot(self.T, self.S);
         plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
         pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)])
@@ -181,66 +185,60 @@ class SQLVisualization:
         #set(l, 'FontSize', 16);
         ##plt.xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
         #plt.ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
-    def PlotIndividual(self, fignum, ppl):
-        h = plt.figure(fignum);
 
-        ymax = 0;
+    def PlotIndividual(self,fignum, ppl):
 
-        for ii = range(len(ppl)):
-
-            #if (ppl[ii] in self._PersonIDs):
-            #    p = []
-
-            if obj.isMember(obj.PeopleIDs, ppl(ii))
-                p = obj.People(obj.PeopleIDs==ppl(ii));
-            else
-                    obj.getPerson(ppl(ii));
-                    p = obj.People(obj.PeopleIDs==ppl(ii));
-                end
-                SC = p.SusCells;
-                IC = p.InfCells;
-                VL = p.VirLoads;
-                ymax = max(ymax,max(SC));
-            end
+        h = plt.figure(fignum)
+        #ax1 = h.add_subplot(111)
+        ymax = 0
+        ymin = 0
 
 
+        for ii in ppl:
+            if self.isMember(self._PersonIDs, ppl[ii-1]):
+                p = self.People(ii-1);
+            else:
+                self.getPerson([ii]);
+                p = self._People[ii-1];
 
-            for ii = 1:length(ppl)
-                p = obj.People(obj.PeopleIDs==ppl(ii));
-                SC = p.SusCells;
-                IC = p.InfCells;
-                VL = p.VirLoads;
-                t = p.Time;
+            SC = p._SC;
+            IC = p._IC;
+            VL = p._VL;
 
-                subplot(length(ppl),1,ii)
-                c = [0,0.9,0; 0.9,0.9,0; 0.9,0,0; 0.0,0.0,0.0];
-                obj.ShadeMyFig(t, [0.01,0.3,2.5,ymax], c)
-                hold on
-                [ax,sph,vph] = plotyy(t, SC, t, VL);
-                set(ax(1),'ycolor','k','FontSize',14)
-                set(ax(2),'ycolor',obj.gr,'FontSize',14)
-                set(sph,'Color',obj.bl,'LineWidth',3);
-                set(vph,'Color',obj.gr,'LineWidth',3);
 
-                iph = plot( t, IC);
-                set(iph, 'Color',obj.re, 'linewidth', 3);
-                ylabel(sprintf('ID: %d',ppl(ii)),'FontSize', 16);
-                grid on
-                if ymax > 0
-                    ylim([0, ymax])
-                end
+        for ii in ppl:
+            p = self._People[ii-1]
+            SC = p._SC;
+            IC = p._IC;
+            VL = p._VL;
+            t = p._Time;
 
-                if obj.ShowDemand
-                    plot(t, obj.Demand, 'k-');
-                end
-                hold off
-                if ii == 1
-                    l = legend ([sph,iph,vph], 'Susceptible cells', 'Infected Cells','Viral Load');
-                    newPosition = [0.31 0.6 0.4 0.73];
-                    newUnits = 'normalized';
-                    set(l,'Position', newPosition,'Units', newUnits, 'Orientation','horizontal', 'FontSize', 18);
-                end
-            end
+            ymax = max(ymax, max(SC))
+            ymin = min(ymin, min(SC))
+            ymin = min(ymin, min(VL))
 
-            %subplot(length(ppl),1,length(ppl))
-            xlabel('Time', 'FontSize', 16)
+            ax1 = h.add_subplot(len(ppl),1,ii)
+            if ii+1 == len(ppl):
+                plt.xlabel('Time')
+            p1 = ax1.plot(t, SC)
+            plt.setp(p1, 'Color', self.bl, 'linewidth', 3)
+            p2 = ax1.plot(t, IC)
+            plt.setp(p2, 'Color', self.re, 'linewidth', 3)
+            plt.ylim(ymax=ymax)
+            plt.ylim(ymin=ymin)
+            plt.ylabel('Person %d' % self._PersonIDs[ii-1])
+
+            ax2 = ax1.twinx()
+            p3 = ax2.plot(t, VL)
+            plt.setp(p3, 'Color', self.gr, 'linewidth', 3)
+            for tl in ax2.get_yticklabels():
+                tl.set_color(self.gr)
+
+            ax1.grid(True)
+
+            ax1.axhspan(ymin, 0.01, color=(0,0.9,0), alpha=0.1, lw=0)
+            ax1.axhspan(0.01, 0.3, color=(0.9,0.9,0), alpha=0.1, lw=0)
+            ax1.axhspan(0.3, 2.5, color=(0.9,0,0), alpha=0.1, lw=0)
+            ax1.axhspan(02.5, ymax, color=(0.0,0.0,0.0), alpha=0.1, lw=0)
+
+            #plt.ylabel('')

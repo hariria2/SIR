@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 vis = SQLVisualization('root','','localhost','sim_v1_10_22_2015')
 
 vis.getHistoryData()
-vis.PlotHistory(1)
-vis.PlotHistory(2)
+#vis.PlotHistory(1)
+
+vis.PlotIndividual(2, [1,2,3])
+
 vis.Render()
