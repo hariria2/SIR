@@ -31,6 +31,11 @@ public:
     void setY(int y);
     void setPeople(vector<Person*> person);
     void setPlaces(vector<Place*> places);
+    void setMouseX(float x);
+    void setMouseY(float y);
+    
+    float getMouseX();
+    float getMouseY();
     
     
     
@@ -46,12 +51,17 @@ public:
     vector<Person*> getPeople();
     vector<Place*> getPlaces();
     
+    void testPrint();
+    
 private:
     
     GLFWwindow* _window;
     
     int _X;
     int _Y;
+    
+    float _MouseX;
+    float _MouseY;
     
     vector<Person*> _People;
     vector<Place*> _Places;

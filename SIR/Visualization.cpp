@@ -31,6 +31,12 @@ void Visualization::setX(int x){
 void Visualization::setY(int y){
     _Y = y;
 }
+void Visualization::setMouseX(float x){
+    _MouseX = x;
+}
+void Visualization::setMouseY(float y){
+    _MouseY = y;
+}
 
 void Visualization::setPeople(vector<Person*> ppl){
     _People = ppl;
@@ -41,6 +47,13 @@ void Visualization::setPlaces(vector<Place*> places){
     }
 }
 
+
+float Visualization::getMouseX(){
+    return _MouseX;
+}
+float Visualization::getMouseY(){
+    return _MouseY;
+}
 
 GLFWwindow* Visualization::getWindow(){
     return _window;
@@ -165,9 +178,13 @@ void Visualization::DrawPeople(){
 }
 void Visualization::DrawTestPoint(float x, float y){
     glBegin(GL_POINTS);
-    glColor3f(1.0f, 1.0f, 0.0f); glVertex3f(2*x/700 - 1, 2*y/900. - 1, 0.);
+    glColor3f(1.0f, 1.0f, 0.0f); glVertex3f(2*x/_X - 1, 2*y/_Y - 1, 0.);
     glEnd();
 };
+
+void Visualization::testPrint(){
+    cout << "=====>THIS IS A TEST<=====" << endl;
+}
 
 void Visualization::error_callback(int error, const char* description)
 {
@@ -181,13 +198,17 @@ void Visualization::key_callback(GLFWwindow* window, int key, int scancode, int 
 }
 void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
+    _visualization->setMouseX(xpos);
+    _visualization->setMouseY(ypos);
+    
     cout << "X: " << xpos << ", " << "Y: " << ypos << endl;
 }
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        Visualization* vis = getVisualization(700, 700);
-        vis->DrawTestPoint(400,400);
+        _visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
+        _visualization->testPrint();
+        cout << _visualization->getMouseX() << endl;
     }
 }
 

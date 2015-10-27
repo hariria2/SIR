@@ -21,7 +21,7 @@ h = vis.PlotLocalPopulation(1);
 vis.FullScreen = 0;
 vis.ShowProgress = 0;
 vis.ShowDemand = 0;
-h2 = vis.PlotIndividual(3, [1, 89, 102, 343]);
+h2 = vis.PlotIndividual(3, [1, 2, 10, 50]);
 
 if makeMovie
     vis.FullScreen = 1;

@@ -194,20 +194,21 @@ class SQLVisualization:
         ymin = 0
 
 
-        for ii in ppl:
-            if self.isMember(self._PersonIDs, ppl[ii-1]):
-                p = self.People(ii-1);
+        for ii, pe in enumerate(ppl):
+            print ii
+            if self.isMember(self._PersonIDs, pe):
+                p = self._People(ii);
             else:
-                self.getPerson([ii]);
-                p = self._People[ii-1];
+                self.getPerson([pe]);
+                p = self._People[ii];
 
             SC = p._SC;
             IC = p._IC;
             VL = p._VL;
 
 
-        for ii in ppl:
-            p = self._People[ii-1]
+        for ii, pe in enumerate(ppl):
+            p = self._People[ii]
             SC = p._SC;
             IC = p._IC;
             VL = p._VL;
@@ -217,7 +218,7 @@ class SQLVisualization:
             ymin = min(ymin, min(SC))
             ymin = min(ymin, min(VL))
 
-            ax1 = h.add_subplot(len(ppl),1,ii)
+            ax1 = h.add_subplot(len(ppl),1,ii+1)
             if ii+1 == len(ppl):
                 plt.xlabel('Time')
             p1 = ax1.plot(t, SC)
@@ -226,7 +227,7 @@ class SQLVisualization:
             plt.setp(p2, 'Color', self.re, 'linewidth', 3)
             plt.ylim(ymax=ymax)
             plt.ylim(ymin=ymin)
-            plt.ylabel('Person %d' % self._PersonIDs[ii-1])
+            plt.ylabel('Person %d' % self._PersonIDs[ii])
 
             ax2 = ax1.twinx()
             p3 = ax2.plot(t, VL)
