@@ -10,6 +10,7 @@ class SQLVisualization:
     re = [0.7, 0.2, 0.3];
     bl = [0.2, 0.3, 0.7];
     yl = [0.7, 0.7, 0.3];
+    plt.rc('font', family='serif')
 
     def __init__(self,usrnm,psswd,hst,db):
         cnx = mysql.connector.connect(user=usrnm, password=psswd,host=hst,database=db)
@@ -24,6 +25,7 @@ class SQLVisualization:
         self.re = '#AF324B'
         self.bl = '#323BAF'
         self.yl = '#AFAF4B'
+
 
     def isMember(self,list, elt):
         for m in list:
@@ -166,36 +168,29 @@ class SQLVisualization:
 
     def PlotHistory(self, fignum):
         h = plt.figure(fignum);
-        ps = plt.plot(self.T, self.S);
+        ps = plt.plot(self.T, self.S, label="Susceptible")
         plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
-        pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)])
+        pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)], label="Infected")
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
-        pr = plt.plot(self.T, self.R);
+        pr = plt.plot(self.T, self.R, label="Recovered")
         plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-        pd = plt.plot(self.T, self.D);
+        pd = plt.plot(self.T, self.D, label="Dead")
         plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
         plt.grid(True)
-
-        #plt.setp([ps,pi,pr,pd],'LineWidth', 3);
-
-        #l = plt.legend([ps,pi,pr,pd],sprintf('Susceptible - %d',obj.S(end)),...
-            #sprintf('Infected - %d',obj.P(end)+obj.I(end)), ...
-            #sprintf('Recovered - %d',obj.R(end)),...
-            #sprintf('Dead - %d',obj.D(end)));
-        #set(l, 'FontSize', 16);
-        ##plt.xlabel('Time','Interpreter', 'Latex', 'FontSize', 16)
-        #plt.ylabel('Population','Interpreter', 'Latex', 'FontSize', 16)
+        plt.legend()
+        #set(l, 'FontSize', 16)
+        plt.xlabel(r'Time', fontsize=18)
+        plt.ylabel(r'Population', fontsize=18)
 
     def PlotIndividual(self,fignum, ppl):
 
         h = plt.figure(fignum)
-        #ax1 = h.add_subplot(111)
         ymax = 0
         ymin = 0
 
 
         for ii, pe in enumerate(ppl):
-            print ii
+
             if self.isMember(self._PersonIDs, pe):
                 p = self._People(ii);
             else:
@@ -219,18 +214,17 @@ class SQLVisualization:
             ymin = min(ymin, min(VL))
 
             ax1 = h.add_subplot(len(ppl),1,ii+1)
-            if ii+1 == len(ppl):
-                plt.xlabel('Time')
-            p1 = ax1.plot(t, SC)
+            p1 = ax1.plot(t, SC,label="Scuseptible Cells")
             plt.setp(p1, 'Color', self.bl, 'linewidth', 3)
-            p2 = ax1.plot(t, IC)
+            p2 = ax1.plot(t, IC, label="Infected Cells")
             plt.setp(p2, 'Color', self.re, 'linewidth', 3)
             plt.ylim(ymax=ymax)
             plt.ylim(ymin=ymin)
-            plt.ylabel('Person %d' % self._PersonIDs[ii])
-
+            plt.ylabel(r'ID $%d$' % self._PersonIDs[ii],fontsize=18)
+            if ii+1 == len(ppl):
+                plt.xlabel(r"Time", fontsize=18)
             ax2 = ax1.twinx()
-            p3 = ax2.plot(t, VL)
+            p3 = ax2.plot(t, VL, label="Viral Load")
             plt.setp(p3, 'Color', self.gr, 'linewidth', 3)
             for tl in ax2.get_yticklabels():
                 tl.set_color(self.gr)
@@ -242,4 +236,7 @@ class SQLVisualization:
             ax1.axhspan(0.3, 2.5, color=(0.9,0,0), alpha=0.1, lw=0)
             ax1.axhspan(02.5, ymax, color=(0.0,0.0,0.0), alpha=0.1, lw=0)
 
-            #plt.ylabel('')
+            if ii == 0:
+                lines1, labels1 = ax1.get_legend_handles_labels()
+                lines2, labels2 = ax2.get_legend_handles_labels()
+                ax2.legend(lines1 + lines2, labels1 + labels2, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=3, mode="expand", borderaxespad=0.)

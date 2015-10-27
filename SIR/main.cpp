@@ -248,7 +248,7 @@ void Example2_MultiLocation(bool SaveData){
         
         
         // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.01,0,0.0,VirLev,ict);
+        InHostDynamics ihd = InHostDynamics(i,0.01,-1,0.0,VirLev,ict);
         
         double randil = ILDist(generator);
         double il = (randil < 0.001)? 0.001:randil;
@@ -294,7 +294,7 @@ void Example2_MultiLocation(bool SaveData){
     
     if (SaveData) {
         string ver = "1";
-        cout << "Enter version number for multi location simulation: ";
+        //cout << "Enter version number for multi location simulation: ";
         //cin >> ver;
         string dataFolder = "data_multi_v"+ver+"_";
         string movieFolder = "movie_multi_v"+ver+"_";
@@ -389,7 +389,7 @@ void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, ve
     cityFile.open(cityFileName, ios_base::in);
     
     if (cityFile.is_open()){
-        cout << "File opened correctly. The contents are: " << endl;
+        cout << "City File opened correctly." << endl;
      
         string sID;
         string name;
