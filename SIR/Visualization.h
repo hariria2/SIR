@@ -17,6 +17,7 @@
 //#include <algorithm>
 
 #include <GLFW/glfw3.h>
+#include <GLUT/GLUT.h>
 #include "Person.h"
 #include "Place.h"
 
@@ -45,6 +46,7 @@ public:
     void DrawPeople();
     void DrawPlace();
     void DrawTestPoint(float x, float y);
+    void DrawText(const char *text, int length, int x, int y);
     
     GLFWwindow* getWindow();
     

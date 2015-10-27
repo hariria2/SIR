@@ -17,12 +17,14 @@ Visualization::Visualization(int x, int y){
 }
 
 void Visualization::setWindow(){
-    _window = glfwCreateWindow(_X, _Y, "My Awesome Real-Time OpenGL Animation", NULL, NULL);
+    
+    _window = glfwCreateWindow(_X, _Y, "Awesomeness", NULL, NULL);
     if (!_window)
     {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+    
     
 }
 void Visualization::setX(int x){
@@ -79,12 +81,13 @@ void Visualization::Init(){
     int width, height;
     glEnable(GL_POINT_SMOOTH);
     glfwGetFramebufferSize(_window, &width, &height);
-    glViewport(0, 0, width, height);
-    
+    //glViewport(0, 0, width, height);
+    glViewport(0, 0, 1200, 800);
     glfwSetKeyCallback(_window, key_callback);
     glfwSetInputMode(_window, GLFW_STICKY_MOUSE_BUTTONS, 1);
     glfwSetCursorPosCallback(_window, cursor_pos_callback);
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
+    
 }
 void Visualization::Render(){
     glPointSize(10.f);
@@ -94,12 +97,15 @@ void Visualization::Render(){
     DrawPlace();
     DrawPeople();
     //DrawTestPoint(400, 400);
+    string text = "This is a simple text.";
+    glColor3f(1, 1, 0);
+    DrawText(text.data(), text.size(), 1350, 700);
+    
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
 
 void Visualization::DrawPlace(){
-    
     float x1, x2, x3, x4;
     float y1, y2, y3, y4;
     float RR, GG, BB;
@@ -181,6 +187,27 @@ void Visualization::DrawTestPoint(float x, float y){
     glColor3f(1.0f, 1.0f, 0.0f); glVertex3f(2*x/_X - 1, 2*y/_Y - 1, 0.);
     glEnd();
 };
+void Visualization::DrawText(const char *text, int length, int x, int y){
+    glMatrixMode(GL_PROJECTION);
+    double *matrix = new double[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+    glLoadIdentity();
+    glOrtho(0, _X, 0, _Y, -5, 5);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glPushMatrix();
+    glLoadIdentity();
+    glRasterPos2i(x,y);
+    for (int i=0; i<length; i++){
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (int)text[i]);
+    }
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(matrix);
+    glMatrixMode(GL_MODELVIEW);
+    
+}
+
 
 void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;

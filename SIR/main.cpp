@@ -248,7 +248,7 @@ void Example2_MultiLocation(bool SaveData){
         
         
         // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.01,-1,0.0,VirLev,ict);
+        InHostDynamics ihd = InHostDynamics(i,0.01,0,0.0,VirLev,ict);
         
         double randil = ILDist(generator);
         double il = (randil < 0.001)? 0.001:randil;
