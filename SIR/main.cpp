@@ -310,7 +310,7 @@ void Example2_MultiLocation(bool SaveData){
         Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
         vis->Init();
         vis->setArchitect(&archie);
-        vis->RenderSplash();
+        //vis->RenderSplash();
         //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
         
         archie.setDomain(myCity);

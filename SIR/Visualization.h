@@ -58,6 +58,7 @@ private:
     Architect* _Architect;
     
     GLFWwindow* _window;
+    const GLFWvidmode* mode;
     
     int _X;
     int _Y;

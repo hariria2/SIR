@@ -162,7 +162,8 @@ void Architect::Simulate(){
         PrepDB();
         
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
-            time_t start = time(0);
+            
+            unsigned long start_s=clock();
             if (CurrentTime - floor(CurrentTime) < TimeStep){
                 cout << "time " << CurrentTime << "!" << endl;
             }
@@ -184,10 +185,11 @@ void Architect::Simulate(){
                                      to_string(Econ.getDemand())
                                      );
             Update(sqlDataPtr);
-            time_t end = time(0);
-            double time = difftime(end, start) * 1000.0;
-            if (time < TimeStep*1000000){
-                usleep(static_cast<int>(TimeStep*1000000) - time);
+            
+            
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            if ((time*1000000) < (TimeStep*1000000)){
+                usleep(static_cast<int>((TimeStep*1000000) - time*1000000));
             }
             
         }

@@ -19,7 +19,14 @@ void Visualization::setArchitect(Architect *archie){
 }
 void Visualization::setWindow(){
     
-    _window = glfwCreateWindow(_X, _Y, "Awesomeness", NULL, NULL);
+    mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    
+    _window =glfwCreateWindow(mode->width, mode->height, "DiseaseVille", glfwGetPrimaryMonitor(), NULL);
+    //_window = glfwCreateWindow(_X, _Y, "Awesomeness", NULL, NULL);
     if (!_window)
     {
         glfwTerminate();
@@ -96,13 +103,9 @@ void Visualization::Render(){
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.3f, 0.0f, 0.9f);
     
-    
     DrawPlace();
     DrawPeople();
     DrawLabel();
-    
-    //DrawTestPoint(400, 400);
-    
     
     glfwSwapBuffers(_window);
     glfwPollEvents();
