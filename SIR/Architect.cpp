@@ -128,6 +128,9 @@ int Architect::getP(){
 int Architect::getR(){
     return R;
 }
+int Architect::getD(){
+    return D;
+}
 int Architect::getSc(){
     return Sc;
 }
@@ -144,7 +147,6 @@ void Architect::IncrementTime(){
 	TimeIndex++;
 }
 void Architect::Simulate(){
-    
 	if (Store == "FileSystem"){
 		dataPtr->citySave();
 		dataPtr->homeSave();
@@ -158,9 +160,9 @@ void Architect::Simulate(){
 	}
     else if (Store == "MYSQL"){
         PrepDB();
-        _Visualization->Init();
+        
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
-            
+            time_t start = time(0);
             if (CurrentTime - floor(CurrentTime) < TimeStep){
                 cout << "time " << CurrentTime << "!" << endl;
             }
@@ -182,7 +184,12 @@ void Architect::Simulate(){
                                      to_string(Econ.getDemand())
                                      );
             Update(sqlDataPtr);
-            usleep(static_cast<int>(TimeStep*1000000));
+            time_t end = time(0);
+            double time = difftime(end, start) * 1000.0;
+            if (time < TimeStep*1000000){
+                usleep(static_cast<int>(TimeStep*1000000) - time);
+            }
+            
         }
         
     }

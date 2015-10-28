@@ -9,24 +9,18 @@
 #ifndef Visualization_h
 #define Visualization_h
 
-#include <stdio.h>
-
-#include <stdio.h>
-#include <iostream>
-#include <vector>
-//#include <algorithm>
-
 #include <GLFW/glfw3.h>
 #include <GLUT/GLUT.h>
-#include "Person.h"
-#include "Place.h"
 
-using namespace std;
+#include "Architect.h"
+
+class Architect;
 
 class Visualization{
+
 public:
     Visualization(int x, int y);
-    
+    void setArchitect(Architect* archie);
     void setWindow();
     void setX(int x);
     void setY(int y);
@@ -35,6 +29,8 @@ public:
     void setMouseX(float x);
     void setMouseY(float y);
     
+    
+    Architect* getArchitect();
     float getMouseX();
     float getMouseY();
     
@@ -42,11 +38,13 @@ public:
     
     void Init();
     void Render();
+    void RenderSplash();
     
     void DrawPeople();
     void DrawPlace();
     void DrawTestPoint(float x, float y);
-    void DrawText(const char *text, int length, int x, int y);
+    void DrawText(const char *text, int length, int x, int y, int fsize);
+    void DrawLabel();
     
     GLFWwindow* getWindow();
     
@@ -56,6 +54,8 @@ public:
     void testPrint();
     
 private:
+    
+    Architect* _Architect;
     
     GLFWwindow* _window;
     

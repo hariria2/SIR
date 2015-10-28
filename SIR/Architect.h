@@ -17,9 +17,11 @@
 #include "Economy.h"
 #include "Visualization.h"
 
+
+
 using namespace std;
 
-class Person;
+class Visualization;
 
 class Architect {
 public:
@@ -49,6 +51,7 @@ public:
     int getI();
     int getP();
     int getR();
+    int getD();
     int getWo();
     int getHo();
     int getSc();

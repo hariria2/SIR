@@ -177,7 +177,7 @@ class SQLVisualization:
         pd = plt.plot(self.T, self.D, label="Dead")
         plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
         plt.grid(True)
-        plt.legend()
+        plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
         #set(l, 'FontSize', 16)
         plt.xlabel(r'Time', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)

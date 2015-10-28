@@ -14,7 +14,6 @@
 		D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D71AB36B3A00726652 /* Domain.cpp */; };
 		D8B403E51AB36B3A00726652 /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D91AB36B3A00726652 /* Person.cpp */; };
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
-		D8B403E71AB36B3A00726652 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DD1AB36B3A00726652 /* README.md */; };
 		D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DE1AB36B3A00726652 /* Storage.cpp */; };
 		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; };
 		D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A21BCF173200FE27FA /* OpenGL.framework */; };
@@ -50,7 +49,6 @@
 		D8B403DA1AB36B3A00726652 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		D8B403DB1AB36B3A00726652 /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Place.cpp; sourceTree = "<group>"; };
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
-		D8B403DD1AB36B3A00726652 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8B403DE1AB36B3A00726652 /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
 		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
@@ -116,7 +114,6 @@
 				D8B403DA1AB36B3A00726652 /* Person.h */,
 				D8B403DB1AB36B3A00726652 /* Place.cpp */,
 				D8B403DC1AB36B3A00726652 /* Place.h */,
-				D8B403DD1AB36B3A00726652 /* README.md */,
 				D8B403DE1AB36B3A00726652 /* Storage.cpp */,
 				D8B403DF1AB36B3A00726652 /* Storage.h */,
 			);
@@ -186,7 +183,6 @@
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
 				D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */,
 				D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */,
-				D8B403E71AB36B3A00726652 /* README.md in Sources */,
 				D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */,
 				D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */,
 				D8B403E61AB36B3A00726652 /* Place.cpp in Sources */,

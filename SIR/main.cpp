@@ -25,7 +25,6 @@ void Example2_MultiLocation(bool SaveData=true);
 //=================
 
 
-
 // ========================= Main ======================
 int main(){
     
@@ -300,7 +299,7 @@ void Example2_MultiLocation(bool SaveData){
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        int xdim = maxdim+400;
+        int xdim = maxdim+500;
         int ydim = maxdim-200;
         Visualization* vis = getVisualization(xdim, ydim);
         vis->setPlaces(homes);
@@ -309,6 +308,9 @@ void Example2_MultiLocation(bool SaveData){
         vis->setPlaces(cemeteries);
         vis->setPeople(people);
         Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
+        vis->Init();
+        vis->setArchitect(&archie);
+        vis->RenderSplash();
         //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
         
         archie.setDomain(myCity);

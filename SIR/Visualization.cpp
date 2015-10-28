@@ -8,14 +8,15 @@
 
 #include "Visualization.h"
 
-using namespace std;
-
 
 Visualization::Visualization(int x, int y){
     setX(x);
     setY(y);
 }
 
+void Visualization::setArchitect(Architect *archie){
+    _Architect = archie;
+}
 void Visualization::setWindow(){
     
     _window = glfwCreateWindow(_X, _Y, "Awesomeness", NULL, NULL);
@@ -50,6 +51,9 @@ void Visualization::setPlaces(vector<Place*> places){
 }
 
 
+Architect* Visualization::getArchitect(){
+    return _Architect;
+}
 float Visualization::getMouseX(){
     return _MouseX;
 }
@@ -81,28 +85,40 @@ void Visualization::Init(){
     int width, height;
     glEnable(GL_POINT_SMOOTH);
     glfwGetFramebufferSize(_window, &width, &height);
-    //glViewport(0, 0, width, height);
-    glViewport(0, 0, 1200, 800);
+    glViewport(0, 0, width, height);
     glfwSetKeyCallback(_window, key_callback);
     glfwSetInputMode(_window, GLFW_STICKY_MOUSE_BUTTONS, 1);
     glfwSetCursorPosCallback(_window, cursor_pos_callback);
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
-    
 }
 void Visualization::Render(){
     glPointSize(10.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.3f, 0.0f, 0.9f);
     
+    
     DrawPlace();
     DrawPeople();
+    DrawLabel();
+    
     //DrawTestPoint(400, 400);
-    string text = "This is a simple text.";
-    glColor3f(1, 1, 0);
-    DrawText(text.data(), text.size(), 1350, 700);
+    
     
     glfwSwapBuffers(_window);
     glfwPollEvents();
+}
+
+void Visualization::RenderSplash(){
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.2f, 0.2f, 0.0f, 0.9f);
+    string text = "Welcome to DiseaseVille.";
+    glColor3f(1, 1, 0);
+    DrawText(text.data(), (int) text.size(), _X/2-100, _Y/2, 24);
+    text = "Written by Sahand";
+    DrawText(text.data(), (int) text.size(), _X/2+100-100, _Y/2-20, 10);
+    glfwSwapBuffers(_window);
+    glfwPollEvents();
+    sleep(4);
 }
 
 void Visualization::DrawPlace(){
@@ -187,7 +203,7 @@ void Visualization::DrawTestPoint(float x, float y){
     glColor3f(1.0f, 1.0f, 0.0f); glVertex3f(2*x/_X - 1, 2*y/_Y - 1, 0.);
     glEnd();
 };
-void Visualization::DrawText(const char *text, int length, int x, int y){
+void Visualization::DrawText(const char *text, int length, int x, int y, int fsize){
     glMatrixMode(GL_PROJECTION);
     double *matrix = new double[16];
     glGetDoublev(GL_PROJECTION_MATRIX, matrix);
@@ -199,7 +215,17 @@ void Visualization::DrawText(const char *text, int length, int x, int y){
     glLoadIdentity();
     glRasterPos2i(x,y);
     for (int i=0; i<length; i++){
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (int)text[i]);
+        if (fsize == 10){
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, (int)text[i]);
+        } else if (fsize == 12){
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, (int)text[i]);
+        }else if (fsize == 18){
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, (int)text[i]);
+        }else if (fsize == 24){
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, (int)text[i]);
+        }else{
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, (int)text[i]);
+        }
     }
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -207,7 +233,44 @@ void Visualization::DrawText(const char *text, int length, int x, int y){
     glMatrixMode(GL_MODELVIEW);
     
 }
-
+void Visualization::DrawLabel(){
+    char buffer [50];
+    int leftedge  = 1340;
+    int rightedge = 1450;
+    string tim = "Time: ";
+    string sus = "Susceptible: ";
+    string exp = "Exposed: ";
+    string inf = "Infected: ";
+    string rec = "Recovered: ";
+    string ded = "Dead: ";
+    
+    sprintf(buffer,"%2.2f", _Architect->getDailyTime());
+    string timVal = buffer;
+    string susVal = to_string(_Architect->getS());
+    string expVal = to_string(_Architect->getI());
+    string infVal = to_string(_Architect->getP());
+    string recVal = to_string(_Architect->getR());
+    string dedVal = to_string(_Architect->getD());
+    
+    glColor3f(1, 0.7, 0);
+    
+    
+    DrawText(tim.data(), (int) tim.size(), leftedge, 780, 18);
+    DrawText(sus.data(), (int) sus.size(), leftedge, 760, 18);
+    DrawText(exp.data(), (int) exp.size(), leftedge, 740, 18);
+    DrawText(inf.data(), (int) inf.size(), leftedge, 720, 18);
+    DrawText(rec.data(), (int) rec.size(), leftedge, 700, 18);
+    DrawText(ded.data(), (int) ded.size(), leftedge, 680, 18);
+    
+    DrawText(timVal.data(), (int) timVal.size(), rightedge, 780, 18);
+    DrawText(susVal.data(), (int) susVal.size(), rightedge, 760, 18);
+    DrawText(expVal.data(), (int) expVal.size(), rightedge, 740, 18);
+    DrawText(infVal.data(), (int) infVal.size(), rightedge, 720, 18);
+    DrawText(recVal.data(), (int) recVal.size(), rightedge, 700, 18);
+    DrawText(dedVal.data(), (int) dedVal.size(), rightedge, 680, 18);
+    
+    
+}
 
 void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
