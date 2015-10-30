@@ -19,11 +19,13 @@ class Architect;
 class Visualization{
 
 public:
-    Visualization(int x, int y);
+    Visualization(int x, int y, bool fsq);
     void setArchitect(Architect* archie);
     void setWindow();
     void setX(int x);
     void setY(int y);
+    void setXRedFctr(double xredfctr);
+    void setYRedFctr(double yredfctr);
     void setPeople(vector<Person*> person);
     void setPlaces(vector<Place*> places);
     void setMouseX(float x);
@@ -33,6 +35,12 @@ public:
     Architect* getArchitect();
     float getMouseX();
     float getMouseY();
+    double getXRedFactr();
+    double getYRedFactr();
+    GLFWwindow* getWindow();
+    
+    vector<Person*> getPeople();
+    vector<Place*> getPlaces();
     
     
     
@@ -45,12 +53,13 @@ public:
     void DrawTestPoint(float x, float y);
     void DrawText(const char *text, int length, int x, int y, int fsize);
     void DrawLabel();
+    void DrawBarGraph(double x0, double y0, double val, string c);
     
-    GLFWwindow* getWindow();
-    
-    vector<Person*> getPeople();
-    vector<Place*> getPlaces();
-    
+    float XTransform(double x);
+    float YTransform(double y);
+    float InvXTrsfrm(double x);
+    float InvYTrsfrm(double y);
+   
     void testPrint();
     
 private:
@@ -60,8 +69,12 @@ private:
     GLFWwindow* _window;
     const GLFWvidmode* mode;
     
+    bool _FullScreenQ = true;
+    
     int _X;
     int _Y;
+    double _XRedFctr;
+    double _YRedFctr;
     
     float _MouseX;
     float _MouseY;
@@ -77,6 +90,6 @@ private:
 };
 
 static Visualization* _visualization = NULL;
-Visualization* getVisualization(int x, int y);
+Visualization* getVisualization(int x, int y, bool fsq);
 
 #endif /* Visualization_h */

@@ -68,6 +68,8 @@ public:
 	void PopulationData();
     void AddPerson(Person *p);
     void PrepDB();
+    
+    void AddPerson(double x, double y);
 
 private:
 	double InitialTime;

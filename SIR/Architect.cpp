@@ -446,3 +446,22 @@ void Architect::PrepDB(){
     
     
 }
+
+void Architect::AddPerson(double x, double y){
+    /*
+    unsigned long s = PeoplePtr.size();
+    int id = (int) s + 1;
+    Person* p1 = PeoplePtr.front();
+    double dt = (p1->getInHostDynamics()).getdt();
+    
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 2, 2, 3);
+    ihd.setBeta(0.3);
+    ihd.setDelta(0.03);
+    ihd.setP(0.5);
+    ihd.setC(0.8);
+    
+    Disease dis = (p1->getDisease());
+    */
+    
+    //Person* p = new Person(id, "Plago", 20, 'P', dis, ihd, )
+}

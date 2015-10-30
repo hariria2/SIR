@@ -150,7 +150,7 @@ void Example1_SingleLocation(bool SaveData){
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         int xdim = maxdim+200;
         int ydim = maxdim;
-        Visualization vis(xdim,ydim);
+        Visualization vis(xdim,ydim, true);
         vis.setPlaces(homes);
         vis.setPlaces(schools);
         vis.setPlaces(works);
@@ -165,8 +165,8 @@ void Example1_SingleLocation(bool SaveData){
 }
 void Example2_MultiLocation(bool SaveData){
     
-    int maxdim = 1000;
-    int cityBoundary[2][2]   = {{0, maxdim+400},{0, maxdim-200}};
+    int maxdim = 700;
+    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
     Domain myCity("DiseasVille", cityBoundary);
     
     vector<Place*> homes;
@@ -299,9 +299,9 @@ void Example2_MultiLocation(bool SaveData){
         string movieFolder = "movie_multi_v"+ver+"_";
         Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        int xdim = maxdim+500;
-        int ydim = maxdim-200;
-        Visualization* vis = getVisualization(xdim, ydim);
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
         vis->setPlaces(homes);
         vis->setPlaces(schools);
         vis->setPlaces(works);
