@@ -264,12 +264,11 @@ void Person::Move(double theta, double r, string motionType, double demand) {
         return;
     }
     
-    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
+    default_random_engine generator(_RandSeed);
 
-    normal_distribution<double> WSTimeD(8,.2);
+    normal_distribution<double> WSTimeD(8,0);
     double  WSTime = WSTimeD(generator);
-    normal_distribution<double> WETimeD(22,.2);
+    normal_distribution<double> WETimeD(22,0);
     double  WETime = WETimeD(generator);
     
     
@@ -427,14 +426,14 @@ void Person::UpdateDisease() {
     }
 }
 void Person::UpdateDiseaseWithInHost() {
-
-    list<Person*>* peeps = Location->getOccupants();
     
+    list<Person*>* peeps = Location->getOccupants();
+    /*
     if (Time == 10) {
         if (ID == 1){
             ihdynamics.setV(0.01);
         }
-    }
+    }*/
 
     int criticalDistance = 5;
     
@@ -458,7 +457,6 @@ void Person::UpdateDiseaseWithInHost() {
             totalVirion += ((*ip)->ihdynamics.getV())/pow(dist,2);
         }
     }
-    
     ihdynamics.setT0(Time);
     ihdynamics.setNE(0.001*totalVirion);
     ihdynamics.Simulate();

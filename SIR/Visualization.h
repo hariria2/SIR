@@ -55,12 +55,23 @@ public:
     void DrawLabel();
     void DrawBarGraph(double x0, double y0, double val, string c);
     
+    //void DrawPlot();
+    
     float XTransform(double x);
     float YTransform(double y);
     float InvXTrsfrm(double x);
     float InvYTrsfrm(double y);
-   
+    
+    float WXTransform(double x);
+    float WYTransform(double y);
+    float WInvXTrsfrm(double x);
+    float WInvYTrsfrm(double y);
+    
+    void AddPerson(Person* p);
+
     void testPrint();
+    
+    void PlotSIR();
     
 private:
     
@@ -80,7 +91,7 @@ private:
     float _MouseY;
     
     vector<Person*> _People;
-    vector<Place*> _Places;
+    vector<Place*>  _Places;
     
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

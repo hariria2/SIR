@@ -55,6 +55,8 @@ public:
     int getWo();
     int getHo();
     int getSc();
+    Domain* getDomain();
+    
 	vector<Person*> getPeople();
     Visualization* getVisualization();
 
@@ -70,6 +72,7 @@ public:
     void PrepDB();
     
     void AddPerson(double x, double y);
+    Place* LocFromCoo(double x, double y);
 
 private:
 	double InitialTime;

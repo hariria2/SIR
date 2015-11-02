@@ -14,7 +14,7 @@ Visualization::Visualization(int x, int y, bool fsq){
     setX(x);
     setY(y);
     setXRedFctr(0.88);
-    setYRedFctr(0.9);
+    setYRedFctr(0.8);
     _FullScreenQ = fsq;
 }
 
@@ -32,10 +32,8 @@ void Visualization::setWindow(){
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
         _window =glfwCreateWindow(mode->width, mode->height, "DiseaseVille", glfwGetPrimaryMonitor(), NULL);
-        //setX(mode->width);
-        //setY(mode->height);
-        setX(700);
-        setY(700);
+        setX(mode->width);
+        setY(mode->height);
         
     } else{
         _window = glfwCreateWindow(_X, _Y, "Awesomeness", NULL, NULL);
@@ -61,10 +59,10 @@ void Visualization::setYRedFctr(double yredfctr){
     _YRedFctr = yredfctr;
 }
 void Visualization::setMouseX(float x){
-    _MouseX = x;
+    _MouseX = InvXTrsfrm(WXTransform(x));
 }
 void Visualization::setMouseY(float y){
-    _MouseY = y;
+    _MouseY = InvYTrsfrm(WYTransform(_Y-y));
 }
 
 void Visualization::setPeople(vector<Person*> ppl){
@@ -126,15 +124,17 @@ void Visualization::Init(){
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
 }
 void Visualization::Render(){
+    double domx = (_Architect->getDomain())->Boundary[0][1];
+    double domy = (_Architect->getDomain())->Boundary[1][1];
     glPointSize(10.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
     glBegin(GL_POLYGON);
     glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(0), YTransform(0), 0.0);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(_X), YTransform(0), 0.0);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(_X), YTransform(_Y), 0.0);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(0), YTransform(_Y), 0.0);
+    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(domx), YTransform(0), 0.0);
+    glColor3f(0.0, 0.3, .8); glVertex3f(XTransform(domx), YTransform(domy), 0.0);
+    glColor3f(0.9, 0.9, 0.); glVertex3f(XTransform(0), YTransform(domy), 0.0);
     glEnd();
     
     
@@ -272,7 +272,7 @@ void Visualization::DrawText(const char *text, int length, int x, int y, int fsi
 void Visualization::DrawLabel(){
     char buffer [50];
     double leftedge = _XRedFctr*_X + 5;
-    double rightedge = _XRedFctr*_X + 60;
+    double rightedge = _XRedFctr*_X + 120;
     string tim = "Time: ";
     string sus = "Susceptible: ";
     string exp = "Exposed: ";
@@ -291,32 +291,32 @@ void Visualization::DrawLabel(){
     glColor3f(1, 0.7, 0);
     
     
-    DrawText(tim.data(), (int) tim.size(), leftedge, 680, 18);
-    DrawText(sus.data(), (int) sus.size(), leftedge, 660, 18);
-    DrawText(exp.data(), (int) exp.size(), leftedge, 640, 18);
-    DrawText(inf.data(), (int) inf.size(), leftedge, 620, 18);
-    DrawText(rec.data(), (int) rec.size(), leftedge, 600, 18);
-    DrawText(ded.data(), (int) ded.size(), leftedge, 580, 18);
+    DrawText(tim.data(), (int) tim.size(), leftedge, _Y - 20, 18);
+    DrawText(sus.data(), (int) sus.size(), leftedge, _Y - 40, 18);
+    DrawText(exp.data(), (int) exp.size(), leftedge, _Y - 60, 18);
+    DrawText(inf.data(), (int) inf.size(), leftedge, _Y - 80, 18);
+    DrawText(rec.data(), (int) rec.size(), leftedge, _Y - 100, 18);
+    DrawText(ded.data(), (int) ded.size(), leftedge, _Y - 120, 18);
     
-    DrawText(timVal.data(), (int) timVal.size(), rightedge, 680, 18);
-    DrawText(susVal.data(), (int) susVal.size(), rightedge, 660, 18);
-    DrawText(expVal.data(), (int) expVal.size(), rightedge, 640, 18);
-    DrawText(infVal.data(), (int) infVal.size(), rightedge, 620, 18);
-    DrawText(recVal.data(), (int) recVal.size(), rightedge, 600, 18);
-    DrawText(dedVal.data(), (int) dedVal.size(), rightedge, 580, 18);
+    DrawText(timVal.data(), (int) timVal.size(), rightedge, _Y - 20, 18);
+    DrawText(susVal.data(), (int) susVal.size(), rightedge, _Y - 40, 18);
+    DrawText(expVal.data(), (int) expVal.size(), rightedge, _Y - 60, 18);
+    DrawText(infVal.data(), (int) infVal.size(), rightedge, _Y - 80, 18);
+    DrawText(recVal.data(), (int) recVal.size(), rightedge, _Y - 100, 18);
+    DrawText(dedVal.data(), (int) dedVal.size(), rightedge, _Y - 120, 18);
     
-    DrawBarGraph(_X + 25, 400, _Architect->getS(), "S");
-    DrawBarGraph(_X + 45, 400, _Architect->getI(), "I");
-    DrawBarGraph(_X + 65, 400, _Architect->getR(), "R");
+    DrawBarGraph(leftedge + 30, _Y*0.6, _Architect->getS(), "S");
+    DrawBarGraph(leftedge + 60, _Y*0.6, _Architect->getI(), "I");
+    DrawBarGraph(leftedge + 90, _Y*0.6, _Architect->getR(), "R");
     
 }
 
 void Visualization::DrawBarGraph(double x0, double y0, double val, string c){
     
-    float x1 = XTransform(x0);
-    float x2 = XTransform(x0 + 7);
-    float y1 = YTransform(y0);
-    float y2 = YTransform(y0 + 15*val/70);
+    float x1 = WXTransform(x0);
+    float x2 = WXTransform(x0 + 10);
+    float y1 = WYTransform(y0);
+    float y2 = WYTransform(y0 + 200*val/_Y);
     
     float RR, GG, BB;
     
@@ -329,50 +329,71 @@ void Visualization::DrawBarGraph(double x0, double y0, double val, string c){
     }
     
     glBegin(GL_POLYGON);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x1, y1, 0.0f);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x2, y1, 0.0f);
+    glColor3f(1.f, 0.9f, 0.9f); glVertex3f(x1, y1, 0.0f);
+    glColor3f(1.f, 0.9f, 0.9f); glVertex3f(x2, y1, 0.0f);
     glColor3f(RR, GG, BB);      glVertex3f(x2, y2, 0.0f);
     glColor3f(RR, GG, BB);      glVertex3f(x1, y2, 0.0f);
     glEnd();
     
     glBegin(GL_POLYGON);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x1-0.01, y1, 0.0f);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x2+0.01, y1, 0.0f);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x2+0.01, y1+0.01, 0.0f);
-    glColor3f(1.f, 0.8f, 0.8f); glVertex3f(x1-0.01, y1+0.01, 0.0f);
+    glColor4f(RR, GG, BB,0.2); glVertex3f(x1-0.01, y1, 0.0f);
+    glColor4f(RR, GG, BB,0.2); glVertex3f(x2+0.01, y1, 0.0f);
+    glColor4f(1.f, 0.9f, 0.9f,0.2); glVertex3f(x2+0.01, y1+0.01, 0.0f);
+    glColor4f(1.f, 0.9f, 0.9f,0.2); glVertex3f(x1-0.01, y1+0.01, 0.0f);
     glEnd();
     
     glColor3f(RR, GG, BB);
-    DrawText(c.data(), (int) c.size(), InvXTrsfrm((x1+x2)/2) , InvYTrsfrm(y1+y1), 18);
-    
+    DrawText(c.data(), (int) c.size(), WInvXTrsfrm((x1+x2)/2)-5 , WInvYTrsfrm(y1)-20, 24);
     }
 
 
 
 
 float Visualization::XTransform(double x){
+    double domx = (_Architect->getDomain())->Boundary[0][1];
     double trans = (1-_XRedFctr);
-    return _XRedFctr*(2.*x/_X - 1)-trans;
+    return _XRedFctr*(2.*x/domx - 1)-trans;
 }
 float Visualization::YTransform(double y){
+    double domy = (_Architect->getDomain())->Boundary[1][1];
     double trans = (1-_YRedFctr);
-    return _YRedFctr*(2.*y/_Y - 1)+trans;
+    return _YRedFctr*(2.*y/domy - 1)+trans;
 }
 float Visualization::InvXTrsfrm(double x){
+    double domx = (_Architect->getDomain())->Boundary[0][1];
     double trans = (1-_XRedFctr);
-    return _X*((x+trans)/_XRedFctr + 1)/2;
+    return domx*((x+trans)/_XRedFctr + 1)/2;
 }
 float Visualization::InvYTrsfrm(double y){
+    double domy = (_Architect->getDomain())->Boundary[1][1];
     double trans = (1-_YRedFctr);
-    return _Y*((y+trans)/_YRedFctr - 1)/2;
+    return domy*((y-trans)/_YRedFctr + 1)/2;
 }
 
+float Visualization::WXTransform(double x){
+    return 2.*x/_X - 1;
+}
+float Visualization::WYTransform(double y){
+    return 2.*y/_Y - 1;
+}
+float Visualization::WInvXTrsfrm(double x){
+    return _X*(x + 1)/2;
+}
+float Visualization::WInvYTrsfrm(double y){
+    return _Y*(y+1)/2;
+}
 
+void Visualization::AddPerson(Person *p){
+    _People.push_back(p);
+}
 
 void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
 }
 
+void Visualization::PlotSIR(){
+    //_Architect->
+}
 
 
 //==========> Call Backs ===============//
@@ -392,7 +413,7 @@ void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double 
     _visualization->setMouseX(xpos);
     _visualization->setMouseY(ypos);
     
-    cout << "X: " << xpos << ", " << "Y: " << ypos << endl;
+    cout << "X: " << _visualization->getMouseX() << ", " << "Y: " << _visualization->getMouseY() << endl;
 }
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -400,6 +421,7 @@ void Visualization::mouse_button_callback(GLFWwindow* window, int button, int ac
         _visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
         _visualization->testPrint();
         cout << _visualization->getMouseX() << endl;
+        (_visualization->_Architect)->AddPerson(_visualization->getMouseX(),_visualization->getMouseY());
         
     }
 }

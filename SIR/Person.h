@@ -134,6 +134,7 @@ private:
     
     list<Person*> neigbors;
     
+    unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	char State;
     char Gender;
     int HasBeenSick = 0;

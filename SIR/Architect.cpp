@@ -140,6 +140,9 @@ int Architect::getHo(){
 int Architect::getWo(){
     return Wo;
 }
+Domain* Architect::getDomain(){
+    return &City;
+}
 
 // Utilities
 void Architect::IncrementTime(){
@@ -246,7 +249,6 @@ void Architect::Update(SQLStorage* data){
     string SQLStatement;
     
     IncrementTime();
-
     for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
         
         
@@ -366,8 +368,6 @@ void Architect::AddPerson(Person *p){
     PopulationData();
 }
 void Architect::PrepDB(){
-
-    
     // ====================>>>>LocationData<<<========================== //
     // Domain
     sqlDataPtr->InsertValue("Location",
@@ -446,22 +446,184 @@ void Architect::PrepDB(){
     
     
 }
-
+Place* Architect::LocFromCoo(double x, double y){
+    
+    double xmin, xmax, ymin, ymax;
+    
+    for(auto c = Cemeteries.cbegin(); c != Cemeteries.cend(); ++c){
+        xmin = (*c)->Perimeter[0][0];
+        xmax = (*c)->Perimeter[0][1];
+        ymin = (*c)->Perimeter[1][0];
+        ymax = (*c)->Perimeter[1][1];
+        
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *c;
+        }
+    }
+    
+    for(auto s = Schools.cbegin(); s != Schools.cend(); ++s){
+        xmin = (*s)->Perimeter[0][0];
+        xmax = (*s)->Perimeter[0][1];
+        ymin = (*s)->Perimeter[1][0];
+        ymax = (*s)->Perimeter[1][1];
+        
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *s;
+        }
+    }
+    
+    for(auto s = Schools.cbegin(); s != Schools.cend(); ++s){
+        xmin = (*s)->Perimeter[0][0];
+        xmax = (*s)->Perimeter[0][1];
+        ymin = (*s)->Perimeter[1][0];
+        ymax = (*s)->Perimeter[1][1];
+        
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *s;
+        }
+    }
+    
+    for(auto w = Works.cbegin(); w != Works.cend(); ++w){
+        xmin = (*w)->Perimeter[0][0];
+        xmax = (*w)->Perimeter[0][1];
+        ymin = (*w)->Perimeter[1][0];
+        ymax = (*w)->Perimeter[1][1];
+        
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *w;
+        }
+    }
+    
+    for(auto h = Homes.cbegin(); h != Homes.cend(); ++h){
+        xmin = (*h)->Perimeter[0][0];
+        xmax = (*h)->Perimeter[0][1];
+        ymin = (*h)->Perimeter[1][0];
+        ymax = (*h)->Perimeter[1][1];
+        
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *h;
+        }
+    }
+    
+    cout << "No Homeless people allowed in DiseaseVille!" << endl;
+    
+    return Homes.front();
+}
 void Architect::AddPerson(double x, double y){
-    /*
+    
     unsigned long s = PeoplePtr.size();
     int id = (int) s + 1;
     Person* p1 = PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 3, 2, 2, 3);
-    ihd.setBeta(0.3);
-    ihd.setDelta(0.03);
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 3);
+    ihd.setBeta(0.4);
+    ihd.setDelta(0.04);
     ihd.setP(0.5);
     ihd.setC(0.8);
+    ihd.setILRate(0.01);
     
     Disease dis = (p1->getDisease());
-    */
+    Place* loc = LocFromCoo(x,y);
+    Place* school;
+    Place* home;
+    Place* work;
+    Place* cemetery;
+    double schoolco[2];
+    double homeco[2];
+    double workco[2];
+    double cemeteryco[2];
     
-    //Person* p = new Person(id, "Plago", 20, 'P', dis, ihd, )
+    if (loc->getType() == "School"){
+        school = loc;
+        home = Homes.front();
+        work = Works.front();
+        cemetery = Cemeteries.front();
+        
+        schoolco[0] = x;
+        schoolco[1] = y;
+        
+        homeco[0] = (double) *(home->Perimeter[0]);
+        homeco[1] = (double) *(home->Perimeter[1]);
+        
+        workco[0] = (double) *(work->Perimeter[0]);
+        workco[1] = (double) *(work->Perimeter[1]);
+        
+        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
+        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
+        
+    }
+    else if (loc->getType() == "Work"){
+        school = Schools.front();
+        home = Homes.front();
+        work = loc;
+        cemetery = Cemeteries.front();
+        
+        schoolco[0] = (double) *(school->Perimeter[0]);
+        schoolco[1] = (double) *(school->Perimeter[0]);
+        
+        homeco[0] = (double) *(home->Perimeter[0]);
+        homeco[1] = (double) *(home->Perimeter[1]);
+        
+        workco[0] = x;
+        workco[1] = y;
+        
+        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
+        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
+        
+    }
+    else if (loc->getType() == "Home"){
+        school = Schools.front();
+        home = loc;
+        work = Works.front();
+        cemetery = Cemeteries.front();
+        
+        homeco[0] = x;
+        homeco[1] = y;
+        
+        schoolco[0] = (double) *(school->Perimeter[0]);
+        schoolco[1] = (double) *(school->Perimeter[1]);
+        
+        workco[0] = (double) *(work->Perimeter[0]);
+        workco[1] = (double) *(work->Perimeter[1]);
+        
+        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
+        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
+        
+    }
+    else if (loc->getType() == "Cemetery"){
+        school = Schools.front();
+        home = Homes.front();
+        work = Works.front();
+        cemetery = loc;
+        
+        cemeteryco[0] = x;
+        cemeteryco[1] = y;
+        
+        homeco[0] = (double) *(home->Perimeter[0]);
+        homeco[1] = (double) *(home->Perimeter[1]);
+        
+        workco[0] = (double) *(work->Perimeter[0]);
+        workco[1] = (double) *(work->Perimeter[1]);
+        
+        schoolco[0] = (double) *(school->Perimeter[0]);
+        schoolco[1] = (double) *(school->Perimeter[1]);
+        
+    }
+    
+    Person* p = new Person(id, "Plago", 20, 'S', dis, ihd, &City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
+    
+    double coo[2] = {x,y};
+    p->setCoordinates(coo);
+    p->setTime(CurrentTime);
+    //p->setHasBeenSick(1);
+    sqlDataPtr->InsertValue("People",
+                            "NULL, '" +
+                            p->getName() + "', "+
+                            to_string(p->getAge()) + ", '" +
+                            p->getGender() + "', " +
+                            to_string((p->getHome())->getID()) + ", " +
+                            to_string((p->getLocation())->getID()));
+    AddPerson(p);
+    _Visualization->AddPerson(p);
 }
