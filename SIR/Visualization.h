@@ -57,6 +57,7 @@ public:
     
     //void DrawPlot();
     
+    float TTransform(double t);
     float XTransform(double x);
     float YTransform(double y);
     float InvXTrsfrm(double x);
@@ -67,6 +68,7 @@ public:
     float WInvXTrsfrm(double x);
     float WInvYTrsfrm(double y);
     
+    float PTransform(double y);
     void AddPerson(Person* p);
 
     void testPrint();
@@ -82,6 +84,7 @@ private:
     
     bool _FullScreenQ = true;
     
+    double _CurrentTime;
     int _X;
     int _Y;
     double _XRedFctr;
@@ -92,6 +95,11 @@ private:
     
     vector<Person*> _People;
     vector<Place*>  _Places;
+    vector<double> _TT;
+    vector<double> _SS;
+    vector<double> _II;
+    vector<double> _RR;
+    
     
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

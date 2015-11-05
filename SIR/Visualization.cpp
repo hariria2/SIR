@@ -124,8 +124,18 @@ void Visualization::Init(){
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
 }
 void Visualization::Render(){
+    // Update things
+    _CurrentTime = _Architect->getCurrentTime();
+    _TT.push_back(_CurrentTime);
+    _SS.push_back(_Architect->getS());
+    _II.push_back(_Architect->getI()+_Architect->getP());
+    _RR.push_back(_Architect->getR());
+    
+    cout << "RR: " << _SS[0] << endl;
+    
     double domx = (_Architect->getDomain())->Boundary[0][1];
     double domy = (_Architect->getDomain())->Boundary[1][1];
+    
     glPointSize(10.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -141,6 +151,12 @@ void Visualization::Render(){
     DrawPlace();
     DrawPeople();
     DrawLabel();
+    
+    vector<double> x0;
+    vector<double> y0;
+    x0.push_back(10); x0.push_back(100); x0.push_back(200);
+    y0.push_back(-80); y0.push_back(-50); y0.push_back(-50);
+    PlotSIR();
     
     glfwSwapBuffers(_window);
     glfwPollEvents();
@@ -270,9 +286,10 @@ void Visualization::DrawText(const char *text, int length, int x, int y, int fsi
     
 }
 void Visualization::DrawLabel(){
-    char buffer [50];
+    char buffer_t [50];
     double leftedge = _XRedFctr*_X + 5;
     double rightedge = _XRedFctr*_X + 120;
+    string day = "Day: ";
     string tim = "Time: ";
     string sus = "Susceptible: ";
     string exp = "Exposed: ";
@@ -280,8 +297,10 @@ void Visualization::DrawLabel(){
     string rec = "Recovered: ";
     string ded = "Dead: ";
     
-    sprintf(buffer,"%2.2f", _Architect->getDailyTime());
-    string timVal = buffer;
+    int dayt = _CurrentTime/24;
+    sprintf(buffer_t,"%2.2f", _Architect->getDailyTime());
+    string dayVal = to_string(dayt);
+    string timVal = buffer_t;
     string susVal = to_string(_Architect->getS());
     string expVal = to_string(_Architect->getI());
     string infVal = to_string(_Architect->getP());
@@ -290,23 +309,24 @@ void Visualization::DrawLabel(){
     
     glColor3f(1, 0.7, 0);
     
+    DrawText(day.data(), (int) day.size(), leftedge, _Y - 20, 18);
+    DrawText(tim.data(), (int) tim.size(), leftedge, _Y - 40, 18);
+    DrawText(sus.data(), (int) sus.size(), leftedge, _Y - 60, 18);
+    DrawText(exp.data(), (int) exp.size(), leftedge, _Y - 80, 18);
+    DrawText(inf.data(), (int) inf.size(), leftedge, _Y - 100, 18);
+    DrawText(rec.data(), (int) rec.size(), leftedge, _Y - 120, 18);
+    DrawText(ded.data(), (int) ded.size(), leftedge, _Y - 140, 18);
     
-    DrawText(tim.data(), (int) tim.size(), leftedge, _Y - 20, 18);
-    DrawText(sus.data(), (int) sus.size(), leftedge, _Y - 40, 18);
-    DrawText(exp.data(), (int) exp.size(), leftedge, _Y - 60, 18);
-    DrawText(inf.data(), (int) inf.size(), leftedge, _Y - 80, 18);
-    DrawText(rec.data(), (int) rec.size(), leftedge, _Y - 100, 18);
-    DrawText(ded.data(), (int) ded.size(), leftedge, _Y - 120, 18);
-    
-    DrawText(timVal.data(), (int) timVal.size(), rightedge, _Y - 20, 18);
-    DrawText(susVal.data(), (int) susVal.size(), rightedge, _Y - 40, 18);
-    DrawText(expVal.data(), (int) expVal.size(), rightedge, _Y - 60, 18);
-    DrawText(infVal.data(), (int) infVal.size(), rightedge, _Y - 80, 18);
-    DrawText(recVal.data(), (int) recVal.size(), rightedge, _Y - 100, 18);
-    DrawText(dedVal.data(), (int) dedVal.size(), rightedge, _Y - 120, 18);
+    DrawText(dayVal.data(), (int) dayVal.size(), rightedge, _Y - 20, 18);
+    DrawText(timVal.data(), (int) timVal.size(), rightedge, _Y - 40, 18);
+    DrawText(susVal.data(), (int) susVal.size(), rightedge, _Y - 60, 18);
+    DrawText(expVal.data(), (int) expVal.size(), rightedge, _Y - 80, 18);
+    DrawText(infVal.data(), (int) infVal.size(), rightedge, _Y - 100, 18);
+    DrawText(recVal.data(), (int) recVal.size(), rightedge, _Y - 120, 18);
+    DrawText(dedVal.data(), (int) dedVal.size(), rightedge, _Y - 140, 18);
     
     DrawBarGraph(leftedge + 30, _Y*0.6, _Architect->getS(), "S");
-    DrawBarGraph(leftedge + 60, _Y*0.6, _Architect->getI(), "I");
+    DrawBarGraph(leftedge + 60, _Y*0.6, _Architect->getI()+_Architect->getP(), "I");
     DrawBarGraph(leftedge + 90, _Y*0.6, _Architect->getR(), "R");
     
 }
@@ -345,9 +365,44 @@ void Visualization::DrawBarGraph(double x0, double y0, double val, string c){
     glColor3f(RR, GG, BB);
     DrawText(c.data(), (int) c.size(), WInvXTrsfrm((x1+x2)/2)-5 , WInvYTrsfrm(y1)-20, 24);
     }
+void Visualization::PlotSIR(){
+    double x;
+    double y;
+    glLineWidth(3);
+    
+    glBegin(GL_LINE_STRIP);
+    for (int ii = 0; ii < _TT.size(); ii++){
+        x = TTransform(_TT[ii]);
+        y = PTransform(_SS[ii]);
+        glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(x,y, 0.0f);
+    }
+    glEnd();
+    
+    glBegin(GL_LINE_STRIP);
+    for (int ii = 0; ii < _TT.size(); ii++){
+        x = TTransform(_TT[ii]);
+        y = PTransform(_II[ii]);
+        glColor3f(1.0f, 0.0f, 0.0f); glVertex3f(x,y, 0.0f);
+    }
+    glEnd();
+    
+    glBegin(GL_LINE_STRIP);
+    for (int ii = 0; ii < _TT.size(); ii++){
+        x = TTransform(_TT[ii]);
+        y = PTransform(_RR[ii]);
+        glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(x,y, 0.0f);
+    }
+    glEnd();
+    
+}
 
 
-
+float Visualization::TTransform(double t){
+    int scale = _CurrentTime/24+1;
+    int tscale = scale*24;
+    double domx = (_Architect->getDomain())->Boundary[0][1];
+    return XTransform(t*domx/tscale);
+}
 
 float Visualization::XTransform(double x){
     double domx = (_Architect->getDomain())->Boundary[0][1];
@@ -383,6 +438,11 @@ float Visualization::WInvYTrsfrm(double y){
     return _Y*(y+1)/2;
 }
 
+float Visualization::PTransform(double y){
+    double pop = (double) _People.size();
+    return y*2*(1-_YRedFctr)/pop - 1;
+}
+
 void Visualization::AddPerson(Person *p){
     _People.push_back(p);
 }
@@ -391,9 +451,6 @@ void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
 }
 
-void Visualization::PlotSIR(){
-    //_Architect->
-}
 
 
 //==========> Call Backs ===============//

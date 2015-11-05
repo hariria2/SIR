@@ -518,9 +518,9 @@ void Architect::AddPerson(double x, double y){
     
     InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 3);
     ihd.setBeta(0.4);
-    ihd.setDelta(0.04);
-    ihd.setP(0.5);
-    ihd.setC(0.8);
+    ihd.setDelta(0.02);
+    ihd.setP(0.03);
+    ihd.setC(0.5);
     ihd.setILRate(0.01);
     
     Disease dis = (p1->getDisease());

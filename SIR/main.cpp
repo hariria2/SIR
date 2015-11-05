@@ -208,9 +208,9 @@ void Example2_MultiLocation(bool SaveData){
 
     
     normal_distribution<double> icDist(3,0.2);
-    normal_distribution<double> betaDist(0.4,0.02);
-    normal_distribution<double> deltaDist(4./100,0);
-    normal_distribution<double> PDist(.5,0);
+    normal_distribution<double> betaDist(0.3,0.02);
+    normal_distribution<double> deltaDist(3./100,0);
+    normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
     normal_distribution<double> ILDist(0.01,0.01);
     
@@ -247,7 +247,7 @@ void Example2_MultiLocation(bool SaveData){
         
         
         // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.01,2,0.0,0,ict);
+        InHostDynamics ihd = InHostDynamics(i,0.01,3,0.0,0.0,ict);
         
         double randil = ILDist(generator);
         double il = (randil < 0.001)? 0.001:randil;

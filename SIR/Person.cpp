@@ -266,9 +266,9 @@ void Person::Move(double theta, double r, string motionType, double demand) {
     
     default_random_engine generator(_RandSeed);
 
-    normal_distribution<double> WSTimeD(8,0);
+    normal_distribution<double> WSTimeD(8,0.2);
     double  WSTime = WSTimeD(generator);
-    normal_distribution<double> WETimeD(22,0);
+    normal_distribution<double> WETimeD(22,0.2);
     double  WETime = WETimeD(generator);
     
     
