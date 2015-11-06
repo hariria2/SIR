@@ -14,7 +14,7 @@ Visualization::Visualization(int x, int y, bool fsq){
     setX(x);
     setY(y);
     setXRedFctr(0.88);
-    setYRedFctr(0.8);
+    setYRedFctr(0.85);
     _FullScreenQ = fsq;
 }
 
@@ -138,7 +138,7 @@ void Visualization::Render(){
     
     glPointSize(10.f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, .5f);
     
     glBegin(GL_POLYGON);
     glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(0), YTransform(0), 0.0);
@@ -152,10 +152,6 @@ void Visualization::Render(){
     DrawPeople();
     DrawLabel();
     
-    vector<double> x0;
-    vector<double> y0;
-    x0.push_back(10); x0.push_back(100); x0.push_back(200);
-    y0.push_back(-80); y0.push_back(-50); y0.push_back(-50);
     PlotSIR();
     
     glfwSwapBuffers(_window);
@@ -165,7 +161,7 @@ void Visualization::Render(){
 void Visualization::RenderSplash(){
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.2f, 0.2f, 0.0f, 0.9f);
-    string text = "Welcome to DiseaseVille.";
+    string text = "Welcome to Diseaseville.";
     glColor3f(1, 1, 0);
     DrawText(text.data(), (int) text.size(), _X/2-100, _Y/2, 24);
     text = "Written by Sahand";
@@ -325,9 +321,9 @@ void Visualization::DrawLabel(){
     DrawText(recVal.data(), (int) recVal.size(), rightedge, _Y - 120, 18);
     DrawText(dedVal.data(), (int) dedVal.size(), rightedge, _Y - 140, 18);
     
-    DrawBarGraph(leftedge + 30, _Y*0.6, _Architect->getS(), "S");
-    DrawBarGraph(leftedge + 60, _Y*0.6, _Architect->getI()+_Architect->getP(), "I");
-    DrawBarGraph(leftedge + 90, _Y*0.6, _Architect->getR(), "R");
+    DrawBarGraph(leftedge + 45, _Y*0.05, _Architect->getS(), "S");
+    DrawBarGraph(leftedge + 75, _Y*0.05, _Architect->getI()+_Architect->getP(), "I");
+    DrawBarGraph(leftedge + 105, _Y*0.05, _Architect->getR(), "R");
     
 }
 
@@ -368,7 +364,7 @@ void Visualization::DrawBarGraph(double x0, double y0, double val, string c){
 void Visualization::PlotSIR(){
     double x;
     double y;
-    glLineWidth(3);
+    glLineWidth(5);
     
     glBegin(GL_LINE_STRIP);
     for (int ii = 0; ii < _TT.size(); ii++){

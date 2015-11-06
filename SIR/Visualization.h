@@ -54,8 +54,7 @@ public:
     void DrawText(const char *text, int length, int x, int y, int fsize);
     void DrawLabel();
     void DrawBarGraph(double x0, double y0, double val, string c);
-    
-    //void DrawPlot();
+    void PlotSIR();
     
     float TTransform(double t);
     float XTransform(double x);
@@ -73,7 +72,9 @@ public:
 
     void testPrint();
     
-    void PlotSIR();
+    void Button();
+    
+    
     
 private:
     

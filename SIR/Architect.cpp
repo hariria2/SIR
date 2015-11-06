@@ -519,7 +519,7 @@ void Architect::AddPerson(double x, double y){
     InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 3);
     ihd.setBeta(0.4);
     ihd.setDelta(0.02);
-    ihd.setP(0.03);
+    ihd.setP(0.4);
     ihd.setC(0.5);
     ihd.setILRate(0.01);
     
@@ -611,7 +611,7 @@ void Architect::AddPerson(double x, double y){
         
     }
     
-    Person* p = new Person(id, "Plago", 20, 'S', dis, ihd, &City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
+    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, &City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
     
     double coo[2] = {x,y};
     p->setCoordinates(coo);

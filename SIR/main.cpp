@@ -150,13 +150,20 @@ void Example1_SingleLocation(bool SaveData){
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         int xdim = maxdim+200;
         int ydim = maxdim;
-        Visualization vis(xdim,ydim, true);
-        vis.setPlaces(homes);
-        vis.setPlaces(schools);
-        vis.setPlaces(works);
-        vis.setPlaces(cemeteries);
-        vis.setPeople(people);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, &vis);
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(homes);
+        vis->setPlaces(schools);
+        vis->setPlaces(works);
+        vis->setPlaces(cemeteries);
+        vis->setPeople(people);
+        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
+        vis->Init();
+        vis->setArchitect(&archie);
+        archie.setDomain(myCity);
+        archie.setHomes(homes);
+        archie.setSchools(schools);
+        archie.setWorks(works);
+        archie.setCemetaries(cemeteries);
         archie.Simulate();
     }else{
         Architect archie(InitialTime,EndTime,TimeStep, people, econ);
@@ -181,7 +188,7 @@ void Example2_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 700;
+    int population = 400;
     
     Disease flu("Flu", 44, 40, 100);
     char state = 'S';
