@@ -20,101 +20,101 @@ InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double v
 
 // setters
 void InHostDynamics::setID(int id){
-    ID = id;
+    _ID = id;
 }
 void InHostDynamics::setdt(double ti){
-    dt = ti;
+    _dt = ti;
 }
 void InHostDynamics::setT0(int it){
-    t0 = it;
+    _t0 = it;
 }
 void InHostDynamics::setBeta(double b){
-    Beta = b;
+    _Beta = b;
 }
 void InHostDynamics::setDelta(double d){
-    Delta = d;
+    _Delta = d;
 }
 void InHostDynamics::setP(double p){
-    P = p;
+    _P = p;
 }
 void InHostDynamics::setC(double c){
-    C = c;
+    _C = c;
 }
 void InHostDynamics::setT(double sc){
-    T  = sc;
+    _T  = sc;
 }
 void InHostDynamics::setTi(double sc){
-    Ti = sc;
+    _Ti = sc;
 }
 void InHostDynamics::setI(double ic){
-    I = ic;
+    _I = ic;
 }
 void InHostDynamics::setV(double vi){
-    V = vi;
+    _V = vi;
 }
 void InHostDynamics::setMaxInfLev(double mil){
-    MaxInfLev = mil;
+    _MaxInfLev = mil;
 }
 void InHostDynamics::setNE(double ne){
-    NE = ne;
+    _NE = ne;
 }
 void InHostDynamics::setTol(double tol){
-    Tol = tol;
+    _Tol = tol;
 }
 void InHostDynamics::setILRate(double ilrate){
-    ILRate = ilrate;
+    _ILRate = ilrate;
 }
 
 // getters
 int InHostDynamics::getID(){
-    return ID;
+    return _ID;
 }
 double InHostDynamics::getdt(){
-    return dt;
+    return _dt;
 }
 double InHostDynamics::getT0(){
-    return t0;
+    return _t0;
 }
 double InHostDynamics::getBeta(){
-    return Beta;
+    return _Beta;
 }
 double InHostDynamics::getDelta(){
-    return Delta;
+    return _Delta;
 }
 double InHostDynamics::getP(){
-    return P;
+    return _P;
 }
 double InHostDynamics::getC(){
-    return C;
+    return _C;
 }
 double InHostDynamics::getT(){
-    return T;
+    return _T;
 }
 double InHostDynamics::getTi(){
-    return Ti;
+    return _Ti;
 }
 double InHostDynamics::getI(){
-    return I;
+    return _I;
 }
 double InHostDynamics::getV(){
-    return V;
+    return _V;
 }
 double InHostDynamics::getMaxInfLev(){
-    return MaxInfLev;
+    return _MaxInfLev;
 }
 double InHostDynamics::getNE(){
-    return NE;
+    return _NE;
 }
 double InHostDynamics::getTol(){
-    return Tol;
+    return _Tol;
 }
 double InHostDynamics::getILRate(){
-    return ILRate;
+    return _ILRate;
 }
 
 //utilities
 void InHostDynamics::Simulate(){
-    for (double tt = t0; tt <= t0+1; tt = tt+dt){
+    for (double tt = _t0; tt <= _t0+1; tt = tt+_dt){
         Update();
         if (getI() > getMaxInfLev()){
             setMaxInfLev(getI());
@@ -127,20 +127,20 @@ void InHostDynamics::Update(){
     
     Flow();
     
-    if (isnan(V)){
-        cout << "V: " << V << endl;
-        cout << "I: " << I << endl;
-        cout << "T: " << T << endl;
-        cout << "dV: " << dV << endl;
-        cout << "dI: " << dI << endl;
-        cout << "dT: " << dT << endl;
+    if (isnan(_V)){
+        cout << "V: " << _V << endl;
+        cout << "I: " << _I << endl;
+        cout << "T: " << _T << endl;
+        cout << "dV: " << _dV << endl;
+        cout << "dI: " << _dI << endl;
+        cout << "dT: " << _dT << endl;
         exit(1);
     }
     
     
-    T = T + dt*dT;
-    I = I + dt*dI;
-    V = V + dt*dV;
+    _T = _T + _dt*_dT;
+    _I = _I + _dt*_dI;
+    _V = _V + _dt*_dV;
     
     
 }
@@ -148,20 +148,20 @@ void InHostDynamics::Update(){
 void InHostDynamics::Flow(){
     
     
-    if (T<Tol){
+    if (_T<_Tol){
         if (!HasBeenSick){
-            dT = ILRate;
-            dI = 0.0;
-            dV = 0.0;
+            _dT = _ILRate;
+            _dI = 0.0;
+            _dV = 0.0;
         } else{
-            dT = -Beta*T*V;
-            dI = Beta*T*V - Delta*I;
-            dV = P*I - C*V + NE;
+            _dT = _Beta*_T*_V;
+            _dI = _Beta*_T*_V - _Delta*_I;
+            _dV = _P*_I - _C*_V + _NE;
         }
     }else {
-        dT = -Beta*T*V;
-        dI = Beta*T*V - Delta*I;
-        dV = P*I - C*V + NE;
+        _dT = -_Beta*_T*_V;
+        _dI = _Beta*_T*_V - _Delta*_I;
+        _dV = _P*_I - _C*_V + _NE;
     }
     
 }

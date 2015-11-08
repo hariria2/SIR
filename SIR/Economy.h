@@ -50,18 +50,18 @@ public:
     
 private:
     
-    double A;
-    double Alpha;
-    double Beta;
-    double GDP = 0;
-    double Demand = 0;
+    double _A;
+    double _Alpha;
+    double _Beta;
+    double _GDP = 0;
+    double _Demand = 0;
     
-    double Lc;
-    double  Lp;
-    double Hc;
-    double Hp;
-    double Y;
-    double dY;
+    double _Lc;
+    double _Lp;
+    double _Hc;
+    double _Hp;
+    double _Y;
+    double _dY;
     
     
     

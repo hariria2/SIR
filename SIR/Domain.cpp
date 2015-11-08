@@ -23,7 +23,7 @@ Domain::Domain(string name, int boundary[2][2]){
 
 // setters
 void Domain::setName(string name){
-	Name = name;
+	_Name = name;
 }
 void Domain::setBoundary(int boundary[2][2]){
 	for (int ii=0; ii<2; ii++){
@@ -36,7 +36,7 @@ void Domain::setBoundary(int boundary[2][2]){
 
 // getters
 string Domain::getName(){
-	return Name;
+	return _Name;
 }
 
 Domain::~Domain(){

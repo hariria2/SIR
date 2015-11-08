@@ -47,37 +47,37 @@ public:
     string listToString(list<int> l);
 
 private:
-	int Length;
-	string dataFolderName;
-	string movieFolderName;
+	int _Length;
+	string _dataFolderName;
+	string _movieFolderName;
 
-	string cityFileName;
-	string homeFileName;
-	string workFileName;
-	string schoolFileName;
-    string cemeteryFileName;
-    string timeStamp;
+	string _cityFileName;
+	string _homeFileName;
+	string _workFileName;
+	string _schoolFileName;
+    string _cemeteryFileName;
+    string _timeStamp;
     
-	ofstream historyFile;
-	ofstream movieFile;
-	ofstream cityFile;
-	ofstream homeFile;
-	ofstream schoolFile;
-	ofstream workFile;
-    ofstream cemeteryFile;
+	ofstream _historyFile;
+	ofstream _movieFile;
+	ofstream _cityFile;
+	ofstream _homeFile;
+	ofstream _schoolFile;
+	ofstream _workFile;
+    ofstream _cemeteryFile;
 
-	Domain* CityPtr;
-	vector<Place*> Homes;
-	vector<Place*> Schools;
-	vector<Place*> Works;
-    vector<Place*> Cemeteries;
-	double* TT;
-	int* II;
-	int* SS;
-    int* PP;
-	int* RR;
-    int* DD;
-    int* XX;
+	Domain* _CityPtr;
+	vector<Place*> _Homes;
+	vector<Place*> _Schools;
+	vector<Place*> _Works;
+    vector<Place*> _Cemeteries;
+	double* _TT;
+	int* _II;
+	int* _SS;
+    int* _PP;
+	int* _RR;
+    int* _DD;
+    int* _XX;
 };
 
 #endif /* STORAGE_H_ */

@@ -26,10 +26,10 @@ public:
     void InsertValue(string table, string vals, bool paren=false);
     
 private:
-    string timeStamp;
-    MYSQL *conn, mysql;
-    MYSQL_RES *res;
-    MYSQL_ROW row;
+    string _timeStamp;
+    MYSQL *_conn, _mysql;
+    MYSQL_RES *_res;
+    MYSQL_ROW _row;
     
     
 };

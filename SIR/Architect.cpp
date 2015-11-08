@@ -12,61 +12,68 @@ using namespace std;
 
 Architect::Architect(double t0, double te, double ts,
 		vector<Person *> pp, Economy econ, string store, Storage* d):
-	dataPtr(d), Econ(econ)
+
+	_dataPtr(d),
+    _Econ(econ)
 {
 
-	InitialTime  = t0;
-	EndTime      = te;
-	TimeStep     = ts;
-	CurrentTime  = t0;
-	TimeIndex    = 0;
-	PeoplePtr    = pp;
-	Store        = store;
+	_InitialTime  = t0;
+	_EndTime      = te;
+	_TimeStep     = ts;
+	_CurrentTime  = t0;
+	_TimeIndex    = 0;
+	_PeoplePtr    = pp;
+	_Store        = store;
     PopulationData();
 }
 
 Architect::Architect(double t0, double te, double ts,
                      vector<Person *> pp, Economy econ, string store, SQLStorage* d):
-sqlDataPtr(d), Econ(econ)
+
+    _sqlDataPtr(d),
+    _Econ(econ)
 {
     
-    InitialTime  = t0;
-    EndTime      = te;
-    TimeStep     = ts;
-    CurrentTime  = t0;
-    TimeIndex    = 0;
-    PeoplePtr    = pp;
-    Store        = store;
+    _InitialTime  = t0;
+    _EndTime      = te;
+    _TimeStep     = ts;
+    _CurrentTime  = t0;
+    _TimeIndex    = 0;
+    _PeoplePtr    = pp;
+    _Store        = store;
     PopulationData();
 }
 
 Architect::Architect(double t0, double te, double ts,
                      vector<Person *> pp, Economy econ, string store, SQLStorage* d,Visualization* vis):
-sqlDataPtr(d), Econ(econ)
+
+    _sqlDataPtr(d),
+    _Econ(econ)
 {
     
-    InitialTime  = t0;
-    EndTime      = te;
-    TimeStep     = ts;
-    CurrentTime  = t0;
-    TimeIndex    = 0;
-    PeoplePtr    = pp;
-    Store        = store;
+    _InitialTime  = t0;
+    _EndTime      = te;
+    _TimeStep     = ts;
+    _CurrentTime  = t0;
+    _TimeIndex    = 0;
+    _PeoplePtr    = pp;
+    _Store        = store;
     setVisualization(vis);
     PopulationData();
 }
 
 
-Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Economy econ, string store):Econ(econ)
+Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Economy econ, string store):
+    _Econ(econ)
 {
     
-    InitialTime  = t0;
-    EndTime      = te;
-    TimeStep     = ts;
-    CurrentTime  = t0;
-    TimeIndex    = 0;
-    PeoplePtr    = pp;
-    Store        = store;
+    _InitialTime  = t0;
+    _EndTime      = te;
+    _TimeStep     = ts;
+    _CurrentTime  = t0;
+    _TimeIndex    = 0;
+    _PeoplePtr    = pp;
+    _Store        = store;
     PopulationData();
 }
 
@@ -75,22 +82,22 @@ Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Econo
 Architect::~Architect() {
 
 }
-// Setters
 
+// Setters
 void Architect::setDomain(Domain city){
-    City = city;
+    _City = city;
 };
 void Architect::setHomes(vector<Place*> homes){
-    Homes = homes;
+    _Homes = homes;
 };
 void Architect::setSchools(vector<Place*> schools){
-    Schools = schools;
+    _Schools = schools;
 };
 void Architect::setWorks(vector<Place*> works){
-    Works = works;
+    _Works = works;
 };
 void Architect::setCemetaries(vector<Place*> cemeteries){
-    Cemeteries = cemeteries;
+    _Cemeteries = cemeteries;
 };
 void Architect::setVisualization(Visualization *vis){
     _Visualization = vis;
@@ -98,108 +105,108 @@ void Architect::setVisualization(Visualization *vis){
 
 // Getters
 double Architect::getCurrentTime(){
-	return CurrentTime;
+	return _CurrentTime;
 }
 double Architect::getTimeStep(){
-	return TimeStep;
+	return _TimeStep;
 }
 vector<Person*> Architect::getPeople(){
-	return PeoplePtr;
+	return _PeoplePtr;
 }
 Visualization* Architect::getVisualization(){
     return _Visualization;
 }
 
 double Architect::getDailyTime(){
-	int hour    = floor(CurrentTime);
-	double min  = CurrentTime - hour;
+	int hour    = floor(_CurrentTime);
+	double min  = _CurrentTime - hour;
 
 	return ((hour % 24) + min);
 }
 int Architect::getS(){
-    return S;
+    return _S;
 }
 int Architect::getI(){
-    return I;
+    return _I;
 }
 int Architect::getP(){
-    return P;
+    return _P;
 }
 int Architect::getR(){
-    return R;
+    return _R;
 }
 int Architect::getD(){
-    return D;
+    return _D;
 }
 int Architect::getSc(){
-    return Sc;
+    return _Sc;
 }
 int Architect::getHo(){
-    return Ho;
+    return _Ho;
 }
 int Architect::getWo(){
-    return Wo;
+    return _Wo;
 }
 Domain* Architect::getDomain(){
-    return &City;
+    return &_City;
 }
 
 // Utilities
 void Architect::IncrementTime(){
-	CurrentTime += TimeStep;
-	TimeIndex++;
+	_CurrentTime += _TimeStep;
+	_TimeIndex++;
 }
 void Architect::Simulate(){
-	if (Store == "FileSystem"){
-		dataPtr->citySave();
-		dataPtr->homeSave();
-		dataPtr->workSave();
-		dataPtr->schoolSave();
-        dataPtr->cemeterySave();
-		for (double t = 0; t < EndTime; t += TimeStep){
-			Update(dataPtr);
+	if (_Store == "FileSystem"){
+		_dataPtr->citySave();
+		_dataPtr->homeSave();
+		_dataPtr->workSave();
+		_dataPtr->schoolSave();
+        _dataPtr->cemeterySave();
+		for (double t = 0; t < _EndTime; t += _TimeStep){
+			Update(_dataPtr);
 		}
-        dataPtr->writeSIR();
+        _dataPtr->writeSIR();
 	}
-    else if (Store == "MYSQL"){
+    else if (_Store == "MYSQL"){
         PrepDB();
         
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
             
             unsigned long start_s=clock();
-            if (CurrentTime - floor(CurrentTime) < TimeStep){
-                cout << "time " << CurrentTime << "!" << endl;
+            if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
+                cout << "time " << _CurrentTime << "!" << endl;
             }
             
             _Visualization->Render();
             
-            sqlDataPtr-> InsertValue("HistoryData",
+            _sqlDataPtr-> InsertValue("HistoryData",
                                      "NULL, " +
-                                     to_string(CurrentTime) + ", " +
-                                     to_string(S) + ", " +
-                                     to_string(I) + ", " +
-                                     to_string(P) + ", " +
-                                     to_string(R) + ", " +
-                                     to_string(D) + ", " +
-                                     to_string(Ho) + ", " +
-                                     to_string(Wo) + ", " +
-                                     to_string(Sc) + ", " +
-                                     to_string(Econ.getGDP()) + ", " +
-                                     to_string(Econ.getDemand())
+                                     to_string(_CurrentTime) + ", " +
+                                     to_string(_S) + ", " +
+                                     to_string(_I) + ", " +
+                                     to_string(_P) + ", " +
+                                     to_string(_R) + ", " +
+                                     to_string(_D) + ", " +
+                                     to_string(_Ho) + ", " +
+                                     to_string(_Wo) + ", " +
+                                     to_string(_Sc) + ", " +
+                                     to_string(_Econ.getGDP()) + ", " +
+                                     to_string(_Econ.getDemand())
                                      );
-            Update(sqlDataPtr);
+            Update(_sqlDataPtr);
             
             
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            if ((time*1000000) < (TimeStep*1000000)){
-                usleep(static_cast<int>((TimeStep*1000000) - time*1000000));
+            if ((time*1000000) < (_TimeStep*1000000)){
+                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
             }
             
         }
         
     }
 	else{
-		for (double t = 0; t < EndTime; t += TimeStep){
+		for (double t = 0; t < _EndTime; t += _TimeStep){
 			Update();
 		}
 	}
@@ -207,15 +214,15 @@ void Architect::Simulate(){
 }
 void Architect::Update(Storage* data){
     
-	data->saveSIR(TimeIndex, CurrentTime, S, I, P, R, D);
-	data->startMovieSave(CurrentTime);
+	data->saveSIR(_TimeIndex, _CurrentTime, _S, _I, _P, _R, _D);
+	data->startMovieSave(_CurrentTime);
 	
     //Econ.computeGDP(PeoplePtr, Econ.getGDP());
-    Econ.getParameters(PeoplePtr);
-    Econ.Update(TimeStep);
+    _Econ.getParameters(_PeoplePtr);
+    _Econ.Update(_TimeStep);
     IncrementTime();
 	
-    for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
 		data->movieSave((*ip)->getID(),
                         (*ip)->getName(),
@@ -233,7 +240,7 @@ void Architect::Update(Storage* data){
                         ((*ip)->getAllConnections()),
                         ((*ip)->getAllConnectionsHist()));
         
-		(*ip)->setTime(CurrentTime);
+		(*ip)->setTime(_CurrentTime);
 		if ((*ip)->IsSingleLocation) {
 			(*ip)->Move2((rand() % 360),1);
 		}else{
@@ -249,7 +256,7 @@ void Architect::Update(SQLStorage* data){
     string SQLStatement;
     
     IncrementTime();
-    for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
         
         
         if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
@@ -273,12 +280,12 @@ void Architect::Update(SQLStorage* data){
         to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
         "),";
         
-        (*ip)->setTime(CurrentTime);
+        (*ip)->setTime(_CurrentTime);
         
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2(rand()%360+1 + 1,1);
         }else{
-            (*ip)->Move(rand()%360+1,1, "DailyMovement",Econ.getDemand());
+            (*ip)->Move(rand()%360+1,1, "DailyMovement",_Econ.getDemand());
         }
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
@@ -288,18 +295,18 @@ void Architect::Update(SQLStorage* data){
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
     
-    //Econ.computeGDP(econList, Econ.getGDP());
-    Econ.getParameters(econList);
-    //Econ.Update(TimeStep);
+    //_Econ.computeGDP(econList, Econ.getGDP());
+    _Econ.getParameters(econList);
+    //_Econ.Update(TimeStep);
     PopulationData();
     
 }
 void Architect::Update(){
 	
-    Econ.computeGDP(PeoplePtr, Econ.getGDP());
+    _Econ.computeGDP(_PeoplePtr, _Econ.getGDP());
     IncrementTime();
-	for (auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip){
-		(*ip)->setTime(CurrentTime);
+	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
+		(*ip)->setTime(_CurrentTime);
 		if ((*ip)->IsSingleLocation) {
 			(*ip)->Move2((rand() % 360),200);
 		}else{
@@ -310,12 +317,12 @@ void Architect::Update(){
     PopulationData();
 }
 void Architect::DisplayTime(){
-	int day   = floor(CurrentTime/24);
-	int mhour = floor(CurrentTime);
+	int day   = floor(_CurrentTime/24);
+	int mhour = floor(_CurrentTime);
 	mhour     = mhour % 24;
 	int  hour = mhour % 12;
 
-	int min   = floor((CurrentTime - floor(CurrentTime))*60);
+	int min   = floor((_CurrentTime - floor(_CurrentTime))*60);
 
 	string AmPm = ((mhour < 12)? "AM":"PM");
 	cout << "Day " << ((day < 10 )? " ":"") << day <<  ", ";
@@ -326,62 +333,62 @@ void Architect::DisplayTime(){
 
 }
 void Architect::PopulationData(){
-    S = 0;
-    I = 0;
-    P = 0;
-    R = 0;
-    D = 0;
-    Wo = 0;
-    Sc = 0;
-    Ho = 0;
+    _S = 0;
+    _I = 0;
+    _P = 0;
+    _R = 0;
+    _D = 0;
+    _Wo = 0;
+    _Sc = 0;
+    _Ho = 0;
     
-    for(auto ip = PeoplePtr.cbegin(); ip != PeoplePtr.cend(); ++ip) {
+    for(auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip) {
         if (((*ip)->getState()) == 'I'){
-            I += 1;
+            _I += 1;
         }
         else if(((*ip)->getState()) == 'P'){
-            P += 1;
+            _P += 1;
         }
         else if(((*ip)->getState()) == 'S'){
-            S += 1;
+            _S += 1;
         }
         else if(((*ip)->getState()) == 'R'){
-            R += 1;
+            _R += 1;
         }
         else{
-            D += 1;
+            _D += 1;
         }
         if (((*ip)->getLocation())->getType() == "Work"){
-            Wo += 1;
+            _Wo += 1;
         }
         else if(((*ip)->getLocation())->getType() == "Home"){
-            Ho += 1;
+            _Ho += 1;
         }
         else if(((*ip)->getLocation())->getType() == "School"){
-            Sc += 1;
+            _Sc += 1;
         }
         
     }
 }
 void Architect::AddPerson(Person *p){
-    PeoplePtr.push_back(p);
+    _PeoplePtr.push_back(p);
     PopulationData();
 }
 void Architect::PrepDB(){
     // ====================>>>>LocationData<<<========================== //
     // Domain
-    sqlDataPtr->InsertValue("Location",
+    _sqlDataPtr->InsertValue("Location",
                    "NULL, '" +
-                   City.getName() + "', " +
+                   _City.getName() + "', " +
                    "'Domain'"     + ", " +
-                   to_string((City.Boundary)[0][0]) + ", " +
-                   to_string((City.Boundary)[0][1]) + ", " +
-                   to_string((City.Boundary)[1][0]) + ", " +
-                   to_string((City.Boundary)[1][1]));
+                   to_string((_City.Boundary)[0][0]) + ", " +
+                   to_string((_City.Boundary)[0][1]) + ", " +
+                   to_string((_City.Boundary)[1][0]) + ", " +
+                   to_string((_City.Boundary)[1][1]));
     
     // Homes
-    for(auto h = Homes.cbegin(); h != Homes.cend(); ++h) {
-        sqlDataPtr->InsertValue("Location",
+    for(auto h = _Homes.cbegin(); h != _Homes.cend(); ++h) {
+        _sqlDataPtr->InsertValue("Location",
                        "NULL, '"        +
                        (*h)->getName() + "', '" +
                        (*h)->getType() + "', "  +
@@ -391,8 +398,8 @@ void Architect::PrepDB(){
                        to_string(((*h)->Perimeter)[1][1]));
     }
     // Works
-    for(auto h = Works.cbegin(); h != Works.cend(); ++h) {
-        sqlDataPtr->InsertValue("Location",
+    for(auto h = _Works.cbegin(); h != _Works.cend(); ++h) {
+        _sqlDataPtr->InsertValue("Location",
                        "NULL, '"        +
                        (*h)->getName() + "', '" +
                        (*h)->getType() + "', "  +
@@ -402,8 +409,8 @@ void Architect::PrepDB(){
                        to_string(((*h)->Perimeter)[1][1]));
     }
     // Schools
-    for(auto h = Schools.cbegin(); h != Schools.cend(); ++h) {
-        sqlDataPtr->InsertValue("Location",
+    for(auto h = _Schools.cbegin(); h != _Schools.cend(); ++h) {
+        _sqlDataPtr->InsertValue("Location",
                        "NULL, '"        +
                        (*h)->getName() + "', '" +
                        (*h)->getType() + "', "  +
@@ -413,8 +420,8 @@ void Architect::PrepDB(){
                        to_string(((*h)->Perimeter)[1][1]));
     }
     // Cemeteries
-    for(auto h = Cemeteries.cbegin(); h != Cemeteries.cend(); ++h) {
-        sqlDataPtr->InsertValue("Location",
+    for(auto h = _Cemeteries.cbegin(); h != _Cemeteries.cend(); ++h) {
+        _sqlDataPtr->InsertValue("Location",
                        "NULL, '"       +
                        (*h)->getName() + "', '" +
                        (*h)->getType() + "', "  +
@@ -427,12 +434,12 @@ void Architect::PrepDB(){
     // =====================>>>End of LocationData<<<========================= //
     
     // =====================>>>People Data<<<================================= //
-    unsigned long ps = PeoplePtr.size();
+    unsigned long ps = _PeoplePtr.size();
     
     cout << "Prepping tables for " << ps << " people. Please wait..." << endl;
-    for(auto p = PeoplePtr.cbegin(); p != PeoplePtr.cend(); ++p) {
+    for(auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); ++p) {
 
-        sqlDataPtr->InsertValue("People",
+        _sqlDataPtr->InsertValue("People",
                                 "NULL, '"        +
                                 (*p)->getName() + "', " +
                                 to_string((*p)->getAge()) + ", '"  +
@@ -450,7 +457,7 @@ Place* Architect::LocFromCoo(double x, double y){
     
     double xmin, xmax, ymin, ymax;
     
-    for(auto c = Cemeteries.cbegin(); c != Cemeteries.cend(); ++c){
+    for(auto c = _Cemeteries.cbegin(); c != _Cemeteries.cend(); ++c){
         xmin = (*c)->Perimeter[0][0];
         xmax = (*c)->Perimeter[0][1];
         ymin = (*c)->Perimeter[1][0];
@@ -461,7 +468,7 @@ Place* Architect::LocFromCoo(double x, double y){
         }
     }
     
-    for(auto s = Schools.cbegin(); s != Schools.cend(); ++s){
+    for(auto s = _Schools.cbegin(); s != _Schools.cend(); ++s){
         xmin = (*s)->Perimeter[0][0];
         xmax = (*s)->Perimeter[0][1];
         ymin = (*s)->Perimeter[1][0];
@@ -472,18 +479,7 @@ Place* Architect::LocFromCoo(double x, double y){
         }
     }
     
-    for(auto s = Schools.cbegin(); s != Schools.cend(); ++s){
-        xmin = (*s)->Perimeter[0][0];
-        xmax = (*s)->Perimeter[0][1];
-        ymin = (*s)->Perimeter[1][0];
-        ymax = (*s)->Perimeter[1][1];
-        
-        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
-            return *s;
-        }
-    }
-    
-    for(auto w = Works.cbegin(); w != Works.cend(); ++w){
+    for(auto w = _Works.cbegin(); w != _Works.cend(); ++w){
         xmin = (*w)->Perimeter[0][0];
         xmax = (*w)->Perimeter[0][1];
         ymin = (*w)->Perimeter[1][0];
@@ -494,7 +490,7 @@ Place* Architect::LocFromCoo(double x, double y){
         }
     }
     
-    for(auto h = Homes.cbegin(); h != Homes.cend(); ++h){
+    for(auto h = _Homes.cbegin(); h != _Homes.cend(); ++h){
         xmin = (*h)->Perimeter[0][0];
         xmax = (*h)->Perimeter[0][1];
         ymin = (*h)->Perimeter[1][0];
@@ -507,13 +503,13 @@ Place* Architect::LocFromCoo(double x, double y){
     
     cout << "No Homeless people allowed in DiseaseVille!" << endl;
     
-    return Homes.front();
+    return _Homes.front();
 }
 void Architect::AddPerson(double x, double y){
     
-    unsigned long s = PeoplePtr.size();
+    unsigned long s = _PeoplePtr.size();
     int id = (int) s + 1;
-    Person* p1 = PeoplePtr.front();
+    Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
     InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 3);
@@ -536,9 +532,9 @@ void Architect::AddPerson(double x, double y){
     
     if (loc->getType() == "School"){
         school = loc;
-        home = Homes.front();
-        work = Works.front();
-        cemetery = Cemeteries.front();
+        home = _Homes.front();
+        work = _Works.front();
+        cemetery = _Cemeteries.front();
         
         schoolco[0] = x;
         schoolco[1] = y;
@@ -554,10 +550,10 @@ void Architect::AddPerson(double x, double y){
         
     }
     else if (loc->getType() == "Work"){
-        school = Schools.front();
-        home = Homes.front();
+        school = _Schools.front();
+        home = _Homes.front();
         work = loc;
-        cemetery = Cemeteries.front();
+        cemetery = _Cemeteries.front();
         
         schoolco[0] = (double) *(school->Perimeter[0]);
         schoolco[1] = (double) *(school->Perimeter[0]);
@@ -573,10 +569,10 @@ void Architect::AddPerson(double x, double y){
         
     }
     else if (loc->getType() == "Home"){
-        school = Schools.front();
+        school = _Schools.front();
         home = loc;
-        work = Works.front();
-        cemetery = Cemeteries.front();
+        work = _Works.front();
+        cemetery = _Cemeteries.front();
         
         homeco[0] = x;
         homeco[1] = y;
@@ -592,9 +588,9 @@ void Architect::AddPerson(double x, double y){
         
     }
     else if (loc->getType() == "Cemetery"){
-        school = Schools.front();
-        home = Homes.front();
-        work = Works.front();
+        school = _Schools.front();
+        home = _Homes.front();
+        work = _Works.front();
         cemetery = loc;
         
         cemeteryco[0] = x;
@@ -611,13 +607,13 @@ void Architect::AddPerson(double x, double y){
         
     }
     
-    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, &City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
+    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, &_City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
     
     double coo[2] = {x,y};
     p->setCoordinates(coo);
-    p->setTime(CurrentTime);
+    p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    sqlDataPtr->InsertValue("People",
+    _sqlDataPtr->InsertValue("People",
                             "NULL, '" +
                             p->getName() + "', "+
                             to_string(p->getAge()) + ", '" +

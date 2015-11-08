@@ -14,10 +14,10 @@ using namespace std;
 
 class Disease {
 private:
-	string Name;
-	int AverageInfectionPeriod;
-	int AverageIncubationPeriod;
-    int AverageRecoveryPeriod;
+	string _Name;
+	int _AverageInfectionPeriod;
+	int _AverageIncubationPeriod;
+    int _AverageRecoveryPeriod;
 
 public:
 	Disease(string name, int incubationPeriod, int infectionPeriod, int recoveryPeriod);

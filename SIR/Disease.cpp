@@ -21,30 +21,30 @@ Disease::Disease(string name, int incubationPeriod, int infectionPeriod, int rec
 
 // Setters
 void Disease::setName(string name){
-	Name = name;
+	_Name = name;
 }
 void Disease::setAverageInfectionPeriod(int ip){
-	AverageInfectionPeriod = ip;
+	_AverageInfectionPeriod = ip;
 }
 void Disease::setAverageIncubationPeriod(int ip){
-	AverageIncubationPeriod = ip;
+	_AverageIncubationPeriod = ip;
 }
 void Disease::setAverageRecoveryPeriod(int rp){
-    AverageRecoveryPeriod = rp;
+    _AverageRecoveryPeriod = rp;
 }
 
 // Getters
 int Disease::getAverageInfectionPeriod(){
-	return AverageInfectionPeriod;
+	return _AverageInfectionPeriod;
 }
 int Disease::getAverageIncubationPeriod(){
-	return AverageIncubationPeriod;
+	return _AverageIncubationPeriod;
 }
 int Disease::getAverageRecoveryPeriod(){
-    return AverageRecoveryPeriod;
+    return _AverageRecoveryPeriod;
 }
 string Disease::getName(){
-	return Name;
+	return _Name;
 }
 
 

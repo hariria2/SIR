@@ -39,11 +39,11 @@ public:
 	bool operator == (const Place& p) const;
 
 private:
-	int ID;
-	string Name;
-	string Type;
-	Domain Location;
-	list<Person*>* Occupants;
+	int _ID;
+	string _Name;
+	string _Type;
+	Domain _Location;
+	list<Person*>* _Occupants;
 
 };
 

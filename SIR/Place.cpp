@@ -10,25 +10,25 @@
 using namespace std;
 
 
-Place::Place(int id, string name, string type, int perimeter[2][2], Domain location)
-	: Location(location)
+Place::Place(int id, string name, string type, int perimeter[2][2], Domain location):
+    _Location(location)
 {
 	setID(id);
 	setName(name);
 	setType(type);
 	setPerimeter(perimeter);
-    Occupants = new list<Person*>;
+    _Occupants = new list<Person*>;
 }// end constructor
 
 // setters
 void Place::setID(int id){
-	ID = id;
+	_ID = id;
 }
 void Place::setName(string name){
-	Name = name;
+	_Name = name;
 }
 void Place::setType(string type){
-	Type = type;
+	_Type = type;
 }
 void Place::setPerimeter(int perimeter[2][2]){
 	for (int ii=0; ii<2; ii++){
@@ -38,27 +38,27 @@ void Place::setPerimeter(int perimeter[2][2]){
 	}
 }
 void Place::addPerson(Person* p){
-	Occupants->push_back(p);
+	_Occupants->push_back(p);
 }
 void Place::removePerson(Person* p){
-	Occupants->remove(p);
+	_Occupants->remove(p);
 }
 
 // getters
 int Place::getID(){
-	return ID;
+	return _ID;
 }
 string Place::getName(){
-	return Name;
+	return _Name;
 }
 string Place::getType(){
-	return Type;
+	return _Type;
 }
 string Place::getLocation(){
-	return Location.getName();
+	return _Location.getName();
 }
 list<Person*>* Place::getOccupants(){
-	return Occupants;
+	return _Occupants;
 }
 
 Place::~Place(){

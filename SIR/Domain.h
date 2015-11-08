@@ -34,7 +34,7 @@ public:
 
 
 private:
-	string Name;
+	string _Name;
 
 };
 

@@ -65,28 +65,28 @@ public:
     int HasBeenSick = 0;
 private:
     
-    int ID;
-    double dt;
-    int t0;
+    int _ID;
+    double _dt;
+    int _t0;
     
     // state variables and derivatives
-    double V;
-    double I;
-    double T;
-    double Ti;
-    double dV;
-    double dI;
-    double dT;
-    double MaxInfLev;
-    double NE;     // Neighbor Effects
+    double _V;
+    double _I;
+    double _T;
+    double _Ti;
+    double _dV;
+    double _dI;
+    double _dT;
+    double _MaxInfLev;
+    double _NE;     // Neighbor Effects
     
     // parameters
-    double Beta;
-    double Delta;
-    double P;
-    double C;
-    double Tol;
-    double ILRate;
+    double _Beta;
+    double _Delta;
+    double _P;
+    double _C;
+    double _Tol;
+    double _ILRate;
     
     
     

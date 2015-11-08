@@ -112,48 +112,48 @@ public:
 
 
 private:
-	int ID;
-    int Age;
-	string Name;
-	double Time;
+	int _ID;
+    int _Age;
+	string _Name;
+	double _Time;
     double _X;
     double _Y;
-	double TimeInfected;
-	double IncubationTime;
-    double RecoveryTime;
-    double TimeOfDeath;
-	double Coordinates[2];
-    double HomeCoordinates[2];
-    double WorkCoordinates[2];
-    double SchoolCoordinates[2];
-    double CemeteryCoordinates[2];
+	double _TimeInfected;
+	double _IncubationTime;
+    double _RecoveryTime;
+    double _TimeOfDeath;
+	double _Coordinates[2];
+    double _HomeCoordinates[2];
+    double _WorkCoordinates[2];
+    double _SchoolCoordinates[2];
+    double _CemeteryCoordinates[2];
     
-	Disease disease;
+	Disease _disease;
     
-    InHostDynamics ihdynamics;
+    InHostDynamics _ihdynamics;
     
-    list<Person*> neigbors;
+    list<Person*> _neigbors;
     
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-	char State;
-    char Gender;
-    int HasBeenSick = 0;
-	Domain* City;
-	Place* Home;
-	Place* School;
-	Place* Work;
-    Place* Cemetery;
-	Place* Location;
-	int InfectionPeriod;
-	int IncubationPeriod;
-    int RecoveryPeriod;
-    int InfectionVar;
-    int IncubationVar;
-    int RecoveryVar;
-    list<int> SIConnections;
-    list<int> SIConnectionsHist;
-    list<int> AllConnections;
-    list<int> AllConnectionsHist;
+	char _State;
+    char _Gender;
+    int _HasBeenSick = 0;
+	Domain* _City;
+	Place* _Home;
+	Place* _School;
+	Place* _Work;
+    Place* _Cemetery;
+	Place* _Location;
+	int _InfectionPeriod;
+	int _IncubationPeriod;
+    int _RecoveryPeriod;
+    int _InfectionVar;
+    int _IncubationVar;
+    int _RecoveryVar;
+    list<int> _SIConnections;
+    list<int> _SIConnectionsHist;
+    list<int> _AllConnections;
+    list<int> _AllConnectionsHist;
 };
 
 #endif /* PERSON_H_ */

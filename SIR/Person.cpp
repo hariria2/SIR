@@ -15,17 +15,22 @@ Person::Person(int id, string name, int age,
                Place* cemetery, Place* location,
                double homeco[2],  double workco[2],
                double schoolco[2],double cemeteryco[2],
-               int inf_var, int inc_var, int rec_var)
-		:disease(dis),ihdynamics(ihd), City(city),
-         Home(home), School(school),
-         Work(work), Cemetery(cemetery), Location(location)
+               int inf_var, int inc_var, int rec_var):
+    _disease(dis),
+    _ihdynamics(ihd),
+    _City(city),
+    _Home(home),
+    _School(school),
+    _Work(work),
+    _Cemetery(cemetery),
+    _Location(location)
 {
 	setID(id);
     setAge(age);
 	setName(name);
 	setState(state);
-	Time = 0;
-	TimeInfected = 0;
+	_Time = 0;
+	_TimeInfected = 0;
     setInfVar(inf_var);
     setIncVar(inc_var);
     setRecVar(rec_var);
@@ -46,15 +51,19 @@ Person::Person(int id, string name, int age,
                Domain* city, Place* home,
                double homeco[2],
                int inf_var, int inc_var, int rec_var,
-               bool isSingleLocation)
-		:disease(dis), ihdynamics(ihd), City(city), Home(home), Location(home)
+               bool isSingleLocation):
+    _disease(dis),
+    _ihdynamics(ihd),
+    _City(city),
+    _Home(home),
+    _Location(home)
 {
  	setID(id);
     setAge(age);
 	setName(name);
 	setState(state);
-	Time = 0;
-	TimeInfected = 0;
+	_Time = 0;
+	_TimeInfected = 0;
     setInfVar(inf_var);
     setIncVar(inc_var);
     setRecVar(rec_var);
@@ -62,205 +71,205 @@ Person::Person(int id, string name, int age,
     setIncubationPeriod();
     setRecoveryPeriod();
     setHomeCoordinates(homeco);
-	setLocation(Location);
+	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
     setGender('M');
 }
 
 // Setters
 void Person::setID(int id){
-	ID = id;
+	_ID = id;
 }
 void Person::setAge(int age){
-    Age = age;
+    _Age = age;
 }
 void Person::setHasBeenSick(int hbs){
-    HasBeenSick = hbs;
+    _HasBeenSick = hbs;
 }
 void Person::setGender(char g){
-    Gender = g;
+    _Gender = g;
 }
 void Person::setName(string name){
-	Name = name;
+	_Name = name;
 }
 void Person::setCoordinates(double coordinates[2]){
 	for (int ii=0; ii<2; ii++){
-		Coordinates[ii] = coordinates[ii];
+		_Coordinates[ii] = coordinates[ii];
 	}
 }
 void Person::setHomeCoordinates(double homeco[2]){
     for (int ii=0; ii<2; ii++){
-        HomeCoordinates[ii] = homeco[ii];
+        _HomeCoordinates[ii] = homeco[ii];
     }
 }
 void Person::setWorkCoordinates(double workco[2]){
     for (int ii=0; ii<2; ii++){
-        WorkCoordinates[ii] = workco[ii];
+        _WorkCoordinates[ii] = workco[ii];
     }
 }
 void Person::setSchoolCoordinates(double schoolco[2]){
     for (int ii=0; ii<2; ii++){
-        SchoolCoordinates[ii] = schoolco[ii];
+        _SchoolCoordinates[ii] = schoolco[ii];
     }
 }
 void Person::setCemeteryCoordinates(double cemeteryco[2]){
     for (int ii=0; ii<2; ii++){
-        CemeteryCoordinates[ii] = cemeteryco[ii];
+        _CemeteryCoordinates[ii] = cemeteryco[ii];
     }
 }
 void Person::setState(char state){
-	State = state;
+	_State = state;
 }
 void Person::setLocation(Place* location){
-	Location->removePerson(this);
-	Location = location;
-	Location->addPerson(this);
+	_Location->removePerson(this);
+	_Location = location;
+	_Location->addPerson(this);
     
-    if (Location == Home){
-        setCoordinates(HomeCoordinates);
-    }else if (Location == Work){
-        setCoordinates(WorkCoordinates);
-    }else if (Location == School){
-        setCoordinates(SchoolCoordinates);
+    if (_Location == _Home){
+        setCoordinates(_HomeCoordinates);
+    }else if (_Location == _Work){
+        setCoordinates(_WorkCoordinates);
+    }else if (_Location == _School){
+        setCoordinates(_SchoolCoordinates);
     }else // Location == Cemetery
     {
-        setCoordinates(CemeteryCoordinates);
+        setCoordinates(_CemeteryCoordinates);
     }
 }
 void Person::setTime(double t){
-	Time = t;
+	_Time = t;
 }
 void Person::setInfectionPeriod(){
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
-	normal_distribution<double> distribution(disease.getAverageInfectionPeriod(),InfectionVar);
+	normal_distribution<double> distribution(_disease.getAverageInfectionPeriod(),_InfectionVar);
 	double randnum  = distribution(generator);
 	randnum = (randnum < 0)? 0:randnum;
-	InfectionPeriod = floor(randnum);
+	_InfectionPeriod = floor(randnum);
 }
 void Person::setIncubationPeriod(){
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
-	normal_distribution<double> distribution(disease.getAverageIncubationPeriod(),IncubationVar);
+	normal_distribution<double> distribution(_disease.getAverageIncubationPeriod(),_IncubationVar);
 	double randnum  = distribution(generator);
 	randnum = (randnum < 0)? 0:randnum;
-	IncubationPeriod = floor(randnum);
+	_IncubationPeriod = floor(randnum);
 }
 void Person::setRecoveryPeriod(){
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
-    normal_distribution<double> distribution(disease.getAverageRecoveryPeriod(),RecoveryVar);
+    normal_distribution<double> distribution(_disease.getAverageRecoveryPeriod(),_RecoveryVar);
     double randnum  = distribution(generator);
     randnum = (randnum < 0)? 0:randnum;
-    RecoveryPeriod = floor(randnum);
+    _RecoveryPeriod = floor(randnum);
 }
 void Person::setDisease(Disease d){
-	disease = d;
+	_disease = d;
 }
 void Person::setInHostDynamics(InHostDynamics ihd){
-    ihdynamics = ihd;
+    _ihdynamics = ihd;
 }
 void Person::setInfVar(int var){
-    InfectionVar = var;
+    _InfectionVar = var;
 };
 void Person::setIncVar(int var){
-    IncubationVar = var;
+    _IncubationVar = var;
 };
 void Person::setRecVar(int var){
-    RecoveryVar = var;
+    _RecoveryVar = var;
 };
 
 // Getters
 int Person::getID(){
-	return ID;
+	return _ID;
 }
 int Person::getAge(){
-    return Age;
+    return _Age;
 }
 int Person::getHastBeenSick(){
-    return HasBeenSick;
+    return _HasBeenSick;
 }
 char Person::getGender(){
-    return Gender;
+    return _Gender;
 }
 int Person::getInfectionPeriod(){
-    return InfectionPeriod;
+    return _InfectionPeriod;
 }
 int Person::getIncubationPeriod(){
-    return IncubationPeriod;
+    return _IncubationPeriod;
 }
 int Person::getRecoveryPeriod(){
-    return RecoveryPeriod;
+    return _RecoveryPeriod;
 }
 int Person::getInfVar(){
-    return InfectionVar;
+    return _InfectionVar;
 }
 int Person::getIncVar(){
-    return IncubationVar;
+    return _IncubationVar;
 }
 int Person::getRecVar(){
-    return RecoveryVar;
+    return _RecoveryVar;
 }
 Domain* Person::getDomain(){
-    return City;
+    return _City;
 }
 Place* Person::getHome(){
-    return Home;
+    return _Home;
 }
 double* Person::getCoordinates(){
-	 return Coordinates;
+	 return _Coordinates;
 }
 double* Person::getHomeCoordinates(){
-    return HomeCoordinates;
+    return _HomeCoordinates;
 }
 double* Person::getWorkCoordinates(){
-    return WorkCoordinates;
+    return _WorkCoordinates;
 }
 double* Person::getSchoolCoordinates(){
-    return SchoolCoordinates;
+    return _SchoolCoordinates;
 }
 double* Person::getCemeteryCoordinates(){
-    return CemeteryCoordinates;
+    return _CemeteryCoordinates;
 }
 double Person::getTime(){
-	return Time;
+	return _Time;
 }
 char Person::getState() const{
-    return State;
+    return _State;
 }
 string Person::getName() const{
-    return Name;
+    return _Name;
 }
 Place* Person::getLocation(){
-    return Location;
+    return _Location;
 }
 Disease Person::getDisease() const{
-    return disease;
+    return _disease;
 }
 InHostDynamics Person::getInHostDynamics() const{
-    return ihdynamics;
+    return _ihdynamics;
 }
 list<int> Person::getSIConnections(){
-    return SIConnections;
+    return _SIConnections;
 }
 list<int> Person::getSIConnectionsHist(){
-    return SIConnectionsHist;
+    return _SIConnectionsHist;
 }
 list<int> Person::getAllConnections(){
-    return AllConnections;
+    return _AllConnections;
 }
 list<int> Person::getAllConnectionsHist(){
-    return AllConnectionsHist;
+    return _AllConnectionsHist;
 }
 
 // Utilities
 void Person::Move(double theta, double r, string motionType, double demand) {
-	int hour    = floor(Time);
-	double min  = Time - hour;
+	int hour    = floor(_Time);
+	double min  = _Time - hour;
 	double DailyTime = ((hour % 24) + min);
 
     if (getState() == 'D') {
-        setLocation(Cemetery);
+        setLocation(_Cemetery);
         return;
     }
     
@@ -284,43 +293,43 @@ void Person::Move(double theta, double r, string motionType, double demand) {
     if (motionType == "DailyMovement"){
         
         if (DailyTime <= WSDailyTime || DailyTime >= WEDailyTime){
-            if (!(Location->getType() == "Home")){
-                setLocation(Home);
+            if (!(_Location->getType() == "Home")){
+                setLocation(_Home);
             }
         }
         else{
             //ihdynamics.getI()<demand
             
-            if (Location->getType() == "Home" && ihdynamics.getI()<demand){
-                (Age>22)? setLocation(Work):setLocation(School);
+            if (_Location->getType() == "Home" && _ihdynamics.getI()<demand){
+                (_Age>22)? setLocation(_Work):setLocation(_School);
             }
         }
         
         
     }else if (motionType == "Travel"){
         if (getID() == 1){
-            if (Time == 10){
-                setLocation(Work);
+            if (_Time == 10){
+                setLocation(_Work);
             }
-            if (Time == 20){
-                setLocation(School);
+            if (_Time == 20){
+                setLocation(_School);
             }
         }
 
         if (getID() == 9){
-            if (Time == 30){
-                setLocation(Home);
+            if (_Time == 30){
+                setLocation(_Home);
             }
         }
     }
     
     
-	double x = Coordinates[0] + r*cos(theta);
-	double y = Coordinates[1] + r*sin(theta);
-	double xmin = Location->Perimeter[0][0];
-	double xmax = Location->Perimeter[0][1];
-	double ymin = Location->Perimeter[1][0];
-	double ymax = Location->Perimeter[1][1];
+	double x = _Coordinates[0] + r*cos(theta);
+	double y = _Coordinates[1] + r*sin(theta);
+	double xmin = _Location->Perimeter[0][0];
+	double xmax = _Location->Perimeter[0][1];
+	double ymin = _Location->Perimeter[1][0];
+	double ymax = _Location->Perimeter[1][1];
 
     if (x < xmin){
         x = xmin;// + abs(x);
@@ -336,8 +345,8 @@ void Person::Move(double theta, double r, string motionType, double demand) {
         y = ymax;// - abs(y-ymax);
     }
 
-	Coordinates[0] = x;
-	Coordinates[1] = y;
+	_Coordinates[0] = x;
+	_Coordinates[1] = y;
 }
 void Person::Move2(double theta, double r){
     
@@ -345,12 +354,12 @@ void Person::Move2(double theta, double r){
         return;
     }
     
-	double x = Coordinates[0] + r*cos(theta);
-	double y = Coordinates[1] + r*sin(theta);
-	double xmin = Location->Perimeter[0][0];
-	double xmax = Location->Perimeter[0][1];
-	double ymin = Location->Perimeter[1][0];
-	double ymax = Location->Perimeter[1][1];
+	double x = _Coordinates[0] + r*cos(theta);
+	double y = _Coordinates[1] + r*sin(theta);
+	double xmin = _Location->Perimeter[0][0];
+	double xmax = _Location->Perimeter[0][1];
+	double ymin = _Location->Perimeter[1][0];
+	double ymax = _Location->Perimeter[1][1];
 
 	if (x < xmin){
 		x = xmin + abs(x);
@@ -366,24 +375,24 @@ void Person::Move2(double theta, double r){
 		y = ymax - abs(y-ymax);
 	}
 
-	Coordinates[0] = x;
-	Coordinates[1] = y;
+	_Coordinates[0] = x;
+	_Coordinates[1] = y;
 }
 void Person::UpdateDisease() {
     
     // Note that SIConnectionsHist does not get cleared here.
-    SIConnections.clear();
+    _SIConnections.clear();
     // Note that AllConnectionsHist does not get cleared here.
-    AllConnections.clear();
+    _AllConnections.clear();
     
 	
     
-    list<Person*>* peeps = Location->getOccupants();
+    list<Person*>* peeps = _Location->getOccupants();
     int criticalDistance = 23;
     
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
-            neigbors.push_back(*ip);
+            _neigbors.push_back(*ip);
             addAllConnection((*ip)->getID());
             addAllConnectionHist((*ip)->getID());
         }
@@ -393,7 +402,7 @@ void Person::UpdateDisease() {
 		for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
 			if ((*ip)->getState() == 'P' | (*ip)->getState() == 'I'){
 				if (Distance(*ip) < criticalDistance){
-					IncubationTime = Time;
+					_IncubationTime = _Time;
 					setDisease((*ip)->getDisease());
                     setState('I');
                     addSIConnection((*ip)->getID());
@@ -402,20 +411,20 @@ void Person::UpdateDisease() {
 			}
 		}
     }else if (getState() == 'I'){
-        double incubationPeriod = Time - IncubationTime;
+        double incubationPeriod = _Time - _IncubationTime;
 
-        if (incubationPeriod >= IncubationPeriod){
-           	TimeInfected = Time;
+        if (incubationPeriod >= _IncubationPeriod){
+           	_TimeInfected = _Time;
             setState('P');
         }
     }else if (getState()=='P'){
-		double infectedTime = Time - TimeInfected;
-		if (infectedTime >= InfectionPeriod & infectedTime <= RecoveryPeriod){
+		double infectedTime = _Time - _TimeInfected;
+		if (infectedTime >= _InfectionPeriod & infectedTime <= _RecoveryPeriod){
 			setState('R');
-            RecoveryTime = Time;
-        }else if(infectedTime > RecoveryPeriod){
+            _RecoveryTime = _Time;
+        }else if(infectedTime > _RecoveryPeriod){
             setState('D');
-            TimeOfDeath = Time;
+            _TimeOfDeath = _Time;
         }
     //}else if(getState()=='R'){
      //   if (RecoveryTime >= 24){
@@ -427,13 +436,7 @@ void Person::UpdateDisease() {
 }
 void Person::UpdateDiseaseWithInHost() {
     
-    list<Person*>* peeps = Location->getOccupants();
-    /*
-    if (Time == 10) {
-        if (ID == 1){
-            ihdynamics.setV(0.01);
-        }
-    }*/
+    list<Person*>* peeps = _Location->getOccupants();
 
     int criticalDistance = 5;
     
@@ -441,7 +444,7 @@ void Person::UpdateDiseaseWithInHost() {
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
-                neigbors.push_back(*ip);
+                _neigbors.push_back(*ip);
                 addAllConnection((*ip)->getID());
                 addAllConnectionHist((*ip)->getID());
             }
@@ -451,74 +454,73 @@ void Person::UpdateDiseaseWithInHost() {
 
     double dist;
     
-    for(auto ip = neigbors.cbegin(); ip != neigbors.cend(); ++ip){
+    for(auto ip = _neigbors.cbegin(); ip != _neigbors.cend(); ++ip){
         dist = Distance(*ip);
         if (dist != 0){
-            totalVirion += ((*ip)->ihdynamics.getV())/pow(dist,2);
+            totalVirion += ((*ip)->_ihdynamics.getV())/pow(dist,2);
         }
     }
-    ihdynamics.setT0(Time);
-    ihdynamics.setNE(0.001*totalVirion);
-    ihdynamics.Simulate();
+    cout << "T cells: " << _ihdynamics.getT() << endl;
+    _ihdynamics.setT0(_Time);
+    _ihdynamics.setNE(0.001*totalVirion);
+    _ihdynamics.Simulate();
     
-    if (getState() == 'S'){
-        if (ihdynamics.getV() > 0.01){
+    if ((getState()=='R') & !(getHastBeenSick())) {
+        if (_ihdynamics.getT() > 2.8){
+            setState('S');
+        }
+    }
+    else if (getState() == 'S'){
+        if (_ihdynamics.getV() > 0.01){
             setState('I');
         }
     }
     else if (getState() == 'I'){
-        if (Location->getName() == "Home"){
-            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
+        if (_Location->getName() == "Home"){
+            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
         }else {
-            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
+            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
         }
         
-        if (ihdynamics.getI() > 0.2 & ihdynamics.getI() < 3 & HasBeenSick==0){
+        if (_ihdynamics.getI() > 0.2 & _ihdynamics.getI() < 3 & _HasBeenSick==0){
             setState('P');
-            ihdynamics.HasBeenSick = 1;
-        }else if (ihdynamics.getI() > 2.5){
+            _ihdynamics.HasBeenSick = 1;
+        }else if (_ihdynamics.getI() > 2.5){
             setState('D');
         }
-//        if (ihdynamics.getI() > 2.8){
-//            setState('D');
-//        }
-        else if (ihdynamics.getI() < 0.01 & HasBeenSick == 1){
+        else if (_ihdynamics.getI() < 0.01 & _HasBeenSick == 1){
             setState('R');
         }
     }else if (getState() == 'P'){
-        if (Location->getName() == "Home"){
-            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
-        }else {
-            ihdynamics.setDelta(1.0*ihdynamics.getDelta());
+        if (_ihdynamics.getI() + 0.01 < _ihdynamics.getMaxInfLev()){
+            setHasBeenSick(1);
         }
-        if (ihdynamics.getI() > 3){
+        if (_Location->getName() == "Home"){
+            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
+        }else {
+            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
+        }
+        if (_ihdynamics.getI() > 3){
             setState('D');
         }
-        else if (ihdynamics.getI() < 0.2){
+        else if (_ihdynamics.getI() < 0.2){
             setState('I');
         }
         
     }else if (getState() == 'R'){
-        if (ihdynamics.getI() < 0.005){
+        if (_ihdynamics.getI() < 0.1){
             //ihdynamics.setT(ihdynamics.getTi());
-            //setHasBeenSick(0);
-            //setState('S');
+            setHasBeenSick(0);
+            _ihdynamics.HasBeenSick = 1;
         }
         
     }
-
-    
-    if (ihdynamics.getI() + 0.01 < ihdynamics.getMaxInfLev()){
-        setHasBeenSick(1);
-    }
-    
-    
     
 }
 double Person::Distance(Person* p){
     
-    double p1x = Coordinates[0];
-    double p1y = Coordinates[1];
+    double p1x = _Coordinates[0];
+    double p1y = _Coordinates[1];
     
     double p2x = (p->getCoordinates())[0];
     double p2y = (p->getCoordinates())[1];
@@ -533,34 +535,34 @@ void Person::UpdateWithinHost(list<Person*> ngbrs){
         
     }
     
-    ihdynamics.setdt(Time);
+    _ihdynamics.setdt(_Time);
     // everything gets set
-    ihdynamics.Simulate();
+    _ihdynamics.Simulate();
     
 }
 
 bool Person::operator == (const Person& p) const {
-	return (p.ID == this->ID);
+	return (p._ID == this->_ID);
 }
 void Person::addSIConnection(int id){
-    SIConnections.push_back(id);
-    SIConnections.sort();
-    SIConnections.unique();
+    _SIConnections.push_back(id);
+    _SIConnections.sort();
+    _SIConnections.unique();
 }
 void Person::addSIConnectionHist(int id){
-    SIConnectionsHist.push_back(id);
-    SIConnectionsHist.sort();
-    SIConnectionsHist.unique();
+    _SIConnectionsHist.push_back(id);
+    _SIConnectionsHist.sort();
+    _SIConnectionsHist.unique();
 }
 void Person::addAllConnection(int id){
-    AllConnections.push_back(id);
-    AllConnections.sort();
-    AllConnections.unique();
+    _AllConnections.push_back(id);
+    _AllConnections.sort();
+    _AllConnections.unique();
 }
 void Person::addAllConnectionHist(int id){
-    AllConnectionsHist.push_back(id);
-    AllConnectionsHist.sort();
-    AllConnectionsHist.unique();
+    _AllConnectionsHist.push_back(id);
+    _AllConnectionsHist.sort();
+    _AllConnectionsHist.unique();
 }
 
 Person::~Person(){
