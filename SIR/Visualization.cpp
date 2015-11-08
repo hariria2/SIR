@@ -115,8 +115,7 @@ void Visualization::Init(){
     int width, height;
     glEnable(GL_POINT_SMOOTH);
     glfwGetFramebufferSize(_window, &width, &height);
-    cout << width << endl;
-    cout << height << endl;
+
     glViewport(0, 0, width, height);
     glfwSetKeyCallback(_window, key_callback);
     glfwSetInputMode(_window, GLFW_STICKY_MOUSE_BUTTONS, 1);
@@ -130,8 +129,6 @@ void Visualization::Render(){
     _SS.push_back(_Architect->getS());
     _II.push_back(_Architect->getI()+_Architect->getP());
     _RR.push_back(_Architect->getR());
-    
-    cout << "RR: " << _SS[0] << endl;
     
     double domx = (_Architect->getDomain())->Boundary[0][1];
     double domy = (_Architect->getDomain())->Boundary[1][1];

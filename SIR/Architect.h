@@ -25,18 +25,19 @@ class Visualization;
 
 class Architect {
 public:
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d, bool eig);
-	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, Storage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, SQLStorage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store, SQLStorage* d, Visualization* vis);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy econ, string store="None");
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d, bool eig);
+	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, string store,SQLStorage* d, Visualization* vis);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d, Visualization* vis);
+    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store="None");
 	
     
     virtual ~Architect();
     
 
 	// Setters
-    void setDomain(Domain city);
+    void setDomain(Domain *city);
     void setHomes(vector<Place*> homes);
     void setSchools(vector<Place*> schools);
     void setWorks(vector<Place*> works);
@@ -80,9 +81,9 @@ private:
 	double _TimeStep;
 	double _CurrentTime;
 	int _TimeIndex;
-    Economy _Econ;
+    Economy* _Econ;
 	vector<Person*> _PeoplePtr;
-    Domain _City;
+    Domain* _City;
     vector<Place*> _Homes;
     vector<Place*> _Schools;
     vector<Place*> _Works;

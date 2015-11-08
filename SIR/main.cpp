@@ -137,38 +137,33 @@ void Example1_SingleLocation(bool SaveData){
     double InitialTime = 0;
     double EndTime = 20;
     double TimeStep = 0.05;
-    int l = floor((EndTime-InitialTime)/TimeStep);
+    //int l = floor((EndTime-InitialTime)/TimeStep);
     
+    string ver="1";
+    //cout << "Enter version number for single location simulation: ";
+    //cin >> ver;
+    //string dataFolder = "data_single_v"+ver+"_";
+    //string movieFolder = "movie_single_v"+ver+"_";
+    //Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
+    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    int xdim = maxdim+200;
+    int ydim = maxdim;
+    Visualization* vis = getVisualization(xdim, ydim, true);
+    vis->setPlaces(homes);
+    vis->setPlaces(schools);
+    vis->setPlaces(works);
+    vis->setPlaces(cemeteries);
+    vis->setPeople(people);
+    Architect archie(InitialTime,EndTime,TimeStep, people, &econ, "MYSQL", &sqldata, vis);
+    vis->Init();
+    vis->setArchitect(&archie);
+    archie.setDomain(&myCity);
+    archie.setHomes(homes);
+    archie.setSchools(schools);
+    archie.setWorks(works);
+    archie.setCemetaries(cemeteries);
+    archie.Simulate();
     
-    if (SaveData) {
-        string ver="1";
-        cout << "Enter version number for single location simulation: ";
-        //cin >> ver;
-        string dataFolder = "data_single_v"+ver+"_";
-        string movieFolder = "movie_single_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        int xdim = maxdim+200;
-        int ydim = maxdim;
-        Visualization* vis = getVisualization(xdim, ydim, true);
-        vis->setPlaces(homes);
-        vis->setPlaces(schools);
-        vis->setPlaces(works);
-        vis->setPlaces(cemeteries);
-        vis->setPeople(people);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
-        vis->Init();
-        vis->setArchitect(&archie);
-        archie.setDomain(myCity);
-        archie.setHomes(homes);
-        archie.setSchools(schools);
-        archie.setWorks(works);
-        archie.setCemetaries(cemeteries);
-        archie.Simulate();
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ);
-        archie.Simulate();
-    }
 }
 void Example2_MultiLocation(bool SaveData){
     
@@ -193,20 +188,6 @@ void Example2_MultiLocation(bool SaveData){
     Disease flu("Flu", 44, 40, 100);
     char state = 'S';
     double VirLev = 0.0;
-    
-    
-    double A     = 2; //0.0025;
-    double alpha = 0.5;
-    double beta  = 0.5;
-    
-    double labor = 0;
-    double health = 0;
-    
-    double y0 = 500; //A*pow(labor,alpha)*pow(health,beta);
-    
-    cout << "y0: " << y0 << endl;
-    
-    Economy econ(A,alpha,beta, y0, labor, health);
     
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
@@ -252,8 +233,7 @@ void Example2_MultiLocation(bool SaveData){
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
         
-        
-        // ihd(id, ti, sc, ic, vi)
+
         InHostDynamics ihd = InHostDynamics(i,0.01,0.0,0.0,VirLev,ict);
         
         double randil = ILDist(generator);
@@ -285,8 +265,9 @@ void Example2_MultiLocation(bool SaveData){
         ihd.setC(C);
         
         
-        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],
-                               schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
+        Person *p = new Person(i, name, age, state, flu, ihd,
+                               &myCity, homes[randHIdx],schools[randSIdx],
+                               works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
                                hco,wco,sco,cco,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
@@ -295,43 +276,35 @@ void Example2_MultiLocation(bool SaveData){
     
     double InitialTime = 0;
     double EndTime = 200;
-    double TimeStep = 0.05; // TODO Fix the naming of the time files for fractional times.
+    double TimeStep = 0.05;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
-    if (SaveData) {
-        string ver = "1";
-        //cout << "Enter version number for multi location simulation: ";
-        //cin >> ver;
-        string dataFolder = "data_multi_v"+ver+"_";
-        string movieFolder = "movie_multi_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-        int xdim = maxdim;
-        int ydim = maxdim;
-        Visualization* vis = getVisualization(xdim, ydim, true);
-        vis->setPlaces(homes);
-        vis->setPlaces(schools);
-        vis->setPlaces(works);
-        vis->setPlaces(cemeteries);
-        vis->setPeople(people);
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ, "MYSQL", &sqldata, vis);
-        vis->Init();
-        vis->setArchitect(&archie);
-        //vis->RenderSplash();
-        //Architect archie(InitialTime,EndTime,TimeStep, people, econ, "FileSystem", &data);
-        
-        archie.setDomain(myCity);
-        archie.setHomes(homes);
-        archie.setSchools(schools);
-        archie.setWorks(works);
-        archie.setCemetaries(cemeteries);
-        archie.Simulate();
-        
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people, econ);
-        
-        archie.Simulate();
-    }
+    string ver = "1";
+    //cout << "Enter version number for multi location simulation: ";
+    //cin >> ver;
+    string dataFolder = "data_multi_v"+ver+"_";
+    string movieFolder = "movie_multi_v"+ver+"_";
+    Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
+    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    int xdim = maxdim;
+    int ydim = maxdim;
+    Visualization* vis = getVisualization(xdim, ydim, true);
+    vis->setPlaces(homes);
+    vis->setPlaces(schools);
+    vis->setPlaces(works);
+    vis->setPlaces(cemeteries);
+    vis->setPeople(people);
+    Architect archie(InitialTime,EndTime,TimeStep, people, "MYSQL", &sqldata, vis);
+    vis->Init();
+    vis->setArchitect(&archie);
+    //vis->RenderSplash();
+    
+    archie.setDomain(&myCity);
+    archie.setHomes(homes);
+    archie.setSchools(schools);
+    archie.setWorks(works);
+    archie.setCemetaries(cemeteries);
+    archie.Simulate();
 }
 
 // ========================= End Examples ======================================

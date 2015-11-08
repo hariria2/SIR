@@ -460,7 +460,6 @@ void Person::UpdateDiseaseWithInHost() {
             totalVirion += ((*ip)->_ihdynamics.getV())/pow(dist,2);
         }
     }
-    cout << "T cells: " << _ihdynamics.getT() << endl;
     _ihdynamics.setT0(_Time);
     _ihdynamics.setNE(0.001*totalVirion);
     _ihdynamics.Simulate();
