@@ -200,12 +200,10 @@ void Example2_MultiLocation(bool SaveData){
     normal_distribution<double> deltaDist(3./100,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
-    normal_distribution<double> ILDist(0.01,0.01);
+    normal_distribution<double> ILDist(0.001,0.0005);
     
     vector<Person*> people;
     for (int i=1; i <= population; i++){
-        
-        
         
         string name = "randomName"+to_string(i);
         
@@ -226,7 +224,7 @@ void Example2_MultiLocation(bool SaveData){
             VirLev = 0.1;
         } else {
             VirLev = 0;
-            state = 'R';
+            state = 'S';
         }
         
         
@@ -234,10 +232,10 @@ void Example2_MultiLocation(bool SaveData){
         double ict = (randic < 0.5)? 0.5:randic;
         
 
-        InHostDynamics ihd = InHostDynamics(i,0.01,0.0,0.0,VirLev,ict);
+        InHostDynamics ihd = InHostDynamics(i,0.01,3,0.0,VirLev,ict);
         
         double randil = ILDist(generator);
-        double il = (randil < 0.001)? 0.001:randil;
+        double il = (randil < 0.0005)? 0.0005:randil;
         ihd.setILRate(il);
         
         double randbeta  = betaDist(generator);

@@ -5,7 +5,5 @@ vis = SQLVisualization('root','','localhost','sim_v1_11_8_2015')
 
 vis.getHistoryData()
 vis.PlotHistory(1)
-
-vis.PlotIndividual(2, [1,2, 34, 400])
-
+vis.PlotIndividual(2, [1,2, 3, 400])
 vis.Render()

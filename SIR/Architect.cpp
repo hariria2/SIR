@@ -181,9 +181,7 @@ void Architect::Simulate(){
 	}
     else if (_Store == "MYSQL"){
         PrepDB();
-        cout << "im in here" << endl;
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
-            cout << "now here" << endl;
             unsigned long start_s=clock();
             if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
                 cout << "time " << _CurrentTime << "!" << endl;
@@ -296,7 +294,8 @@ void Architect::Update(SQLStorage* data){
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2(rand()%360+1 + 1,1);
         }else{
-            (*ip)->Move(rand()%360+1,1, "DailyMovement",_Econ->getDemand());
+            //(*ip)->Move(rand()%360+1,1, "DailyMovement",_Econ->getDemand());
+            (*ip)->Move(rand()%360+1,1, "DailyMovement");
         }
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();

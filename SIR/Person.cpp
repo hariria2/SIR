@@ -263,7 +263,8 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 // Utilities
-void Person::Move(double theta, double r, string motionType, double demand) {
+//void Person::Move(double theta, double r, string motionType, double demand)
+void Person::Move(double theta, double r, string motionType) {
 	int hour    = floor(_Time);
 	double min  = _Time - hour;
 	double DailyTime = ((hour % 24) + min);
@@ -290,6 +291,7 @@ void Person::Move(double theta, double r, string motionType, double demand) {
     double WEDailyTime = ((WEHour % 24)+WEMin);
     
     
+    
     if (motionType == "DailyMovement"){
         
         if (DailyTime <= WSDailyTime || DailyTime >= WEDailyTime){
@@ -299,9 +301,11 @@ void Person::Move(double theta, double r, string motionType, double demand) {
         }
         else{
             //ihdynamics.getI()<demand
-            
-            if (_Location->getType() == "Home" && _ihdynamics.getI()<demand){
-                (_Age>22)? setLocation(_Work):setLocation(_School);
+            //if (_Location->getType() == "Home" && _ihdynamics.getI()<demand){
+            if (_Location->getType() == "Home"){
+                if (getState() != 'I' && getState()!='P'){
+                    (_Age>22)? setLocation(_Work):setLocation(_School);
+                }
             }
         }
         
@@ -465,39 +469,33 @@ void Person::UpdateDiseaseWithInHost() {
     _ihdynamics.Simulate();
     
     if ((getState()=='R') & !(getHastBeenSick())) {
-        if (_ihdynamics.getT() > 2.8){
+        if (_ihdynamics.getT() > 1.8){
             setState('S');
         }
     }
     else if (getState() == 'S'){
-        if (_ihdynamics.getV() > 0.01){
+        if (_ihdynamics.getV() > 0.1){
             setState('I');
         }
     }
     else if (getState() == 'I'){
-        if (_Location->getName() == "Home"){
-            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
-        }else {
-            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
-        }
         
-        if (_ihdynamics.getI() > 0.2 & _ihdynamics.getI() < 3 & _HasBeenSick==0){
+        if (_ihdynamics.getI() > 0.3 & _ihdynamics.getI() < 3 & _HasBeenSick==0){
             setState('P');
+            setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 2.5){
+        }else if (_ihdynamics.getI() > 2.8){
             setState('D');
         }
-        else if (_ihdynamics.getI() < 0.01 & _HasBeenSick == 1){
+        else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
             setState('R');
+            setHasBeenSick(0);
+            _ihdynamics.HasBeenSick = 0;
         }
     }else if (getState() == 'P'){
         if (_ihdynamics.getI() + 0.01 < _ihdynamics.getMaxInfLev()){
             setHasBeenSick(1);
-        }
-        if (_Location->getName() == "Home"){
-            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
-        }else {
-            _ihdynamics.setDelta(1.0*_ihdynamics.getDelta());
+            _ihdynamics.HasBeenSick = 1;
         }
         if (_ihdynamics.getI() > 3){
             setState('D');
@@ -505,15 +503,18 @@ void Person::UpdateDiseaseWithInHost() {
         else if (_ihdynamics.getI() < 0.2){
             setState('I');
         }
-        
     }else if (getState() == 'R'){
         if (_ihdynamics.getI() < 0.1){
-            //ihdynamics.setT(ihdynamics.getTi());
+            //_ihdynamics.setT(_ihdynamics.getTi());
             setHasBeenSick(0);
-            _ihdynamics.HasBeenSick = 1;
+            _ihdynamics.HasBeenSick = 0;
         }
-        
     }
+//    if (_ihdynamics.getI() + 0.01 < _ihdynamics.getMaxInfLev()){
+//        setHasBeenSick(1);
+//        _ihdynamics.HasBeenSick = 1;
+//    }
+
     
 }
 double Person::Distance(Person* p){
@@ -527,18 +528,6 @@ double Person::Distance(Person* p){
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
 
-//Not sure what this function is doing. Deprecated???!!!!
-void Person::UpdateWithinHost(list<Person*> ngbrs){
-    
-    for(auto ip = ngbrs.cbegin(); ip != ngbrs.cend(); ++ip){
-        
-    }
-    
-    _ihdynamics.setdt(_Time);
-    // everything gets set
-    _ihdynamics.Simulate();
-    
-}
 
 bool Person::operator == (const Person& p) const {
 	return (p._ID == this->_ID);

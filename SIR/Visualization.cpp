@@ -130,6 +130,7 @@ void Visualization::Render(){
     _II.push_back(_Architect->getI()+_Architect->getP());
     _RR.push_back(_Architect->getR());
     
+
     double domx = (_Architect->getDomain())->Boundary[0][1];
     double domy = (_Architect->getDomain())->Boundary[1][1];
     
@@ -220,8 +221,10 @@ void Visualization::DrawPeople(){
     for(auto p = _People.cbegin(); p != _People.cend(); ++p){
         X = XTransform(((*p)->getCoordinates())[0]);
         Y = YTransform(((*p)->getCoordinates())[1]);
-        Ic = ((*p)->getInHostDynamics()).getI();
-        Sc = ((*p)->getInHostDynamics()).getT();
+        
+        Ic = (((*p)->getInHostDynamics()).getI());
+        Sc = (((*p)->getInHostDynamics()).getT());
+        
         if (Ic >=1){
             Ic = 1;
         }

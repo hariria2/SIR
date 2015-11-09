@@ -95,12 +95,12 @@ public:
 
 	// Utilities
 	double Distance(Person* p);
-	void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
+	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
+    void Move(double theta, double r, string type = "DailyMovement");
 	void Move2(double theta, double r);
 	void ContractDisease(Disease d);
 	void UpdateDisease();
     void UpdateDiseaseWithInHost();
-    void UpdateWithinHost(list<Person*> ngbrs);
     
 	bool operator == (const Person& p) const;
     

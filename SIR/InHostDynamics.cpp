@@ -154,7 +154,7 @@ void InHostDynamics::Flow(){
             _dI = 0.0;
             _dV = 0.0;
         } else{
-            _dT = _Beta*_T*_V;
+            _dT = -_Beta*_T*_V;
             _dI = _Beta*_T*_V - _Delta*_I;
             _dV = _P*_I - _C*_V + _NE;
         }
