@@ -264,7 +264,7 @@ list<int> Person::getAllConnectionsHist(){
 
 // Utilities
 //void Person::Move(double theta, double r, string motionType, double demand)
-void Person::Move(double theta, double r, string motionType) {
+void Person::Move(double theta, double r, string motionType){
 	int hour    = floor(_Time);
 	double min  = _Time - hour;
 	double DailyTime = ((hour % 24) + min);
@@ -465,7 +465,7 @@ void Person::UpdateDiseaseWithInHost() {
         }
     }
     _ihdynamics.setT0(_Time);
-    _ihdynamics.setNE(0.001*totalVirion);
+    _ihdynamics.setNE(0.01*totalVirion);
     _ihdynamics.Simulate();
     
     if ((getState()=='R') & !(getHastBeenSick())) {
@@ -515,7 +515,6 @@ void Person::UpdateDiseaseWithInHost() {
 //        _ihdynamics.HasBeenSick = 1;
 //    }
 
-    
 }
 double Person::Distance(Person* p){
     

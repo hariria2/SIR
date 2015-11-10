@@ -183,7 +183,7 @@ void Example2_MultiLocation(bool SaveData){
     double sco[2];
     double cco[2];
     
-    int population = 400;
+    int population = 500;
     
     Disease flu("Flu", 44, 40, 100);
     char state = 'S';
@@ -200,7 +200,7 @@ void Example2_MultiLocation(bool SaveData){
     normal_distribution<double> deltaDist(3./100,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
-    normal_distribution<double> ILDist(0.001,0.0005);
+    normal_distribution<double> ILDist(0.005,0.001);
     
     vector<Person*> people;
     for (int i=1; i <= population; i++){
@@ -274,7 +274,7 @@ void Example2_MultiLocation(bool SaveData){
     
     double InitialTime = 0;
     double EndTime = 200;
-    double TimeStep = 0.05;
+    double TimeStep = 0.1;
     int l = floor((EndTime-InitialTime)/TimeStep);
     
     string ver = "1";

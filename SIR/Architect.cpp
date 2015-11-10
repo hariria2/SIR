@@ -206,10 +206,10 @@ void Architect::Simulate(){
             Update(_sqlDataPtr);
             
             
-            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            if ((time*1000000) < (_TimeStep*1000000)){
-                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-            }
+            //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            //if ((time*1000000) < (_TimeStep*1000000)){
+            //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            //}
             
         }
         
@@ -630,6 +630,7 @@ void Architect::AddPerson(double x, double y){
                             p->getGender() + "', " +
                             to_string((p->getHome())->getID()) + ", " +
                             to_string((p->getLocation())->getID()));
+    p->setLocation(loc);
     AddPerson(p);
     _Visualization->AddPerson(p);
 }

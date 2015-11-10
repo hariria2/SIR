@@ -147,7 +147,7 @@ void InHostDynamics::Update(){
 
 void InHostDynamics::Flow(){
     
-    
+    _NE = (_NE > 5)? 5:_NE;
     if (_T<_Tol){
         if (!HasBeenSick){
             _dT = _ILRate;

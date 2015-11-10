@@ -221,9 +221,9 @@ void Visualization::DrawPeople(){
     for(auto p = _People.cbegin(); p != _People.cend(); ++p){
         X = XTransform(((*p)->getCoordinates())[0]);
         Y = YTransform(((*p)->getCoordinates())[1]);
-        
+        double tol = ((*p)->getInHostDynamics()).getTol();
         Ic = (((*p)->getInHostDynamics()).getI());
-        Sc = (((*p)->getInHostDynamics()).getT());
+        Sc = (((*p)->getInHostDynamics()).getT())/tol;
         
         if (Ic >=1){
             Ic = 1;

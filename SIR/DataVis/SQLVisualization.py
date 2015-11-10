@@ -216,15 +216,15 @@ class SQLVisualization:
             ax1 = h.add_subplot(len(ppl),1,ii+1)
             p1 = ax1.plot(t, SC,label="Scuseptible Cells")
             plt.setp(p1, 'Color', self.bl, 'linewidth', 3)
-            p2 = ax1.plot(t, IC, label="Infected Cells")
-            plt.setp(p2, 'Color', self.re, 'linewidth', 3)
+            p2 = ax1.plot(t, IC,label="Infected Cells")
+            plt.setp(p2, 'Color',self.re, 'linewidth', 3)
             plt.ylim(ymax=ymax)
             plt.ylim(ymin=ymin)
             plt.ylabel(r'ID $%d$' % self._PersonIDs[ii],fontsize=18)
             if ii+1 == len(ppl):
                 plt.xlabel(r"Time", fontsize=18)
             ax2 = ax1.twinx()
-            p3 = ax2.plot(t, VL, label="Viral Load")
+            p3 = ax2.plot(t, VL, '--', label="Viral Load")
             plt.setp(p3, 'Color', self.gr, 'linewidth', 3)
             for tl in ax2.get_yticklabels():
                 tl.set_color(self.gr)
@@ -233,8 +233,8 @@ class SQLVisualization:
 
             ax1.axhspan(ymin, 0.01, color=(0,0.9,0), alpha=0.1, lw=0)
             ax1.axhspan(0.01, 0.3, color=(0.9,0.9,0), alpha=0.1, lw=0)
-            ax1.axhspan(0.3, 2.5, color=(0.9,0,0), alpha=0.1, lw=0)
-            ax1.axhspan(02.5, ymax, color=(0.0,0.0,0.0), alpha=0.1, lw=0)
+            ax1.axhspan(0.3, 2.8, color=(0.9,0,0), alpha=0.1, lw=0)
+            ax1.axhspan(2.8, ymax, color=(0.0,0.0,0.0), alpha=0.1, lw=0)
 
             if ii == 0:
                 lines1, labels1 = ax1.get_legend_handles_labels()
