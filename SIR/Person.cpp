@@ -10,19 +10,11 @@
 
 Person::Person(int id, string name, int age,
                char state, Disease dis, InHostDynamics ihd,
-               Domain* city,    Place* home,
-               Place* school,   Place* work,
-               Place* cemetery, Place* location,
-               double homeco[2],  double workco[2],
-               double schoolco[2],double cemeteryco[2],
+               Domain* city, Place* location, vector<Place*> availplaces,
                int inf_var, int inc_var, int rec_var):
     _disease(dis),
     _ihdynamics(ihd),
     _City(city),
-    _Home(home),
-    _School(school),
-    _Work(work),
-    _Cemetery(cemetery),
     _Location(location)
 {
 	setID(id);
@@ -37,10 +29,6 @@ Person::Person(int id, string name, int age,
 	setInfectionPeriod();
     setIncubationPeriod();
     setRecoveryPeriod();
-    setHomeCoordinates(homeco);
-    setWorkCoordinates(workco);
-    setSchoolCoordinates(schoolco);
-    setCemeteryCoordinates(cemeteryco);
 	IsSingleLocation = false;
     setGender('M');
 }// end constructor
@@ -48,15 +36,11 @@ Person::Person(int id, string name, int age,
 
 Person::Person(int id, string name, int age,
                char state, Disease dis, InHostDynamics ihd,
-               Domain* city, Place* home,
-               double homeco[2],
+               Domain* city,vector<Place*> availplaces,
                int inf_var, int inc_var, int rec_var,
                bool isSingleLocation):
     _disease(dis),
-    _ihdynamics(ihd),
-    _City(city),
-    _Home(home),
-    _Location(home)
+    _ihdynamics(ihd)
 {
  	setID(id);
     setAge(age);
@@ -70,7 +54,6 @@ Person::Person(int id, string name, int age,
 	setInfectionPeriod();
     setIncubationPeriod();
     setRecoveryPeriod();
-    setHomeCoordinates(homeco);
 	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
     setGender('M');
@@ -96,45 +79,13 @@ void Person::setCoordinates(double coordinates[2]){
 	for (int ii=0; ii<2; ii++){
 		_Coordinates[ii] = coordinates[ii];
 	}
-}
-void Person::setHomeCoordinates(double homeco[2]){
-    for (int ii=0; ii<2; ii++){
-        _HomeCoordinates[ii] = homeco[ii];
-    }
-}
-void Person::setWorkCoordinates(double workco[2]){
-    for (int ii=0; ii<2; ii++){
-        _WorkCoordinates[ii] = workco[ii];
-    }
-}
-void Person::setSchoolCoordinates(double schoolco[2]){
-    for (int ii=0; ii<2; ii++){
-        _SchoolCoordinates[ii] = schoolco[ii];
-    }
-}
-void Person::setCemeteryCoordinates(double cemeteryco[2]){
-    for (int ii=0; ii<2; ii++){
-        _CemeteryCoordinates[ii] = cemeteryco[ii];
-    }
-}
-void Person::setState(char state){
+}void Person::setState(char state){
 	_State = state;
 }
 void Person::setLocation(Place* location){
 	_Location->removePerson(this);
 	_Location = location;
 	_Location->addPerson(this);
-    
-    if (_Location == _Home){
-        setCoordinates(_HomeCoordinates);
-    }else if (_Location == _Work){
-        setCoordinates(_WorkCoordinates);
-    }else if (_Location == _School){
-        setCoordinates(_SchoolCoordinates);
-    }else // Location == Cemetery
-    {
-        setCoordinates(_CemeteryCoordinates);
-    }
 }
 void Person::setTime(double t){
 	_Time = t;
@@ -213,23 +164,8 @@ int Person::getRecVar(){
 Domain* Person::getDomain(){
     return _City;
 }
-Place* Person::getHome(){
-    return _Home;
-}
 double* Person::getCoordinates(){
-	 return _Coordinates;
-}
-double* Person::getHomeCoordinates(){
-    return _HomeCoordinates;
-}
-double* Person::getWorkCoordinates(){
-    return _WorkCoordinates;
-}
-double* Person::getSchoolCoordinates(){
-    return _SchoolCoordinates;
-}
-double* Person::getCemeteryCoordinates(){
-    return _CemeteryCoordinates;
+    return _Coordinates;
 }
 double Person::getTime(){
 	return _Time;
@@ -270,7 +206,7 @@ void Person::Move(double theta, double r, string motionType){
 	double DailyTime = ((hour % 24) + min);
 
     if (getState() == 'D') {
-        setLocation(_Cemetery);
+        //setLocation(_Cemetery); ==================================>>>>>>>
         return;
     }
     
@@ -296,7 +232,7 @@ void Person::Move(double theta, double r, string motionType){
         
         if (DailyTime <= WSDailyTime || DailyTime >= WEDailyTime){
             if (!(_Location->getType() == "Home")){
-                setLocation(_Home);
+                //setLocation(_Home); ===================================>>>>
             }
         }
         else{
@@ -304,7 +240,7 @@ void Person::Move(double theta, double r, string motionType){
             //if (_Location->getType() == "Home" && _ihdynamics.getI()<demand){
             if (_Location->getType() == "Home"){
                 if (getState() != 'I' && getState()!='P'){
-                    (_Age>22)? setLocation(_Work):setLocation(_School);
+                   // (_Age>22)? setLocation(_Work):setLocation(_School); ===============>>>
                 }
             }
         }
@@ -313,16 +249,16 @@ void Person::Move(double theta, double r, string motionType){
     }else if (motionType == "Travel"){
         if (getID() == 1){
             if (_Time == 10){
-                setLocation(_Work);
+               // setLocation(_Work); ===============================>>>>
             }
             if (_Time == 20){
-                setLocation(_School);
+                // setLocation(_School); ============================>>>>
             }
         }
 
         if (getID() == 9){
             if (_Time == 30){
-                setLocation(_Home);
+                //setLocation(_Home);================================>>>>
             }
         }
     }

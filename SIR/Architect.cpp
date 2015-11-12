@@ -186,6 +186,7 @@ void Architect::Simulate(){
             
             _Visualization->Render();
             
+            /*  ================================================================>>>>>>>>>>>>>>>>>>
             _sqlDataPtr-> InsertValue("HistoryData",
                                      "NULL, " +
                                      to_string(_CurrentTime) + ", " +
@@ -200,6 +201,7 @@ void Architect::Simulate(){
                                      to_string(_Econ->getGDP()) + ", " +
                                      to_string(_Econ->getDemand())
                                      );
+             */
             Update(_sqlDataPtr);
             
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -395,7 +397,7 @@ void Architect::PrepDB(){
                    to_string((_City->Boundary)[0][1]) + ", " +
                    to_string((_City->Boundary)[1][0]) + ", " +
                    to_string((_City->Boundary)[1][1]));
-    
+    /* =======================================================================>>>>>>>>>>>>>>>>>>>>>>>>>
     // Homes
     for(auto h = _Homes.cbegin(); h != _Homes.cend(); ++h) {
         _sqlDataPtr->InsertValue("Location",
@@ -440,7 +442,7 @@ void Architect::PrepDB(){
                        to_string(((*h)->Perimeter)[1][0]) + ", " +
                        to_string(((*h)->Perimeter)[1][1]));
     }
-    
+    */
     // =====================>>>End of LocationData<<<========================= //
     
     // =====================>>>People Data<<<================================= //
@@ -448,7 +450,7 @@ void Architect::PrepDB(){
     
     cout << "Prepping tables for " << ps << " people. Please wait..." << endl;
     for(auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); ++p) {
-
+        /* ====================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
         _sqlDataPtr->InsertValue("People",
                                 "NULL, '"        +
                                 (*p)->getName() + "', " +
@@ -456,6 +458,7 @@ void Architect::PrepDB(){
                                 (*p)->getGender() + "', " +
                                 to_string(((*p)->getHome())->getID()) + ", " +
                                 to_string(((*p)->getLocation())->getID()));
+         */
     }
     
     
@@ -505,6 +508,7 @@ void Architect::AddPerson(double x, double y){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
+    /* =================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
     _sqlDataPtr->InsertValue("People",
                             "NULL, '" +
                             p->getName() + "', "+
@@ -512,6 +516,7 @@ void Architect::AddPerson(double x, double y){
                             p->getGender() + "', " +
                             to_string((p->getHome())->getID()) + ", " +
                             to_string((p->getLocation())->getID()));
+     */
     p->setLocation(loc);
     AddPerson(p);
     _Visualization->AddPerson(p);

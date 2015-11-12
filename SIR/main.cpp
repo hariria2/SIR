@@ -127,7 +127,7 @@ void Example1_SingleLocation(bool SaveData){
         //====================================================//
         
         
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, homes, 5,0,0);
         
         people.push_back(p);
     };
@@ -158,10 +158,6 @@ void Example1_SingleLocation(bool SaveData){
     vis->Init();
     vis->setArchitect(&archie);
     archie.setDomain(&myCity);
-    archie.setHomes(homes);
-    archie.setSchools(schools);
-    archie.setWorks(works);
-    archie.setCemetaries(cemeteries);
     archie.Simulate();
     
 }
@@ -263,10 +259,7 @@ void Example2_MultiLocation(bool SaveData){
         ihd.setC(C);
         
         
-        Person *p = new Person(i, name, age, state, flu, ihd,
-                               &myCity, homes[randHIdx],schools[randSIdx],
-                               works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
-                               hco,wco,sco,cco,10,10,10);
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],homes,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
     };
@@ -298,10 +291,6 @@ void Example2_MultiLocation(bool SaveData){
     //vis->RenderSplash();
     
     archie.setDomain(&myCity);
-    archie.setHomes(homes);
-    archie.setSchools(schools);
-    archie.setWorks(works);
-    archie.setCemetaries(cemeteries);
     archie.Simulate();
 }
 
@@ -432,6 +421,7 @@ void readPeopleData(){
 void generateSourceData(){
     
 }
+/*
 void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
     
     for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
@@ -468,14 +458,16 @@ void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
                            (p1.front()->getDisease()),
                            (p1.front()->getInHostDynamics()),
                            (p1.front()->getDomain()),
-                           (p1.front())->getHome(),
-                           (p1.front())->getHomeCoordinates(),
+                           //(p1.front())->getHome(),
+                           //(p1.front())->getHomeCoordinates(),
                            (p1.front())-> getInfVar(),
                            (p1.front())-> getIncVar(),
                            (p1.front())-> getRecVar(), true);
     p2.push_back(np);
     
 }
+*/
+
 void updatePop(vector<Person*> p1, char s){
     for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
         if ((*ip)->getState() != s){
