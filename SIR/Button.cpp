@@ -7,8 +7,12 @@
 //
 
 #include "Button.hpp"
-
-Button::Button(){
+Button::Button(double x,double y, string label, Visualization* vis){
+    setX(x);
+    setY(y);
+    setLabel(label);
+    setVis(vis);
+    drawButton();
     
 }
 
@@ -34,6 +38,9 @@ void Button::setLabel(string label){
 void Button::setClicked(bool clicked){
     _Clicked = clicked;
 }
+void Button::setVis(Visualization* vis){
+    _Vis = vis;
+}
 
 double Button::getX(){
     return _X;
@@ -52,4 +59,31 @@ string Button::getLabel(){
 }
 bool Button::getClicked(){
     return _Clicked;
+}
+Visualization* Button::getVis(){
+    return _Vis;
+}
+void Button::drawButton(){
+    double RR, GG, BB;
+    cout << _Clicked << endl;
+    if (_Clicked){
+        RR = 0.8;
+        GG = 0.;
+        BB = 0.;
+    } else{
+        RR = 0.0;
+        GG = 0.0;
+        BB = 0.6;
+    }
+    
+    glBegin(GL_QUADS);
+    glColor3f(RR,GG,BB); glVertex2d(_X, _Y);
+    glColor3f(RR,GG,BB); glVertex2d(_X+_L, _Y);
+    glColor3f(RR,GG,BB); glVertex2d(_X+_L, _Y+_W);
+    glColor3f(RR,GG,BB); glVertex2d(_X, _Y+_W);
+    glEnd();
+    glColor3f(0.8,0.9,0.9);
+    double tx = _Vis->WInvXTrsfrm(_X+_L/4.);
+    double ty = _Vis->WInvYTrsfrm(_Y+_W/4.);
+    _Vis->DrawText(_Label.data(),(int) _Label.size(), tx, ty,18);
 }

@@ -11,12 +11,15 @@
 
 #include <stdio.h>
 #include <string>
+#include "Visualization.h"
 
 using namespace std;
 
+class Visualization;
+
 class Button{
 public:
-    Button();
+    Button(double x, double y, string label, Visualization* vis);
     
     ~Button();
     
@@ -26,6 +29,7 @@ public:
     void setW(double w);
     void setLabel(string label);
     void setClicked(bool clicked);
+    void setVis(Visualization* vis);
     
     double getX();
     double getY();
@@ -33,17 +37,20 @@ public:
     double getW();
     string getLabel();
     bool getClicked();
+    Visualization* getVis();
     
+    void drawButton();
 private:
     
     double _X;
     double _Y;
-    double _L;
-    double _W;
+    double _L=0.1;
+    double _W=0.05;
     string _Label;
     
     bool _Clicked = false;
     
+    Visualization* _Vis;
     
     
 };

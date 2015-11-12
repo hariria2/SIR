@@ -8,7 +8,6 @@
 
 #include "Visualization.h"
 
-
 Visualization::Visualization(int x, int y, bool fsq){
     
     setX(x);
@@ -134,15 +133,15 @@ void Visualization::Render(){
     double domx = (_Architect->getDomain())->Boundary[0][1];
     double domy = (_Architect->getDomain())->Boundary[1][1];
     
-    glPointSize(10.f);
+    glPointSize(8.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.2f, 0.2f, 0.2f, .5f);
     
     glBegin(GL_POLYGON);
     glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(0), YTransform(0), 0.0);
     glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(domx), YTransform(0), 0.0);
-    glColor3f(0.0, 0.3, .8); glVertex3f(XTransform(domx), YTransform(domy), 0.0);
-    glColor3f(0.9, 0.9, 0.); glVertex3f(XTransform(0), YTransform(domy), 0.0);
+    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(domx), YTransform(domy), 0.0);
+    glColor3f(0.8, 0.8, 0.); glVertex3f(XTransform(0), YTransform(domy), 0.0);
     glEnd();
     
     
@@ -152,6 +151,7 @@ void Visualization::Render(){
     
     PlotSIR();
     
+    addButton(710, 500, "test"); // This shouldn't be here. 
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
@@ -302,9 +302,7 @@ void Visualization::DrawLabel(){
     string infVal = to_string(_Architect->getP());
     string recVal = to_string(_Architect->getR());
     string dedVal = to_string(_Architect->getD());
-    
     glColor3f(1, 0.7, 0);
-    
     DrawText(day.data(), (int) day.size(), leftedge, _Y - 20, 18);
     DrawText(tim.data(), (int) tim.size(), leftedge, _Y - 40, 18);
     DrawText(sus.data(), (int) sus.size(), leftedge, _Y - 60, 18);
@@ -447,6 +445,13 @@ void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
 }
 
+void Visualization::addButton(double x, double y, string label){
+    double bx = XTransform(x);
+    double by = YTransform(y);
+
+    Button *b = new Button(bx,by,label, this);
+    _Buttons.push_back(b);
+}
 
 
 //==========> Call Backs ===============//
@@ -471,6 +476,7 @@ void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double 
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        (_visualization->_Buttons.front())->setClicked(true);
         _visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
         _visualization->testPrint();
         cout << _visualization->getMouseX() << endl;

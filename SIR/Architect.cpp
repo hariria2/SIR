@@ -295,6 +295,7 @@ void Architect::Update(SQLStorage* data){
             (*ip)->Move2(rand()%360+1 + 1,1);
         }else{
             //(*ip)->Move(rand()%360+1,1, "DailyMovement",_Econ->getDemand());
+            //(*ip)->Move(rand()%360+1,.1, "IslandHopper");
             (*ip)->Move(rand()%360+1,1, "DailyMovement");
         }
         if ((*ip)->getState() != 'D'){

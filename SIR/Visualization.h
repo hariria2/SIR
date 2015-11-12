@@ -13,6 +13,7 @@
 #include <GLUT/GLUT.h>
 
 #include "Architect.h"
+#include "Button.hpp"
 
 class Architect;
 
@@ -72,7 +73,7 @@ public:
 
     void testPrint();
     
-    void Button();
+    void addButton(double x,double y,string label);
     
     
     
@@ -100,6 +101,8 @@ private:
     vector<double> _SS;
     vector<double> _II;
     vector<double> _RR;
+    
+    vector<class Button*> _Buttons;
     
     
     static void error_callback(int error, const char* description);

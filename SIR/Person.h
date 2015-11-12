@@ -78,6 +78,8 @@ public:
     char getState() const;
     Domain* getDomain();
     Place* getHome();
+    Place* getSchool();
+    Place* getWork();
 	Place* getLocation();
 	double getTime();
 	Disease getDisease() const;

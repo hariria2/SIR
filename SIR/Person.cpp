@@ -216,6 +216,12 @@ Domain* Person::getDomain(){
 Place* Person::getHome(){
     return _Home;
 }
+Place* Person::getSchool(){
+    return _School;
+}
+Place* Person::getWork(){
+    return _Work;
+}
 double* Person::getCoordinates(){
 	 return _Coordinates;
 }
@@ -264,6 +270,7 @@ list<int> Person::getAllConnectionsHist(){
 
 // Utilities
 //void Person::Move(double theta, double r, string motionType, double demand)
+
 void Person::Move(double theta, double r, string motionType){
 	int hour    = floor(_Time);
 	double min  = _Time - hour;
@@ -326,7 +333,40 @@ void Person::Move(double theta, double r, string motionType){
             }
         }
     }
-    
+    if (motionType == "IslandHopper"){
+        
+        if (getID() == 1){
+            if (_Time == 10){
+                setLocation(_Work);
+            }
+            if (_Time == 20){
+                setLocation(_School);
+            }
+        }
+        
+        if (getID() == 9){
+            if (_Time == 30){
+                setLocation(_Home);
+            }
+        }
+        
+        
+    }else if (motionType == "Travel"){
+        if (getID() == 1){
+            if (_Time == 10){
+                setLocation(_Work);
+            }
+            if (_Time == 20){
+                setLocation(_School);
+            }
+        }
+        
+        if (getID() == 9){
+            if (_Time == 30){
+                setLocation(_Home);
+            }
+        }
+    }
     
 	double x = _Coordinates[0] + r*cos(theta);
 	double y = _Coordinates[1] + r*sin(theta);

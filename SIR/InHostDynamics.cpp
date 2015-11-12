@@ -122,7 +122,6 @@ void InHostDynamics::Simulate(){
     }
     
 }
-
 void InHostDynamics::Update(){
     
     Flow();
@@ -144,7 +143,6 @@ void InHostDynamics::Update(){
     
     
 }
-
 void InHostDynamics::Flow(){
     
     _NE = (_NE > 5)? 5:_NE;
@@ -165,7 +163,6 @@ void InHostDynamics::Flow(){
     }
     
 }
-
 void InHostDynamics::Jacobian(){
     
 }

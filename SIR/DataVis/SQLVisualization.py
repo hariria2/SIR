@@ -181,6 +181,11 @@ class SQLVisualization:
         #set(l, 'FontSize', 16)
         plt.xlabel(r'Time', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
+    def PlotHistogram(self, fignum):
+        h = plt.figure(fignum);
+        plt.hist([a+b for a,b in zip(self.P, self.I)],50)
+        plt.xlabel(r'Time', fontsize=18)
+        plt.ylabel(r'Population', fontsize=18)
 
     def PlotIndividual(self,fignum, ppl):
 
