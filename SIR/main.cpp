@@ -28,8 +28,8 @@ void Example2_MultiLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
-    //Example2_MultiLocation();
+    //Example1_SingleLocation();
+    Example2_MultiLocation();
     return 0;
  }
 // ========================= End main =================
@@ -283,7 +283,7 @@ void Example2_MultiLocation(bool SaveData){
     string dataFolder = "data_multi_v"+ver+"_";
     string movieFolder = "movie_multi_v"+ver+"_";
     Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    //SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
     int xdim = maxdim;
     int ydim = maxdim;
     Visualization* vis = getVisualization(xdim, ydim, true);
@@ -292,7 +292,7 @@ void Example2_MultiLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, "MYSQL", &sqldata, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis);
     vis->Init();
     vis->setArchitect(&archie);
     //vis->RenderSplash();

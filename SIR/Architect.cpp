@@ -55,6 +55,18 @@ _sqlDataPtr(d)
     setVisualization(vis);
     PopulationData();
 }
+Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis)
+{
+    _InitialTime  = t0;
+    _EndTime      = te;
+    _TimeStep     = ts;
+    _CurrentTime  = t0;
+    _TimeIndex    = 0;
+    _PeoplePtr    = pp;
+    //_Store        = store;
+    setVisualization(vis);
+    PopulationData();
+}
 
 Architect::Architect(double t0, double te, double ts,
                      vector<Person *> pp, Economy *econ, string store, SQLStorage* d,Visualization* vis):
@@ -98,18 +110,9 @@ Architect::~Architect() {
 void Architect::setDomain(Domain *city){
     _City = city;
 };
-void Architect::setHomes(vector<Place*> homes){
-    _Homes = homes;
-};
-void Architect::setSchools(vector<Place*> schools){
-    _Schools = schools;
-};
-void Architect::setWorks(vector<Place*> works){
-    _Works = works;
-};
-void Architect::setCemetaries(vector<Place*> cemeteries){
-    _Cemeteries = cemeteries;
-};
+void Architect::setPlaces(vector<Place *> places){
+    _AllPlaces = places;
+}
 void Architect::setVisualization(Visualization *vis){
     _Visualization = vis;
 }
@@ -123,6 +126,9 @@ double Architect::getTimeStep(){
 }
 vector<Person*> Architect::getPeople(){
 	return _PeoplePtr;
+}
+vector<Place*> Architect::getPlaces(){
+    return _AllPlaces;
 }
 Visualization* Architect::getVisualization(){
     return _Visualization;
@@ -148,15 +154,6 @@ int Architect::getR(){
 }
 int Architect::getD(){
     return _D;
-}
-int Architect::getSc(){
-    return _Sc;
-}
-int Architect::getHo(){
-    return _Ho;
-}
-int Architect::getWo(){
-    return _Wo;
 }
 Domain* Architect::getDomain(){
     return _City;
@@ -205,19 +202,31 @@ void Architect::Simulate(){
                                      );
             Update(_sqlDataPtr);
             
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            if ((time*1000000) < (_TimeStep*1000000)){
+                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            }
             
+        }
+        
+    }
+	else{
+        while (!glfwWindowShouldClose(_Visualization->getWindow())){
+            unsigned long start_s=clock();
+            if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
+                cout << "time " << _CurrentTime << "!" << endl;
+            }
+            
+            _Visualization->Render();
+            
+            Update();
+        
             //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
             //if ((time*1000000) < (_TimeStep*1000000)){
             //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
             //}
             
         }
-        
-    }
-	else{
-		for (double t = 0; t < _EndTime; t += _TimeStep){
-			Update();
-		}
 	}
     cout << "Simulation Complete. Thank you...!" << endl;
 }
@@ -317,12 +326,15 @@ void Architect::Update(){
     IncrementTime();
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
+        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
 		if ((*ip)->IsSingleLocation) {
-			(*ip)->Move2((rand() % 360),200);
+			(*ip)->Move2((rand() % 360),1);
 		}else{
-			(*ip)->Move((rand() % 360),5);
+			(*ip)->Move((rand() % 360),1);
 		}
-		(*ip)->UpdateDisease();
+        if ((*ip)->getState() != 'D'){
+            (*ip)->UpdateDiseaseWithInHost();
+        }
 	}
     PopulationData();
 }
@@ -348,9 +360,6 @@ void Architect::PopulationData(){
     _P = 0;
     _R = 0;
     _D = 0;
-    _Wo = 0;
-    _Sc = 0;
-    _Ho = 0;
     
     for(auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip) {
         if (((*ip)->getState()) == 'I'){
@@ -367,15 +376,6 @@ void Architect::PopulationData(){
         }
         else{
             _D += 1;
-        }
-        if (((*ip)->getLocation())->getType() == "Work"){
-            _Wo += 1;
-        }
-        else if(((*ip)->getLocation())->getType() == "Home"){
-            _Ho += 1;
-        }
-        else if(((*ip)->getLocation())->getType() == "School"){
-            _Sc += 1;
         }
         
     }
@@ -467,53 +467,19 @@ Place* Architect::LocFromCoo(double x, double y){
     
     double xmin, xmax, ymin, ymax;
     
-    for(auto c = _Cemeteries.cbegin(); c != _Cemeteries.cend(); ++c){
-        xmin = (*c)->Perimeter[0][0];
-        xmax = (*c)->Perimeter[0][1];
-        ymin = (*c)->Perimeter[1][0];
-        ymax = (*c)->Perimeter[1][1];
+    for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p){
+        xmin = (*p)->Perimeter[0][0];
+        xmax = (*p)->Perimeter[0][1];
+        ymin = (*p)->Perimeter[1][0];
+        ymax = (*p)->Perimeter[1][1];
         
         if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
-            return *c;
-        }
-    }
-    
-    for(auto s = _Schools.cbegin(); s != _Schools.cend(); ++s){
-        xmin = (*s)->Perimeter[0][0];
-        xmax = (*s)->Perimeter[0][1];
-        ymin = (*s)->Perimeter[1][0];
-        ymax = (*s)->Perimeter[1][1];
-        
-        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
-            return *s;
-        }
-    }
-    
-    for(auto w = _Works.cbegin(); w != _Works.cend(); ++w){
-        xmin = (*w)->Perimeter[0][0];
-        xmax = (*w)->Perimeter[0][1];
-        ymin = (*w)->Perimeter[1][0];
-        ymax = (*w)->Perimeter[1][1];
-        
-        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
-            return *w;
-        }
-    }
-    
-    for(auto h = _Homes.cbegin(); h != _Homes.cend(); ++h){
-        xmin = (*h)->Perimeter[0][0];
-        xmax = (*h)->Perimeter[0][1];
-        ymin = (*h)->Perimeter[1][0];
-        ymax = (*h)->Perimeter[1][1];
-        
-        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
-            return *h;
+            return *p;
         }
     }
     
     cout << "No Homeless people allowed in DiseaseVille!" << endl;
-    
-    return _Homes.front();
+    return _AllPlaces.front();
 }
 void Architect::AddPerson(double x, double y){
     
@@ -531,93 +497,9 @@ void Architect::AddPerson(double x, double y){
     
     Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
-    Place* school;
-    Place* home;
-    Place* work;
-    Place* cemetery;
-    double schoolco[2];
-    double homeco[2];
-    double workco[2];
-    double cemeteryco[2];
+    vector<Place*> availPlaces = _AllPlaces;
     
-    if (loc->getType() == "School"){
-        school = loc;
-        home = _Homes.front();
-        work = _Works.front();
-        cemetery = _Cemeteries.front();
-        
-        schoolco[0] = x;
-        schoolco[1] = y;
-        
-        homeco[0] = (double) *(home->Perimeter[0]);
-        homeco[1] = (double) *(home->Perimeter[1]);
-        
-        workco[0] = (double) *(work->Perimeter[0]);
-        workco[1] = (double) *(work->Perimeter[1]);
-        
-        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
-        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
-        
-    }
-    else if (loc->getType() == "Work"){
-        school = _Schools.front();
-        home = _Homes.front();
-        work = loc;
-        cemetery = _Cemeteries.front();
-        
-        schoolco[0] = (double) *(school->Perimeter[0]);
-        schoolco[1] = (double) *(school->Perimeter[0]);
-        
-        homeco[0] = (double) *(home->Perimeter[0]);
-        homeco[1] = (double) *(home->Perimeter[1]);
-        
-        workco[0] = x;
-        workco[1] = y;
-        
-        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
-        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
-        
-    }
-    else if (loc->getType() == "Home"){
-        school = _Schools.front();
-        home = loc;
-        work = _Works.front();
-        cemetery = _Cemeteries.front();
-        
-        homeco[0] = x;
-        homeco[1] = y;
-        
-        schoolco[0] = (double) *(school->Perimeter[0]);
-        schoolco[1] = (double) *(school->Perimeter[1]);
-        
-        workco[0] = (double) *(work->Perimeter[0]);
-        workco[1] = (double) *(work->Perimeter[1]);
-        
-        cemeteryco[0] = (double) *(cemetery->Perimeter[0]);
-        cemeteryco[1] = (double) *(cemetery->Perimeter[1]);
-        
-    }
-    else if (loc->getType() == "Cemetery"){
-        school = _Schools.front();
-        home = _Homes.front();
-        work = _Works.front();
-        cemetery = loc;
-        
-        cemeteryco[0] = x;
-        cemeteryco[1] = y;
-        
-        homeco[0] = (double) *(home->Perimeter[0]);
-        homeco[1] = (double) *(home->Perimeter[1]);
-        
-        workco[0] = (double) *(work->Perimeter[0]);
-        workco[1] = (double) *(work->Perimeter[1]);
-        
-        schoolco[0] = (double) *(school->Perimeter[0]);
-        schoolco[1] = (double) *(school->Perimeter[1]);
-        
-    }
-    
-    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, home, school, work, cemetery, loc, homeco, workco, schoolco, cemeteryco,1,1,1);
+    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
     
     double coo[2] = {x,y};
     p->setCoordinates(coo);
