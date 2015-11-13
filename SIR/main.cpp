@@ -28,8 +28,8 @@ void Example2_MultiLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    Example1_SingleLocation();
-    //Example2_MultiLocation();
+    //Example1_SingleLocation();
+    Example2_MultiLocation();
     return 0;
  }
 // ========================= End main =================

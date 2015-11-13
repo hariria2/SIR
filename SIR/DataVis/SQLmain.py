@@ -1,7 +1,7 @@
 from SQLVisualization import SQLVisualization
 import matplotlib.pyplot as plt
 
-vis = SQLVisualization('root','','localhost','sim_v1_11_9_2015')
+vis = SQLVisualization('root','','localhost','sim_v1_11_12_2015')
 
 vis.getHistoryData()
 vis.PlotHistory(1)
