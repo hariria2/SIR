@@ -16,7 +16,6 @@ void getDefaultCoordinates(Place* location, double co[2]);
 void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries);
 void readPeopleData();
 void generateSourceData();
-void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s);
 void updatePop(vector<Person*> p1, char s);
 
 void Example1_SingleLocation(bool SaveData=true);
@@ -259,11 +258,10 @@ void Example2_MultiLocation(bool SaveData){
         ihd.setC(C);
         
         vector<Place*> AllPlaces;
-        AllPlaces.insert(AllPlaces.end(), homes.begin(), homes.end());
-        AllPlaces.insert(AllPlaces.end(), schools.begin(), schools.end());
-        AllPlaces.insert(AllPlaces.end(), works.begin(), works.end());
-        AllPlaces.insert(AllPlaces.end(), cemeteries.begin(), cemeteries.end());
-        
+        AllPlaces.push_back(works[randWIdx]);
+        AllPlaces.push_back(schools[randSIdx]);
+        AllPlaces.push_back(cemeteries[randCIdx]);
+
         Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],AllPlaces,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
@@ -426,53 +424,6 @@ void readPeopleData(){
 void generateSourceData(){
     
 }
-/*
-void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
-    
-    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
-        
-        Person *p = new Person(
-        (*ip) -> getID(),
-        (*ip) -> getName(),
-        (*ip) -> getAge(),
-        (*ip) -> getState(),
-        (*ip) -> getDisease(),
-        (*ip) -> getInHostDynamics(),
-        (*ip) -> getDomain(),
-        (*ip) -> getHome(),
-        (*ip) -> getHomeCoordinates(),
-        (*ip) -> getInfVar(),
-        (*ip) -> getIncVar(),
-        (*ip) -> getRecVar(), true);
-        
-        p2.push_back(p);
-    }
-    string name = "randomName"+to_string(p1.size()+1);
-    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
-    
-    normal_distribution<double> ageDist(25,20);
-    double randage  = ageDist(generator);
-    int age = (randage < 0)? 0:floor(randage);
-    
-    getDefaultCoordinates((p1.front())->getHome(), (p1.front())->getHomeCoordinates());
-    Person *np = new Person((int)p1.size()+1,
-                           name,
-                           age,
-                           s,
-                           (p1.front()->getDisease()),
-                           (p1.front()->getInHostDynamics()),
-                           (p1.front()->getDomain()),
-                           //(p1.front())->getHome(),
-                           //(p1.front())->getHomeCoordinates(),
-                           (p1.front())-> getInfVar(),
-                           (p1.front())-> getIncVar(),
-                           (p1.front())-> getRecVar(), true);
-    p2.push_back(np);
-    
-}
-*/
-
 void updatePop(vector<Person*> p1, char s){
     for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
         if ((*ip)->getState() != s){
