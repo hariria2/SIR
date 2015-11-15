@@ -80,6 +80,9 @@ public:
     list<int> getAllConnections();
     list<int> getAllConnectionsHist();
 
+    
+    void Update();
+    
 	// Utilities
 	double Distance(Person* p);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
@@ -88,6 +91,7 @@ public:
 	void ContractDisease(Disease d);
 	void UpdateDisease();
     void UpdateDiseaseWithInHost();
+    
     
 	bool operator == (const Person& p) const;
     
@@ -115,7 +119,7 @@ private:
     
     InHostDynamics _ihdynamics;
     
-    list<Person*> _neigbors;
+    vector<Person*> _neigbors;
     
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	char _State;
@@ -134,6 +138,8 @@ private:
     list<int> _SIConnectionsHist;
     list<int> _AllConnections;
     list<int> _AllConnectionsHist;
+    
+    unsigned _seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 };
 
 #endif /* PERSON_H_ */

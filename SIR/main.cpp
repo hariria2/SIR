@@ -258,8 +258,13 @@ void Example2_MultiLocation(bool SaveData){
         
         ihd.setC(C);
         
+        vector<Place*> AllPlaces;
+        AllPlaces.insert(AllPlaces.end(), homes.begin(), homes.end());
+        AllPlaces.insert(AllPlaces.end(), schools.begin(), schools.end());
+        AllPlaces.insert(AllPlaces.end(), works.begin(), works.end());
+        AllPlaces.insert(AllPlaces.end(), cemeteries.begin(), cemeteries.end());
         
-        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],homes,10,10,10);
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],AllPlaces,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
     };

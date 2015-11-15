@@ -241,7 +241,10 @@ void Architect::Update(Storage* data){
     _Econ->getParameters(_PeoplePtr);
     _Econ->Update(_TimeStep);
     IncrementTime();
-	
+    for (auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); p++){
+        (*p)->Update();
+    }
+	/*  did not erase yet because this block has storage code
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
 		data->movieSave((*ip)->getID(),
@@ -261,14 +264,10 @@ void Architect::Update(Storage* data){
                         ((*ip)->getAllConnectionsHist()));
         
 		(*ip)->setTime(_CurrentTime);
-		if ((*ip)->IsSingleLocation) {
-			(*ip)->Move2((rand() % 360),1);
-		}else{
-			(*ip)->Move((rand() % 360),1, "Travel");
-		}
-		(*ip)->UpdateDiseaseWithInHost();
+        (*ip)->Update();
 	}
-	data->endMovieSave();
+	*/
+     data->endMovieSave();
     PopulationData();
 }
 void Architect::Update(SQLStorage* data){
@@ -324,7 +323,7 @@ void Architect::Update(SQLStorage* data){
 }
 void Architect::Update(){
 	
-    _Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
+    //_Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
     IncrementTime();
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);

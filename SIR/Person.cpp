@@ -15,7 +15,8 @@ Person::Person(int id, string name, int age,
     _disease(dis),
     _ihdynamics(ihd),
     _City(city),
-    _Location(location)
+    _Location(location),
+    _AvailablePlaces(availplaces)
 {
 	setID(id);
     setAge(age);
@@ -40,7 +41,8 @@ Person::Person(int id, string name, int age,
                int inf_var, int inc_var, int rec_var,
                bool isSingleLocation):
     _disease(dis),
-    _ihdynamics(ihd)
+    _ihdynamics(ihd),
+    _AvailablePlaces(availplaces)
 {
  	setID(id);
     setAge(age);
@@ -79,22 +81,38 @@ void Person::setCoordinates(double coordinates[2]){
 	for (int ii=0; ii<2; ii++){
 		_Coordinates[ii] = coordinates[ii];
 	}
-}void Person::setState(char state){
+}
+void Person::setState(char state){
 	_State = state;
 }
 void Person::setLocation(Place* location){
 	_Location->removePerson(this);
 	_Location = location;
 	_Location->addPerson(this);
+    
+    double xmin = location->Perimeter[0][0];
+    double xmax = location->Perimeter[0][1];
+    double ymin = location->Perimeter[1][0];
+    double ymax = location->Perimeter[1][1];
+    
+    default_random_engine generator(_seed);
+    uniform_real_distribution<double> xdist(xmin, xmax);
+    uniform_real_distribution<double> ydist(ymin, ymax);
+    
+    double x = xdist(generator);
+    double y = ydist(generator);
+    double Co[2] = {x,y};
+    
+    setCoordinates(Co);
+    
 }
 void Person::setTime(double t){
 	_Time = t;
 }
 void Person::setInfectionPeriod(){
-	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
-	normal_distribution<double> distribution(_disease.getAverageInfectionPeriod(),_InfectionVar);
-	double randnum  = distribution(generator);
+	default_random_engine generator(_seed);
+    normal_distribution<double> distribution(_disease.getAverageInfectionPeriod(),_InfectionVar);
+    double randnum  = distribution(generator);
 	randnum = (randnum < 0)? 0:randnum;
 	_InfectionPeriod = floor(randnum);
 }
@@ -198,16 +216,42 @@ list<int> Person::getAllConnectionsHist(){
     return _AllConnectionsHist;
 }
 
+void Person::Update(){
+    
+    Move((rand() % 360),1, "DailyMotion");
+    UpdateDiseaseWithInHost();
+}
+
 // Utilities
 //void Person::Move(double theta, double r, string motionType, double demand)
 void Person::Move(double theta, double r, string motionType){
 	int hour    = floor(_Time);
 	double min  = _Time - hour;
 	double DailyTime = ((hour % 24) + min);
-
+//    Place* home;
+//    Place* school;
+//    Place* work;
+//    Place* cemet;
+//    for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+//        
+//        if ((*L)->getType()=="Home"){
+//            home = *L;
+//        }else if ((*L)->getType()=="School"){
+//            school = *L;
+//        }else if ((*L)->getType()=="Work"){
+//            work = *L;
+//        }else if ((*L)->getType()=="Cemetery"){
+//            cemet = *L;
+//        }
+//    
+//    }
     if (getState() == 'D') {
-        //setLocation(_Cemetery); ==================================>>>>>>>
-        return;
+        for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+            if ((*L)->getType()=="Cemetery") {
+                setLocation(*L);
+                return;
+            }
+        }
     }
     
     default_random_engine generator(_RandSeed);
@@ -327,10 +371,10 @@ void Person::UpdateDisease() {
     
 	
     
-    list<Person*>* peeps = _Location->getOccupants();
+    list<Person*> peeps = _Location->getOccupants();
     int criticalDistance = 23;
     
-    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
+    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         if (Distance(*ip) < criticalDistance){
             _neigbors.push_back(*ip);
             addAllConnection((*ip)->getID());
@@ -339,7 +383,7 @@ void Person::UpdateDisease() {
     }
     
 	if (getState() == 'S'){
-		for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
+		for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
 			if ((*ip)->getState() == 'P' | (*ip)->getState() == 'I'){
 				if (Distance(*ip) < criticalDistance){
 					_IncubationTime = _Time;
@@ -374,13 +418,13 @@ void Person::UpdateDisease() {
         return;
     }
 }
-void Person::UpdateDiseaseWithInHost() {
+void Person::UpdateDiseaseWithInHost(){
     
-    list<Person*>* peeps = _Location->getOccupants();
+    list<Person*> peeps = _Location->getOccupants();
 
     int criticalDistance = 5;
     
-    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
+    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
@@ -462,7 +506,6 @@ double Person::Distance(Person* p){
     
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
-
 
 bool Person::operator == (const Person& p) const {
 	return (p._ID == this->_ID);
