@@ -25,23 +25,16 @@ class Visualization;
 
 class Architect {
 public:
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d, bool eig);
-	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, string store,SQLStorage* d, Visualization* vis);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d, Visualization* vis);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store="None");
-	
+    
+    Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis);
+    Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d);
     
     virtual ~Architect();
     
 
 	// Setters
     void setDomain(Domain *city);
-    void setHomes(vector<Place*> homes);
-    void setSchools(vector<Place*> schools);
-    void setWorks(vector<Place*> works);
-    void setCemetaries(vector<Place*> cemetaries);
+    void setPlaces(vector<Place*> places);
     void setVisualization(Visualization* vis);
     
 	// Getters
@@ -52,13 +45,10 @@ public:
     int getI();
     int getP();
     int getR();
-    int getD();
-    int getWo();
-    int getHo();
-    int getSc();
+    int getD(); 
     Domain* getDomain();
-    
 	vector<Person*> getPeople();
+    vector<Place*> getPlaces();
     Visualization* getVisualization();
 
 	// Utilities
@@ -84,21 +74,15 @@ private:
     Economy* _Econ;
 	vector<Person*> _PeoplePtr;
     Domain* _City;
-    vector<Place*> _Homes;
-    vector<Place*> _Schools;
-    vector<Place*> _Works;
-    vector<Place*> _Cemeteries;
+    vector<Place*> _AllPlaces;
     SQLStorage* _sqlDataPtr;
 	Storage* _dataPtr;
-	string _Store;
+	string _Store = "None";
     Visualization* _Visualization;
 	int _S;
 	int _I;
     int _P;
 	int _R;
     int _D;
-    int _Wo;
-    int _Sc;
-    int _Ho;
 };
 #endif /* ARCHITECT_H_ */

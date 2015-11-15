@@ -44,11 +44,6 @@ class SQLVisualization:
         self.P = [row[4] for row in data]
         self.R = [row[5] for row in data]
         self.D = [row[6] for row in data]
-        self.Ho = [row[7] for row in data]
-        self.Wo = [row[8] for row in data]
-        self.Sc = [row[9] for row in data]
-        self.GDP = [row[10] for row in data]
-        self.Demand = [row[11] for row in data]
     def getPerson(self, ids):
         query1 = '';
         query2 = '';

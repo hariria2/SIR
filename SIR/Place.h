@@ -34,7 +34,7 @@ public:
 	string getName();
 	string getType();
 	string getLocation();
-	list<Person*>* getOccupants();
+	list<Person*> getOccupants();
 
 	bool operator == (const Place& p) const;
 
@@ -43,7 +43,7 @@ private:
 	string _Name;
 	string _Type;
 	Domain _Location;
-	list<Person*>* _Occupants;
+	list<Person*> _Occupants;
 
 };
 

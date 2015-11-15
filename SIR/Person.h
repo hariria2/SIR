@@ -23,17 +23,12 @@ public:
 
 	Person(int id, string name, int age,
            char state, Disease dis, InHostDynamics ihd,
-           Domain* city,    Place* home,
-           Place* school,   Place* work,
-           Place* cemetery, Place* Location,
-           double homeco[2],  double workco[2],
-           double schoolco[2],double cemeteryco[2],
+           Domain* city, Place* Location, vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var);
 
 	Person(int id, string name, int age,
            char state, Disease dis, InHostDynamics ihd,
-           Domain* city, Place* home,
-           double homeco[2],
+           Domain* city,vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var,
            bool IsSingleLocation);
 
@@ -47,12 +42,10 @@ public:
     void setGender(char g);
 	void setName(string name);
 	void setCoordinates(double coordinates[2]);
-    void setHomeCoordinates(double homeco[2]);
-    void setWorkCoordinates(double workco[2]);
-    void setSchoolCoordinates(double schoolco[2]);
-    void setCemeteryCoordinates(double cemeteryco[2]);
     void setState(char state);
 	void setLocation(Place* location);
+    void setDefaultLocation(Place* location);
+    void setAvailPlaces(vector<Place*> availplaces);
 	void setTime(double t);
 	void setInfectionPeriod();
 	void setIncubationPeriod();
@@ -71,16 +64,11 @@ public:
     int getHastBeenSick();
 	string getName() const;
 	double* getCoordinates();
-    double* getHomeCoordinates();
-    double* getWorkCoordinates();
-    double* getSchoolCoordinates();
-    double* getCemeteryCoordinates();
     char getState() const;
     Domain* getDomain();
-    Place* getHome();
-    Place* getSchool();
-    Place* getWork();
 	Place* getLocation();
+    Place* getDeafaultLocation();
+    vector<Place*> getAvailablePlaces();
 	double getTime();
 	Disease getDisease() const;
     InHostDynamics getInHostDynamics() const;
@@ -95,6 +83,9 @@ public:
     list<int> getAllConnections();
     list<int> getAllConnectionsHist();
 
+    
+    void Update();
+    
 	// Utilities
 	double Distance(Person* p);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
@@ -103,6 +94,7 @@ public:
 	void ContractDisease(Disease d);
 	void UpdateDisease();
     void UpdateDiseaseWithInHost();
+    
     
 	bool operator == (const Person& p) const;
     
@@ -125,27 +117,21 @@ private:
     double _RecoveryTime;
     double _TimeOfDeath;
 	double _Coordinates[2];
-    double _HomeCoordinates[2];
-    double _WorkCoordinates[2];
-    double _SchoolCoordinates[2];
-    double _CemeteryCoordinates[2];
     
 	Disease _disease;
     
     InHostDynamics _ihdynamics;
     
-    list<Person*> _neigbors;
+    vector<Person*> _neigbors;
     
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	char _State;
     char _Gender;
     int _HasBeenSick = 0;
 	Domain* _City;
-	Place* _Home;
-	Place* _School;
-	Place* _Work;
-    Place* _Cemetery;
 	Place* _Location;
+    Place* _DefaultLocation;
+    vector<Place*> _AvailablePlaces;
 	int _InfectionPeriod;
 	int _IncubationPeriod;
     int _RecoveryPeriod;
