@@ -202,6 +202,9 @@ Place* Person::getLocation(){
 Place* Person::getDeafaultLocation(){
     return _DefaultLocation;
 }
+vector<Place*> Person::getAvailablePlaces(){
+    return _AvailablePlaces;
+}
 Disease Person::getDisease() const{
     return _disease;
 }

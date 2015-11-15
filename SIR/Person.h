@@ -68,6 +68,7 @@ public:
     Domain* getDomain();
 	Place* getLocation();
     Place* getDeafaultLocation();
+    vector<Place*> getAvailablePlaces();
 	double getTime();
 	Disease getDisease() const;
     InHostDynamics getInHostDynamics() const;

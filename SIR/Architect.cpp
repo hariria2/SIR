@@ -497,12 +497,19 @@ void Architect::AddPerson(double x, double y){
     ihd.setC(0.5);
     ihd.setILRate(0.01);
     
+    int randPIdx = rand() % _PeoplePtr.size();
+    
     Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
-    vector<Place*> availPlaces = _AllPlaces;
+    vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
     Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
     
+    for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
+        if ((*l)->getType()=="Home"){
+            p->setDefaultLocation(*l);
+        }
+    }
     double coo[2] = {x,y};
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
@@ -516,7 +523,7 @@ void Architect::AddPerson(double x, double y){
                             to_string((p->getHome())->getID()) + ", " +
                             to_string((p->getLocation())->getID()));
      */
-    p->setLocation(loc);
+    //p->setLocation(loc);
     AddPerson(p);
     _Visualization->AddPerson(p);
 }

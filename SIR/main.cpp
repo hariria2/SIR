@@ -11,6 +11,11 @@
 using namespace std;
 
 // Function prototyping
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B);
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B);
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain);
 void getDefaultCoordinates(Place* location, double co[2]);
 void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries);
@@ -257,12 +262,13 @@ void Example2_MultiLocation(bool SaveData){
         
         ihd.setC(C);
         
-        vector<Place*> AllPlaces;
-        AllPlaces.push_back(works[randWIdx]);
-        AllPlaces.push_back(schools[randSIdx]);
-        AllPlaces.push_back(cemeteries[randCIdx]);
-
-        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],AllPlaces,10,10,10);
+        vector<Place*> availPlaces;
+        availPlaces.push_back(homes[randHIdx]);
+        availPlaces.push_back(works[randWIdx]);
+        availPlaces.push_back(schools[randSIdx]);
+        availPlaces.push_back(cemeteries[randCIdx]);
+        
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],availPlaces,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
     };
@@ -289,17 +295,44 @@ void Example2_MultiLocation(bool SaveData){
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
     Architect archie(InitialTime,EndTime,TimeStep, people, vis);
+    vector<Place*> AllPlaces;
+    AllPlaces += homes;
+    AllPlaces += schools;
+    AllPlaces += works;
+    AllPlaces += cemeteries;
+    
+    
     vis->Init();
     vis->setArchitect(&archie);
     //vis->RenderSplash();
     
     archie.setDomain(&myCity);
+    archie.setPlaces(AllPlaces);
     archie.Simulate();
 }
 
 // ========================= End Examples ======================================
 
 // ========================= Utilities ===========================================
+
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B)
+{
+    std::vector<T> AB;
+    AB.reserve( A.size() + B.size() );                // preallocate memory
+    AB.insert( AB.end(), A.begin(), A.end() );        // add A;
+    AB.insert( AB.end(), B.begin(), B.end() );        // add B;
+    return AB;
+}
+
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B)
+{
+    A.reserve( A.size() + B.size() );                // preallocate memory without erase original data
+    A.insert( A.end(), B.begin(), B.end() );         // add B;
+    return A;                                        // here A could be named AB
+}
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain){
  
 	int xdist  = homesize[1];
