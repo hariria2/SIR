@@ -44,6 +44,7 @@ public:
 	void setCoordinates(double coordinates[2]);
     void setState(char state);
 	void setLocation(Place* location);
+    void setDefaultLocation(Place* location);
     void setAvailPlaces(vector<Place*> availplaces);
 	void setTime(double t);
 	void setInfectionPeriod();
@@ -66,6 +67,7 @@ public:
     char getState() const;
     Domain* getDomain();
 	Place* getLocation();
+    Place* getDeafaultLocation();
 	double getTime();
 	Disease getDisease() const;
     InHostDynamics getInHostDynamics() const;
@@ -127,6 +129,7 @@ private:
     int _HasBeenSick = 0;
 	Domain* _City;
 	Place* _Location;
+    Place* _DefaultLocation;
     vector<Place*> _AvailablePlaces;
 	int _InfectionPeriod;
 	int _IncubationPeriod;
@@ -138,8 +141,6 @@ private:
     list<int> _SIConnectionsHist;
     list<int> _AllConnections;
     list<int> _AllConnectionsHist;
-    
-    unsigned _seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 };
 
 #endif /* PERSON_H_ */

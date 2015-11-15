@@ -32,6 +32,7 @@ Person::Person(int id, string name, int age,
     setRecoveryPeriod();
 	IsSingleLocation = false;
     setGender('M');
+    setDefaultLocation(location);
 }// end constructor
 
 
@@ -95,7 +96,7 @@ void Person::setLocation(Place* location){
     double ymin = location->Perimeter[1][0];
     double ymax = location->Perimeter[1][1];
     
-    default_random_engine generator(_seed);
+    default_random_engine generator(_RandSeed);
     uniform_real_distribution<double> xdist(xmin, xmax);
     uniform_real_distribution<double> ydist(ymin, ymax);
     
@@ -106,27 +107,28 @@ void Person::setLocation(Place* location){
     setCoordinates(Co);
     
 }
+void Person::setDefaultLocation(Place* location){
+    _DefaultLocation = location;
+}
 void Person::setTime(double t){
 	_Time = t;
 }
 void Person::setInfectionPeriod(){
-	default_random_engine generator(_seed);
+	default_random_engine generator(_RandSeed);
     normal_distribution<double> distribution(_disease.getAverageInfectionPeriod(),_InfectionVar);
     double randnum  = distribution(generator);
 	randnum = (randnum < 0)? 0:randnum;
 	_InfectionPeriod = floor(randnum);
 }
 void Person::setIncubationPeriod(){
-	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
+	default_random_engine generator(_RandSeed);
 	normal_distribution<double> distribution(_disease.getAverageIncubationPeriod(),_IncubationVar);
 	double randnum  = distribution(generator);
 	randnum = (randnum < 0)? 0:randnum;
 	_IncubationPeriod = floor(randnum);
 }
 void Person::setRecoveryPeriod(){
-    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
+    default_random_engine generator(_RandSeed);
     normal_distribution<double> distribution(_disease.getAverageRecoveryPeriod(),_RecoveryVar);
     double randnum  = distribution(generator);
     randnum = (randnum < 0)? 0:randnum;
@@ -197,6 +199,9 @@ string Person::getName() const{
 Place* Person::getLocation(){
     return _Location;
 }
+Place* Person::getDeafaultLocation(){
+    return _DefaultLocation;
+}
 Disease Person::getDisease() const{
     return _disease;
 }
@@ -228,23 +233,7 @@ void Person::Move(double theta, double r, string motionType){
 	int hour    = floor(_Time);
 	double min  = _Time - hour;
 	double DailyTime = ((hour % 24) + min);
-//    Place* home;
-//    Place* school;
-//    Place* work;
-//    Place* cemet;
-//    for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
-//        
-//        if ((*L)->getType()=="Home"){
-//            home = *L;
-//        }else if ((*L)->getType()=="School"){
-//            school = *L;
-//        }else if ((*L)->getType()=="Work"){
-//            work = *L;
-//        }else if ((*L)->getType()=="Cemetery"){
-//            cemet = *L;
-//        }
-//    
-//    }
+
     if (getState() == 'D') {
         for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
             if ((*L)->getType()=="Cemetery") {
@@ -275,20 +264,29 @@ void Person::Move(double theta, double r, string motionType){
     if (motionType == "DailyMovement"){
         
         if (DailyTime <= WSDailyTime || DailyTime >= WEDailyTime){
-            if (!(_Location->getType() == "Home")){
-                //setLocation(_Home); ===================================>>>>
+            if (_Location->getType() != "Home"){
+                setLocation(_DefaultLocation);
             }
-        }
-        else{
-            //ihdynamics.getI()<demand
-            //if (_Location->getType() == "Home" && _ihdynamics.getI()<demand){
+        } else {
             if (_Location->getType() == "Home"){
-                if (getState() != 'I' && getState()!='P'){
-                   // (_Age>22)? setLocation(_Work):setLocation(_School); ===============>>>
+                for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+                    
+                    if ((*L)->getType()=="School"){
+                        if (_Age < 22) {
+                            if (getState() != 'I' && getState()!='P'){
+                                setLocation(*L);
+                            }
+                        }
+                    }else if ((*L)->getType()=="Work"){
+                        if (_Age >= 22) {
+                            if (getState() != 'I' && getState()!='P'){
+                                setLocation(*L);
+                            }
+                        }
+                    }
                 }
             }
         }
-        
         
     }else if (motionType == "Travel"){
         if (getID() == 1){
