@@ -11,12 +11,16 @@
 using namespace std;
 
 // Function prototyping
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B);
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B);
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain);
 void getDefaultCoordinates(Place* location, double co[2]);
 void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries);
 void readPeopleData();
 void generateSourceData();
-void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s);
 void updatePop(vector<Person*> p1, char s);
 
 void Example1_SingleLocation(bool SaveData=true);
@@ -127,7 +131,7 @@ void Example1_SingleLocation(bool SaveData){
         //====================================================//
         
         
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, hco, 5,0,0, true);
+        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, homes, 5,0,0);
         
         people.push_back(p);
     };
@@ -154,19 +158,14 @@ void Example1_SingleLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, &econ, "MYSQL", &sqldata, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
     vis->Init();
     vis->setArchitect(&archie);
     archie.setDomain(&myCity);
-    archie.setHomes(homes);
-    archie.setSchools(schools);
-    archie.setWorks(works);
-    archie.setCemetaries(cemeteries);
     archie.Simulate();
     
 }
 void Example2_MultiLocation(bool SaveData){
-    
     int maxdim = 700;
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
     Domain myCity("DiseasVille", cityBoundary);
@@ -262,11 +261,13 @@ void Example2_MultiLocation(bool SaveData){
         
         ihd.setC(C);
         
+        vector<Place*> availPlaces;
+        availPlaces.push_back(homes[randHIdx]);
+        availPlaces.push_back(works[randWIdx]);
+        availPlaces.push_back(schools[randSIdx]);
+        availPlaces.push_back(cemeteries[randCIdx]);
         
-        Person *p = new Person(i, name, age, state, flu, ihd,
-                               &myCity, homes[randHIdx],schools[randSIdx],
-                               works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
-                               hco,wco,sco,cco,10,10,10);
+        Person *p = new Person(i, name, age, state, flu, ihd, &myCity, homes[randHIdx],availPlaces,10,10,10);
         p->setLocation(homes[randHIdx]);
         people.push_back(p);
     };
@@ -292,22 +293,45 @@ void Example2_MultiLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, "MYSQL", &sqldata, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
+    vector<Place*> AllPlaces;
+    AllPlaces += homes;
+    AllPlaces += schools;
+    AllPlaces += works;
+    AllPlaces += cemeteries;
+    
+    
     vis->Init();
     vis->setArchitect(&archie);
     //vis->RenderSplash();
     
     archie.setDomain(&myCity);
-    archie.setHomes(homes);
-    archie.setSchools(schools);
-    archie.setWorks(works);
-    archie.setCemetaries(cemeteries);
+    archie.setPlaces(AllPlaces);
     archie.Simulate();
 }
 
 // ========================= End Examples ======================================
 
 // ========================= Utilities ===========================================
+
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B)
+{
+    std::vector<T> AB;
+    AB.reserve( A.size() + B.size() );                // preallocate memory
+    AB.insert( AB.end(), A.begin(), A.end() );        // add A;
+    AB.insert( AB.end(), B.begin(), B.end() );        // add B;
+    return AB;
+}
+
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B)
+{
+    A.reserve( A.size() + B.size() );                // preallocate memory without erasing original data
+    A.insert( A.end(), B.begin(), B.end() );         // add B;
+    return A;                                        // here A could be named AB
+}
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain){
  
 	int xdist  = homesize[1];
@@ -430,50 +454,6 @@ void readPeopleData(){
     
 }
 void generateSourceData(){
-    
-}
-void matchPeople(vector<Person*> &p1, vector<Person*> &p2, char s){
-    
-    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
-        
-        Person *p = new Person(
-        (*ip) -> getID(),
-        (*ip) -> getName(),
-        (*ip) -> getAge(),
-        (*ip) -> getState(),
-        (*ip) -> getDisease(),
-        (*ip) -> getInHostDynamics(),
-        (*ip) -> getDomain(),
-        (*ip) -> getHome(),
-        (*ip) -> getHomeCoordinates(),
-        (*ip) -> getInfVar(),
-        (*ip) -> getIncVar(),
-        (*ip) -> getRecVar(), true);
-        
-        p2.push_back(p);
-    }
-    string name = "randomName"+to_string(p1.size()+1);
-    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
-    
-    normal_distribution<double> ageDist(25,20);
-    double randage  = ageDist(generator);
-    int age = (randage < 0)? 0:floor(randage);
-    
-    getDefaultCoordinates((p1.front())->getHome(), (p1.front())->getHomeCoordinates());
-    Person *np = new Person((int)p1.size()+1,
-                           name,
-                           age,
-                           s,
-                           (p1.front()->getDisease()),
-                           (p1.front()->getInHostDynamics()),
-                           (p1.front()->getDomain()),
-                           (p1.front())->getHome(),
-                           (p1.front())->getHomeCoordinates(),
-                           (p1.front())-> getInfVar(),
-                           (p1.front())-> getIncVar(),
-                           (p1.front())-> getRecVar(), true);
-    p2.push_back(np);
     
 }
 void updatePop(vector<Person*> p1, char s){

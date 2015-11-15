@@ -17,7 +17,7 @@ Place::Place(int id, string name, string type, int perimeter[2][2], Domain locat
 	setName(name);
 	setType(type);
 	setPerimeter(perimeter);
-    _Occupants = new list<Person*>;
+    _Occupants = *new list<Person*>;
 }// end constructor
 
 // setters
@@ -38,10 +38,10 @@ void Place::setPerimeter(int perimeter[2][2]){
 	}
 }
 void Place::addPerson(Person* p){
-	_Occupants->push_back(p);
+	_Occupants.push_back(p);
 }
 void Place::removePerson(Person* p){
-	_Occupants->remove(p);
+	_Occupants.remove(p);
 }
 
 // getters
@@ -57,7 +57,7 @@ string Place::getType(){
 string Place::getLocation(){
 	return _Location.getName();
 }
-list<Person*>* Place::getOccupants(){
+list<Person*> Place::getOccupants(){
 	return _Occupants;
 }
 
