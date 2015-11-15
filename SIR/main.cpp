@@ -158,7 +158,7 @@ void Example1_SingleLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, &econ, "MYSQL", &sqldata, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
     vis->Init();
     vis->setArchitect(&archie);
     archie.setDomain(&myCity);
@@ -166,7 +166,6 @@ void Example1_SingleLocation(bool SaveData){
     
 }
 void Example2_MultiLocation(bool SaveData){
-    
     int maxdim = 700;
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
     Domain myCity("DiseasVille", cityBoundary);
@@ -285,7 +284,7 @@ void Example2_MultiLocation(bool SaveData){
     string dataFolder = "data_multi_v"+ver+"_";
     string movieFolder = "movie_multi_v"+ver+"_";
     Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-    //SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
     int xdim = maxdim;
     int ydim = maxdim;
     Visualization* vis = getVisualization(xdim, ydim, true);
@@ -294,7 +293,7 @@ void Example2_MultiLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
     vector<Place*> AllPlaces;
     AllPlaces += homes;
     AllPlaces += schools;
@@ -328,7 +327,7 @@ vector<T> operator+(const vector<T> &A, const vector<T> &B)
 template <typename T>
 vector<T> &operator+=(vector<T> &A, const vector<T> &B)
 {
-    A.reserve( A.size() + B.size() );                // preallocate memory without erase original data
+    A.reserve( A.size() + B.size() );                // preallocate memory without erasing original data
     A.insert( A.end(), B.begin(), B.end() );         // add B;
     return A;                                        // here A could be named AB
 }

@@ -25,14 +25,9 @@ class Visualization;
 
 class Architect {
 public:
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d, bool eig);
-	Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, Storage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, string store,SQLStorage* d, Visualization* vis);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store, SQLStorage* d, Visualization* vis);
+    
     Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis);
-    Architect(double t0, double tend, double ts, vector<Person *> pp, Economy *econ, string store="None");
-	
+    Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d);
     
     virtual ~Architect();
     

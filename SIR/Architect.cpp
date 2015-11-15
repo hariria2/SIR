@@ -10,51 +10,6 @@
 
 using namespace std;
 
-Architect::Architect(double t0, double te, double ts,
-		vector<Person *> pp, Economy* econ, string store, Storage* d):
-	_dataPtr(d),
-    _Econ(econ)
-{
-
-	_InitialTime  = t0;
-	_EndTime      = te;
-	_TimeStep     = ts;
-	_CurrentTime  = t0;
-	_TimeIndex    = 0;
-	_PeoplePtr    = pp;
-	_Store        = store;
-    PopulationData();
-}
-
-Architect::Architect(double t0, double te, double ts,
-                     vector<Person *> pp, Economy *econ, string store, SQLStorage* d):
-    _sqlDataPtr(d),
-    _Econ(econ)
-{
-    
-    _InitialTime  = t0;
-    _EndTime      = te;
-    _TimeStep     = ts;
-    _CurrentTime  = t0;
-    _TimeIndex    = 0;
-    _PeoplePtr    = pp;
-    _Store        = store;
-    PopulationData();
-}
-
-Architect::Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d,Visualization* vis):
-_sqlDataPtr(d)
-{
-    _InitialTime  = t0;
-    _EndTime      = te;
-    _TimeStep     = ts;
-    _CurrentTime  = t0;
-    _TimeIndex    = 0;
-    _PeoplePtr    = pp;
-    _Store        = store;
-    setVisualization(vis);
-    PopulationData();
-}
 Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis)
 {
     _InitialTime  = t0;
@@ -63,17 +18,13 @@ Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visuali
     _CurrentTime  = t0;
     _TimeIndex    = 0;
     _PeoplePtr    = pp;
-    //_Store        = store;
     setVisualization(vis);
     PopulationData();
 }
 
-Architect::Architect(double t0, double te, double ts,
-                     vector<Person *> pp, Economy *econ, string store, SQLStorage* d,Visualization* vis):
-    _sqlDataPtr(d),
-    _Econ(econ)
+Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d):
+    _sqlDataPtr(d)
 {
-    
     _InitialTime  = t0;
     _EndTime      = te;
     _TimeStep     = ts;
@@ -82,21 +33,6 @@ Architect::Architect(double t0, double te, double ts,
     _PeoplePtr    = pp;
     _Store        = store;
     setVisualization(vis);
-    PopulationData();
-}
-
-
-Architect::Architect(double t0, double te, double ts, vector<Person *> pp, Economy *econ, string store):
-    _Econ(econ)
-{
-    
-    _InitialTime  = t0;
-    _EndTime      = te;
-    _TimeStep     = ts;
-    _CurrentTime  = t0;
-    _TimeIndex    = 0;
-    _PeoplePtr    = pp;
-    _Store        = store;
     PopulationData();
 }
 
@@ -186,22 +122,16 @@ void Architect::Simulate(){
             
             _Visualization->Render();
             
-            /*  ================================================================>>>>>>>>>>>>>>>>>>
             _sqlDataPtr-> InsertValue("HistoryData",
-                                     "NULL, " +
-                                     to_string(_CurrentTime) + ", " +
-                                     to_string(_S) + ", " +
-                                     to_string(_I) + ", " +
-                                     to_string(_P) + ", " +
-                                     to_string(_R) + ", " +
-                                     to_string(_D) + ", " +
-                                     to_string(_Ho) + ", " +
-                                     to_string(_Wo) + ", " +
-                                     to_string(_Sc) + ", " +
-                                     to_string(_Econ->getGDP()) + ", " +
-                                     to_string(_Econ->getDemand())
+                                    "NULL, " +
+                                    to_string(_CurrentTime) + ", " +
+                                    to_string(_S) + ", " +
+                                    to_string(_I) + ", " +
+                                    to_string(_P) + ", " +
+                                    to_string(_R) + ", " +
+                                    to_string(_D)
                                      );
-             */
+            
             Update(_sqlDataPtr);
             
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -316,7 +246,7 @@ void Architect::Update(SQLStorage* data){
     data -> InsertValue("PersonValues",SQLStatement, true);
     
     //_Econ.computeGDP(econList, Econ.getGDP());
-    _Econ->getParameters(econList);
+    //_Econ->getParameters(econList);
     //_Econ.Update(TimeStep);
     PopulationData();
     
@@ -396,52 +326,16 @@ void Architect::PrepDB(){
                    to_string((_City->Boundary)[0][1]) + ", " +
                    to_string((_City->Boundary)[1][0]) + ", " +
                    to_string((_City->Boundary)[1][1]));
-    /* =======================================================================>>>>>>>>>>>>>>>>>>>>>>>>>
-    // Homes
-    for(auto h = _Homes.cbegin(); h != _Homes.cend(); ++h) {
+    for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p) {
         _sqlDataPtr->InsertValue("Location",
-                       "NULL, '"        +
-                       (*h)->getName() + "', '" +
-                       (*h)->getType() + "', "  +
-                       to_string(((*h)->Perimeter)[0][0]) + ", " +
-                       to_string(((*h)->Perimeter)[0][1]) + ", " +
-                       to_string(((*h)->Perimeter)[1][0]) + ", " +
-                       to_string(((*h)->Perimeter)[1][1]));
+                                 "NULL, '"        +
+                                 (*p)->getName() + "', '" +
+                                 (*p)->getType() + "', "  +
+                                 to_string(((*p)->Perimeter)[0][0]) + ", " +
+                                 to_string(((*p)->Perimeter)[0][1]) + ", " +
+                                 to_string(((*p)->Perimeter)[1][0]) + ", " +
+                                 to_string(((*p)->Perimeter)[1][1]));
     }
-    // Works
-    for(auto h = _Works.cbegin(); h != _Works.cend(); ++h) {
-        _sqlDataPtr->InsertValue("Location",
-                       "NULL, '"        +
-                       (*h)->getName() + "', '" +
-                       (*h)->getType() + "', "  +
-                       to_string(((*h)->Perimeter)[0][0]) + ", " +
-                       to_string(((*h)->Perimeter)[0][1]) + ", " +
-                       to_string(((*h)->Perimeter)[1][0]) + ", " +
-                       to_string(((*h)->Perimeter)[1][1]));
-    }
-    // Schools
-    for(auto h = _Schools.cbegin(); h != _Schools.cend(); ++h) {
-        _sqlDataPtr->InsertValue("Location",
-                       "NULL, '"        +
-                       (*h)->getName() + "', '" +
-                       (*h)->getType() + "', "  +
-                       to_string(((*h)->Perimeter)[0][0]) + ", " +
-                       to_string(((*h)->Perimeter)[0][1]) + ", " +
-                       to_string(((*h)->Perimeter)[1][0]) + ", " +
-                       to_string(((*h)->Perimeter)[1][1]));
-    }
-    // Cemeteries
-    for(auto h = _Cemeteries.cbegin(); h != _Cemeteries.cend(); ++h) {
-        _sqlDataPtr->InsertValue("Location",
-                       "NULL, '"       +
-                       (*h)->getName() + "', '" +
-                       (*h)->getType() + "', "  +
-                       to_string(((*h)->Perimeter)[0][0]) + ", " +
-                       to_string(((*h)->Perimeter)[0][1]) + ", " +
-                       to_string(((*h)->Perimeter)[1][0]) + ", " +
-                       to_string(((*h)->Perimeter)[1][1]));
-    }
-    */
     // =====================>>>End of LocationData<<<========================= //
     
     // =====================>>>People Data<<<================================= //
@@ -449,15 +343,15 @@ void Architect::PrepDB(){
     
     cout << "Prepping tables for " << ps << " people. Please wait..." << endl;
     for(auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); ++p) {
-        /* ====================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        
         _sqlDataPtr->InsertValue("People",
-                                "NULL, '"        +
-                                (*p)->getName() + "', " +
-                                to_string((*p)->getAge()) + ", '"  +
-                                (*p)->getGender() + "', " +
-                                to_string(((*p)->getHome())->getID()) + ", " +
-                                to_string(((*p)->getLocation())->getID()));
-         */
+                            "NULL, '"        +
+                            (*p)->getName() + "', " +
+                            to_string((*p)->getAge()) + ", '"  +
+                            (*p)->getGender() + "', " +
+                            to_string(((*p)->getDeafaultLocation())->getID()) + ", " +
+                            to_string(((*p)->getLocation())->getID()));
+        
     }
     
     
@@ -523,7 +417,6 @@ void Architect::AddPerson(double x, double y){
                             to_string((p->getHome())->getID()) + ", " +
                             to_string((p->getLocation())->getID()));
      */
-    //p->setLocation(loc);
     AddPerson(p);
     _Visualization->AddPerson(p);
 }

@@ -92,12 +92,7 @@ void SQLStorage::CreateTable(string table){
         "Exposed     INT UNSIGNED NOT NULL, " +
         "Infected    INT UNSIGNED NOT NULL, " +
         "Recovered   INT UNSIGNED NOT NULL, " +
-        "Dead        INT UNSIGNED NOT NULL, " +
-        "AtHome      INT UNSIGNED NOT NULL, " +
-        "AtWork      INT UNSIGNED NOT NULL, " +
-        "AtSchool    INT UNSIGNED NOT NULL, " +
-        "GDP         DOUBLE UNSIGNED NOT NULL, " +
-        "Demand      DOUBLE UNSIGNED NOT NULL" +
+        "Dead        INT UNSIGNED NOT NULL" +
         ");";
         
     }
@@ -107,7 +102,7 @@ void SQLStorage::CreateTable(string table){
         "name VARCHAR(20) NOT NULL, " +
         "age INT NOT NULL, " +
         "gender ENUM('M','F') NOT NULL, " +
-        "home INT UNSIGNED NOT NULL REFERENCES Location(ID), " +
+        "default_location INT UNSIGNED NOT NULL REFERENCES Location(ID), " +
         "location INT UNSIGNED NOT NULL REFERENCES Location(ID)"
         ");";
         
