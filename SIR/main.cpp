@@ -23,8 +23,7 @@ void readPeopleData();
 void generateSourceData();
 void updatePop(vector<Person*> p1, char s);
 
-void Example1_SingleLocation(bool SaveData=true);
-void Example2_MultiLocation(bool SaveData=true);
+void CityPlan(bool SaveData=true);
 
 //=================
 
@@ -32,140 +31,14 @@ void Example2_MultiLocation(bool SaveData=true);
 // ========================= Main ======================
 int main(){
     
-    //Example1_SingleLocation();
-    Example2_MultiLocation();
+    CityPlan();
     return 0;
  }
 // ========================= End main =================
 
 
 // ========================= Example Simulations ==============================
-void Example1_SingleLocation(bool SaveData){
-    int maxdim = 700;
-    
-    // Setting up parameters
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    
-    
-    // Instantiate Classes
-    Domain myCity("DiseasVille", cityBoundary);
-    Place home(1, "home", "Home", homeBoundary,myCity);
-    
-    double hco[2];
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-    
-    
-    homes.push_back(&home);
-    int population = 700;
-    
-    Disease flu("Flu", 24, 24, 1);
-    char state = 'S';
-    
-    //============Economy==================//
-    double A     = 2; //0.0025;
-    double alpha = 0.5;
-    double beta  = 0.5;
-    double labor = 0;
-    double health = 0;
-    double y0 = 500; //A*pow(labor,alpha)*pow(health,beta);
-    
-    Economy econ(A,alpha,beta, y0, labor, health);
-    //=======================================//
-    
-    
-    //============InHostDynamics=============//
-    normal_distribution<double> icDist(3,0.2);
-    normal_distribution<double> betaDist(0.05,0.005);
-    normal_distribution<double> deltaDist(3./50,0.005);
-    normal_distribution<double> PDist(3,0.5);
-    normal_distribution<double> CDist(0.8,0.05);
-    double VirLev = 0.0;
-    //=======================================//
-    
-    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine generator(seed);
-    
-    
-    
-    vector<Person*> people;
-    normal_distribution<double> ageDist(25,20);
-    double randage;
-    for (int i=0; i < population; i++){
-        string name = "randomName"+to_string(i);
-        
-        
-        
-        randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
-        
-        getDefaultCoordinates(&home, hco);
-        
-        //=============InHostDynamics=================//
-        if (i == 1){
-            VirLev = 0.1;
-        } else {
-            VirLev = 0;
-            state = 'S';
-        }
-        double randic  = icDist(generator);
-        double ict = (randic < 0.5)? 0.5:randic;
-        // ihd(id, ti, sc, ic, vi)
-        InHostDynamics ihd = InHostDynamics(i,0.01,0,0.0,VirLev, ict);
-        double randbeta  = betaDist(generator);
-        double beta = (randbeta < 0)? 0:randbeta;
-        ihd.setBeta(beta);
-        double randdelta  = deltaDist(generator);
-        double delta = (randdelta < 0)? 0:randdelta;
-        ihd.setDelta(delta);
-        double randP  = PDist(generator);
-        double P = (randP < 0)? 0:randP;
-        ihd.setP(P);
-        double randC  = CDist(generator);
-        double C = (randC < 0)? 0:randC;
-        ihd.setC(C);
-        //====================================================//
-        
-        
-        Person *p = new Person(i, name, age, 'S', flu, ihd, &myCity, &home, homes, 5,0,0);
-        
-        people.push_back(p);
-    };
-    (people.front())->setState('I');
-    
-    
-    double InitialTime = 0;
-    double EndTime = 20;
-    double TimeStep = 0.05;
-    //int l = floor((EndTime-InitialTime)/TimeStep);
-    
-    string ver="1";
-    //cout << "Enter version number for single location simulation: ";
-    //cin >> ver;
-    //string dataFolder = "data_single_v"+ver+"_";
-    //string movieFolder = "movie_single_v"+ver+"_";
-    //Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-    int xdim = maxdim+200;
-    int ydim = maxdim;
-    Visualization* vis = getVisualization(xdim, ydim, true);
-    vis->setPlaces(homes);
-    vis->setPlaces(schools);
-    vis->setPlaces(works);
-    vis->setPlaces(cemeteries);
-    vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
-    vis->Init();
-    vis->setArchitect(&archie);
-    archie.setDomain(&myCity);
-    archie.Simulate();
-    
-}
-void Example2_MultiLocation(bool SaveData){
+void CityPlan(bool SaveData){
     int maxdim = 700;
     int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
     Domain myCity("DiseasVille", cityBoundary);
@@ -284,7 +157,7 @@ void Example2_MultiLocation(bool SaveData){
     string dataFolder = "data_multi_v"+ver+"_";
     string movieFolder = "movie_multi_v"+ver+"_";
     Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    //SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
     int xdim = maxdim;
     int ydim = maxdim;
     Visualization* vis = getVisualization(xdim, ydim, true);
@@ -293,7 +166,8 @@ void Example2_MultiLocation(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
+    //Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis);
     vector<Place*> AllPlaces;
     AllPlaces += homes;
     AllPlaces += schools;
