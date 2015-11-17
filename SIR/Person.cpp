@@ -398,7 +398,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     list<Person*> peeps = _Location->getOccupants();
 
-    int criticalDistance = 1;
+    double criticalDistance = 0.5;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
@@ -430,7 +430,7 @@ void Person::UpdateDiseaseWithInHost(){
         }
     }
     else if (getState() == 'S'){
-        if (_ihdynamics.getV() > 0.1){
+        if (_ihdynamics.getV() > 0.2){
             setState('I');
         }
     }

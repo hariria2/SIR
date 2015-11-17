@@ -181,18 +181,10 @@ void Visualization::DrawPlace(){
         y2 = YTransform((*p)->Perimeter[1][1]);
         
         
-        if ((*p)->getType()=="Home"){
-            RR = 0.5;
-            GG = 0.6;
-            BB = 0.7;
-        } else if ((*p)->getType()=="School"){
-            RR = 0.7;
-            GG = 0.6;
-            BB = 0.5;
-        } else if ((*p)->getType()=="Work"){
+        if ((*p)->getType()=="Island"){
             RR = 0.6;
-            GG = 0.5;
-            BB = 0.7;
+            GG = 0.2;
+            BB = 0.;
         } else if ((*p)->getType()=="Cemetery"){
             RR = 0.7;
             GG = 0.5;
@@ -205,8 +197,8 @@ void Visualization::DrawPlace(){
         
         glBegin(GL_POLYGON);
         glColor3f(RR, GG, BB); glVertex3f(x1, y1, 0.0);
-        glColor3f(RR, GG, BB); glVertex3f(x2, y1, 0.0);
-        glColor3f(RR, GG, BB); glVertex3f(x2, y2, 0.0);
+        glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y1, 0.0);
+        glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y2, 0.0);
         glColor3f(RR, GG, BB); glVertex3f(x1, y2, 0.0);
         glEnd();
     }
@@ -285,34 +277,34 @@ void Visualization::DrawLabel(){
     char buffer_t [50];
     double leftedge = _XRedFctr*_X + 5;
     double rightedge = _XRedFctr*_X + 120;
+    string mnth = "Month: ";
     string day = "Day: ";
-    string tim = "Time: ";
     string sus = "Susceptible: ";
     string exp = "Exposed: ";
     string inf = "Infected: ";
     string rec = "Recovered: ";
     string ded = "Dead: ";
     
-    int dayt = _CurrentTime/24;
-    sprintf(buffer_t,"%2.2f", _Architect->getDailyTime());
-    string dayVal = to_string(dayt);
-    string timVal = buffer_t;
+    int mntht = _CurrentTime/30;
+    sprintf(buffer_t,"%2.2f", _Architect->getMonthlyTime());
+    string mnthVal = to_string(mntht);
+    string dayVal = buffer_t;
     string susVal = to_string(_Architect->getS());
     string expVal = to_string(_Architect->getI());
     string infVal = to_string(_Architect->getP());
     string recVal = to_string(_Architect->getR());
     string dedVal = to_string(_Architect->getD());
     glColor3f(1, 0.7, 0);
-    DrawText(day.data(), (int) day.size(), leftedge, _Y - 20, 18);
-    DrawText(tim.data(), (int) tim.size(), leftedge, _Y - 40, 18);
+    DrawText(mnth.data(), (int) mnth.size(), leftedge, _Y - 20, 18);
+    DrawText(day.data(), (int) day.size(), leftedge, _Y - 40, 18);
     DrawText(sus.data(), (int) sus.size(), leftedge, _Y - 60, 18);
     DrawText(exp.data(), (int) exp.size(), leftedge, _Y - 80, 18);
     DrawText(inf.data(), (int) inf.size(), leftedge, _Y - 100, 18);
     DrawText(rec.data(), (int) rec.size(), leftedge, _Y - 120, 18);
     DrawText(ded.data(), (int) ded.size(), leftedge, _Y - 140, 18);
     
-    DrawText(dayVal.data(), (int) dayVal.size(), rightedge, _Y - 20, 18);
-    DrawText(timVal.data(), (int) timVal.size(), rightedge, _Y - 40, 18);
+    DrawText(mnthVal.data(), (int) mnthVal.size(), rightedge, _Y - 20, 18);
+    DrawText(dayVal.data(), (int) dayVal.size(), rightedge, _Y - 40, 18);
     DrawText(susVal.data(), (int) susVal.size(), rightedge, _Y - 60, 18);
     DrawText(expVal.data(), (int) expVal.size(), rightedge, _Y - 80, 18);
     DrawText(infVal.data(), (int) infVal.size(), rightedge, _Y - 100, 18);
@@ -392,8 +384,8 @@ void Visualization::PlotSIR(){
 
 
 float Visualization::TTransform(double t){
-    int scale = _CurrentTime/24+1;
-    int tscale = scale*24;
+    int scale = _CurrentTime/30+1;
+    int tscale = scale*30;
     double domx = (_Architect->getDomain())->Boundary[0][1];
     return XTransform(t*domx/tscale);
 }

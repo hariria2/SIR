@@ -70,12 +70,12 @@ void FaroeIslands(bool SaveData){
     normal_distribution<double> ageDist(25,20);
     
     
-    normal_distribution<double> icDist(3,0.05);
-    normal_distribution<double> betaDist(0.3,0.02);
+    normal_distribution<double> icDist(2,0.01);
+    normal_distribution<double> betaDist(0.2,0.01);
     normal_distribution<double> deltaDist(3./100,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
-    normal_distribution<double> ILDist(0.005,0.001);
+    normal_distribution<double> ILDist(0.001,0.001);
     
     vector<Person*> people;
     

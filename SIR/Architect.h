@@ -40,7 +40,7 @@ public:
 	// Getters
 	double getCurrentTime();
 	double getTimeStep();
-	double getDailyTime();
+	double getMonthlyTime();
     int getS();
     int getI();
     int getP();

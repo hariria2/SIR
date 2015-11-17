@@ -70,11 +70,11 @@ Visualization* Architect::getVisualization(){
     return _Visualization;
 }
 
-double Architect::getDailyTime(){
+double Architect::getMonthlyTime(){
 	int hour    = floor(_CurrentTime);
 	double min  = _CurrentTime - hour;
 
-	return ((hour % 24) + min);
+	return ((hour % 30) + min);
 }
 int Architect::getS(){
     return _S;
@@ -153,10 +153,10 @@ void Architect::Simulate(){
             
             Update();
         
-            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            if ((time*1000000) < (_TimeStep*1000000)){
-                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-            }
+            //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            //if ((time*1000000) < (_TimeStep*1000000)){
+            //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            //}
             
         }
 	}
@@ -255,7 +255,7 @@ void Architect::Update(){
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		(*ip)->Move((rand() % 360),.1, "IslandHopper");
+		(*ip)->Move((rand() % 360),.05, "IslandHopper");
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
         }
@@ -377,12 +377,12 @@ void Architect::AddPerson(double x, double y){
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 3);
-    ihd.setBeta(0.4);
-    ihd.setDelta(0.02);
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 2);
+    ihd.setBeta(0.2);
+    ihd.setDelta(0.03);
     ihd.setP(0.4);
     ihd.setC(0.5);
-    ihd.setILRate(0.01);
+    ihd.setILRate(0.001);
     
     int randPIdx = rand() % _PeoplePtr.size();
     

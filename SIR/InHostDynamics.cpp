@@ -136,7 +136,6 @@ void InHostDynamics::Update(){
         exit(1);
     }
     
-    
     _T = _T + _dt*_dT;
     _I = _I + _dt*_dI;
     _V = _V + _dt*_dV;
@@ -145,7 +144,7 @@ void InHostDynamics::Update(){
 }
 void InHostDynamics::Flow(){
     
-    _NE = (_NE > 5)? 5:_NE;
+    _NE = (_NE > 1)? 1:_NE;
     if (_T<_Tol){
         if (!HasBeenSick){
             _dT = _ILRate;
