@@ -41,8 +41,7 @@ SQLStorage::SQLStorage(const char *server, const char *user, const char *passwor
     CreateTable("HistoryData");
     CreateTable("People");
     CreateTable("PersonValues");
-    
-    
+
 }
 
 void SQLStorage::CreateDB(string db){

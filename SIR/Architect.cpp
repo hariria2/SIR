@@ -231,12 +231,9 @@ void Architect::Update(SQLStorage* data){
         
         (*ip)->setTime(_CurrentTime);
         
-        if ((*ip)->IsSingleLocation) {
-            (*ip)->Move2(rand()%360+1 + 1,1);
-        }else{
-            (*ip)->Move(rand()%360+1,.1, "IslandHopper");
-            //(*ip)->Move(rand()%360+1,1, "DailyMovement");
-        }
+        
+        (*ip)->Move(rand()%360+1,.1, "IslandHopper");
+        
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
         }
@@ -258,7 +255,7 @@ void Architect::Update(){
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		(*ip)->Move((rand() % 360),.1);
+		(*ip)->Move((rand() % 360),.1, "IslandHopper");
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
         }

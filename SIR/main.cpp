@@ -179,10 +179,10 @@ void FaroeIslands(bool SaveData){
     vis->setPlaces(islands);
     vis->setPeople(people);
     
-    //SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-    //Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
+    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
     
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis);
+    //Architect archie(InitialTime,EndTime,TimeStep, people, vis);
     vis->Init();
     vis->setArchitect(&archie);
     //vis->RenderSplash();

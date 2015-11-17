@@ -32,6 +32,7 @@ Person::Person(int id, string name, int age,
     setRecoveryPeriod();
 	IsSingleLocation = false;
     setGender('M');
+    setLocation(location);
     setDefaultLocation(location);
 }// end constructor
 
@@ -291,19 +292,23 @@ void Person::Move(double theta, double r, string motionType){
             }
         }
         
-    }else if (motionType == "Travel"){
+    }else if (motionType == "IslandHopper"){
         if (getID() == 1){
             if (_Time == 10){
-               // setLocation(_Work); ===============================>>>>
+                for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+                    if ((*L)->getName()=="Eysturoy"){
+                        setLocation(*L);
+                    }
+                }
+
             }
             if (_Time == 20){
-                // setLocation(_School); ============================>>>>
-            }
-        }
+                for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+                    if ((*L)->getName()=="Streymoy"){
+                        setLocation(*L);
+                    }
+                }
 
-        if (getID() == 9){
-            if (_Time == 30){
-                //setLocation(_Home);================================>>>>
             }
         }
     }
@@ -329,36 +334,6 @@ void Person::Move(double theta, double r, string motionType){
     else if (y > ymax){
         y = ymax;// - abs(y-ymax);
     }
-
-	_Coordinates[0] = x;
-	_Coordinates[1] = y;
-}
-void Person::Move2(double theta, double r){
-    
-    if (getState() == 'D') {
-        return;
-    }
-    
-	double x = _Coordinates[0] + r*cos(theta);
-	double y = _Coordinates[1] + r*sin(theta);
-	double xmin = _Location->Perimeter[0][0];
-	double xmax = _Location->Perimeter[0][1];
-	double ymin = _Location->Perimeter[1][0];
-	double ymax = _Location->Perimeter[1][1];
-
-	if (x < xmin){
-		x = xmin + abs(x);
-	}
-	else if (x > xmax){
-		x = xmax - abs(x-xmax);
-	}
-
-	if (y <  ymin){
-		y = ymin + abs(y);
-	}
-	else if (y > ymax){
-		y = ymax - abs(y-ymax);
-	}
 
 	_Coordinates[0] = x;
 	_Coordinates[1] = y;
@@ -423,7 +398,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     list<Person*> peeps = _Location->getOccupants();
 
-    int criticalDistance = 5;
+    int criticalDistance = 1;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
@@ -465,7 +440,7 @@ void Person::UpdateDiseaseWithInHost(){
             setState('P');
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 2.8){
+        }else if (_ihdynamics.getI() > 3){
             setState('D');
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
