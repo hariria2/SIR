@@ -10,7 +10,7 @@
 using namespace std;
 
 
-Place::Place(int id, string name, string type, int perimeter[2][2], Domain location):
+Place::Place(int id, string name, string type, double perimeter[2][2], Domain location):
     _Location(location)
 {
 	setID(id);
@@ -30,7 +30,7 @@ void Place::setName(string name){
 void Place::setType(string type){
 	_Type = type;
 }
-void Place::setPerimeter(int perimeter[2][2]){
+void Place::setPerimeter(double perimeter[2][2]){
 	for (int ii=0; ii<2; ii++){
 		for (int jj=0; jj<2; jj++){
 			Perimeter[ii][jj] = perimeter[ii][jj];

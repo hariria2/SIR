@@ -65,7 +65,6 @@ Visualization* Button::getVis(){
 }
 void Button::drawButton(){
     double RR, GG, BB;
-    cout << _Clicked << endl;
     if (_Clicked){
         RR = 0.8;
         GG = 0.;

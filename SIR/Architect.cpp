@@ -153,10 +153,10 @@ void Architect::Simulate(){
             
             Update();
         
-            //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            //if ((time*1000000) < (_TimeStep*1000000)){
-            //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-            //}
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            if ((time*1000000) < (_TimeStep*1000000)){
+                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            }
             
         }
 	}
@@ -234,9 +234,8 @@ void Architect::Update(SQLStorage* data){
         if ((*ip)->IsSingleLocation) {
             (*ip)->Move2(rand()%360+1 + 1,1);
         }else{
-            //(*ip)->Move(rand()%360+1,1, "DailyMovement",_Econ->getDemand());
-            //(*ip)->Move(rand()%360+1,.1, "IslandHopper");
-            (*ip)->Move(rand()%360+1,1, "DailyMovement");
+            (*ip)->Move(rand()%360+1,.1, "IslandHopper");
+            //(*ip)->Move(rand()%360+1,1, "DailyMovement");
         }
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
@@ -259,11 +258,7 @@ void Architect::Update(){
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		if ((*ip)->IsSingleLocation) {
-			(*ip)->Move2((rand() % 360),1);
-		}else{
-			(*ip)->Move((rand() % 360),1);
-		}
+		(*ip)->Move((rand() % 360),.1);
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
         }

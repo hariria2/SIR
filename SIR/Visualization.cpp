@@ -138,10 +138,10 @@ void Visualization::Render(){
     glClearColor(0.2f, 0.2f, 0.2f, .5f);
     
     glBegin(GL_POLYGON);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(0), YTransform(0), 0.0);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(domx), YTransform(0), 0.0);
-    glColor3f(0.0, 0.3, 0.); glVertex3f(XTransform(domx), YTransform(domy), 0.0);
-    glColor3f(0.8, 0.8, 0.); glVertex3f(XTransform(0), YTransform(domy), 0.0);
+    glColor3f(0.6, 0.6, 0.8); glVertex3f(XTransform(0), YTransform(0), 0.0);
+    glColor3f(0.3, 0.4, 0.8); glVertex3f(XTransform(domx), YTransform(0), 0.0);
+    glColor3f(0.3, 0.2, 0.9); glVertex3f(XTransform(domx), YTransform(domy), 0.0);
+    glColor3f(0.8, 0.8, 0.5); glVertex3f(XTransform(0), YTransform(domy), 0.0);
     glEnd();
     
     
@@ -479,7 +479,7 @@ void Visualization::mouse_button_callback(GLFWwindow* window, int button, int ac
         (_visualization->_Buttons.front())->setClicked(true);
         _visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
         _visualization->testPrint();
-        cout << _visualization->getMouseX() << endl;
+        //cout << _visualization->getMouseX() << endl;
         (_visualization->_Architect)->AddPerson(_visualization->getMouseX(),_visualization->getMouseY());
         
     }

@@ -1,1 +1,0 @@
-1	Home1	Home	10	30	10	302	Home2	Home	10	30	40	603	Home3	Home	10	30	50	704	Home4	Home	10	30	80	1005	Home5	Home	10	30	10	306	Home6	Home	40	60	40	607	Home7	Home	40	60	50	708	Home8	Home	40	60	80	1001	Work1	Work	200	250	50	2002	Work2	Work	550	650	500	6501	School1	School	50	200	400	6002	School2	School	200	500	50	2001	Cemetery	Cemetery	300	400	300	400

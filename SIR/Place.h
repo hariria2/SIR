@@ -20,13 +20,13 @@ class Place {
 
 
 public:
-	int Perimeter[2][2];
-	Place(int id, string name, string type, int perimeter[2][2], Domain location);
+	double Perimeter[2][2];
+	Place(int id, string name, string type, double perimeter[2][2], Domain location);
 	~Place();
 	void setID(int x);
 	void setName(string x);
 	void setType(string x);
-	void setPerimeter(int Perimeter[2][2]);
+	void setPerimeter(double Perimeter[2][2]);
 	void addPerson(Person* p);
 	void removePerson(Person* p);
 
