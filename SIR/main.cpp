@@ -169,22 +169,24 @@ void FaroeIslands(bool SaveData){
     double EndTime = 200;
     double TimeStep = 0.1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
-    string ver = "2";
+    string ver = "1";
     //cout << "Enter version number for multi location simulation: ";
     //cin >> ver;
     
-    int xdim = maxdim;
-    int ydim = maxdim;
-    Visualization* vis = getVisualization(xdim, ydim, true);
-    vis->setPlaces(islands);
-    vis->setPeople(people);
+    //int xdim = maxdim;
+    //int ydim = maxdim;
+    //Visualization* vis = getVisualization(xdim, ydim, true);
+    //vis->setPlaces(islands);
+    //vis->setPeople(people);
     
     SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
+    Architect archie(InitialTime,EndTime,TimeStep, people,  "MYSQL", &sqldata);
+    
+    //Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
     
     //Architect archie(InitialTime,EndTime,TimeStep, people, vis);
-    vis->Init();
-    vis->setArchitect(&archie);
+    //vis->Init();
+    //vis->setArchitect(&archie);
     //vis->RenderSplash();
     archie.setDomain(&Island);
     archie.setPlaces(islands);

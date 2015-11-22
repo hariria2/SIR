@@ -27,6 +27,7 @@ class Architect {
 public:
     
     Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis);
+    Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d);
     Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d);
     
     virtual ~Architect();
@@ -78,7 +79,7 @@ private:
     SQLStorage* _sqlDataPtr;
 	Storage* _dataPtr;
 	string _Store = "None";
-    Visualization* _Visualization;
+    Visualization* _Visualization = NULL;
 	int _S;
 	int _I;
     int _P;

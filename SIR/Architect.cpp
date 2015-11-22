@@ -22,6 +22,19 @@ Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visuali
     PopulationData();
 }
 
+Architect::Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d):
+_sqlDataPtr(d)
+{
+    _InitialTime  = t0;
+    _EndTime      = te;
+    _TimeStep     = ts;
+    _CurrentTime  = t0;
+    _TimeIndex    = 0;
+    _PeoplePtr    = pp;
+    _Store        = store;
+    PopulationData();
+}
+
 Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d):
     _sqlDataPtr(d)
 {
@@ -114,31 +127,51 @@ void Architect::Simulate(){
 	}
     else if (_Store == "MYSQL"){
         PrepDB();
-        while (!glfwWindowShouldClose(_Visualization->getWindow())){
-            unsigned long start_s=clock();
-            if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
-                cout << "time " << _CurrentTime << "!" << endl;
+        if (_Visualization == NULL){
+            for (double t = 0; t < _EndTime; t += _TimeStep){
+                
+                if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
+                    cout << "time " << _CurrentTime << "!" << endl;
+                
+                _sqlDataPtr-> InsertValue("HistoryData",
+                                          "NULL, " +
+                                          to_string(_CurrentTime) + ", " +
+                                          to_string(_S) + ", " +
+                                          to_string(_I) + ", " +
+                                          to_string(_P) + ", " +
+                                          to_string(_R) + ", " +
+                                          to_string(_D)
+                                          );
+                }
+                Update();
             }
+        } else {
+            while (!glfwWindowShouldClose(_Visualization->getWindow())){
+                unsigned long start_s=clock();
+                if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
+                    cout << "time " << _CurrentTime << "!" << endl;
+                }
             
-            _Visualization->Render();
+                _Visualization->Render();
             
-            _sqlDataPtr-> InsertValue("HistoryData",
-                                    "NULL, " +
-                                    to_string(_CurrentTime) + ", " +
-                                    to_string(_S) + ", " +
-                                    to_string(_I) + ", " +
-                                    to_string(_P) + ", " +
-                                    to_string(_R) + ", " +
-                                    to_string(_D)
-                                     );
+                _sqlDataPtr-> InsertValue("HistoryData",
+                                      "NULL, " +
+                                      to_string(_CurrentTime) + ", " +
+                                      to_string(_S) + ", " +
+                                      to_string(_I) + ", " +
+                                      to_string(_P) + ", " +
+                                      to_string(_R) + ", " +
+                                      to_string(_D)
+                                      );
             
-            Update(_sqlDataPtr);
+                Update(_sqlDataPtr);
             
-            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            if ((time*1000000) < (_TimeStep*1000000)){
-                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+                double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+                if ((time*1000000) < (_TimeStep*1000000)){
+                    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+                }
+            
             }
-            
         }
         
     }
@@ -152,13 +185,14 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-        
-            //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            //if ((time*1000000) < (_TimeStep*1000000)){
-            //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-            //}
+            
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            if ((time*1000000) < (_TimeStep*1000000)){
+                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            }
             
         }
+
 	}
     cout << "Simulation Complete. Thank you...!" << endl;
 }
