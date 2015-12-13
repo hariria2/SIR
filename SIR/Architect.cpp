@@ -128,23 +128,65 @@ void Architect::Simulate(){
     else if (_Store == "MYSQL"){
         PrepDB();
         if (_Visualization == NULL){
+            default_random_engine generator(_RandSeed);
+            uniform_int_distribution<int> introtimeDist(1000, 1500);
+            //_sqlDataPtr->StartTransaction();
+            int batchctr = 0;
+            string statement="";
             for (double t = 0; t < _EndTime; t += _TimeStep){
+                int indx  = rand() % _AllPlaces.size();
+                int pindx = rand() % _PeoplePtr.size();
+                (_PeoplePtr[pindx])->setLocation((_AllPlaces[indx]));
                 
-                if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
+                int introtime = introtimeDist(generator);
+                
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
+                    //int indx = rand() % _AllPlaces.size();
+                    double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
+                    double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
+                    double ymin = (_AllPlaces[indx]->Perimeter)[1][0];
+                    double ymax = (_AllPlaces[indx]->Perimeter)[1][1];
+                    
+                    uniform_real_distribution<double> xdist(xmin, xmax);
+                    uniform_real_distribution<double> ydist(ymin, ymax);
+                    double x = xdist(generator);
+                    double y = ydist(generator);
+                    AddPerson(x,y);
+                    cout << "Person Added" << endl;
+                }
+                
+                if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
                     cout << "time " << _CurrentTime << "!" << endl;
-                
-                _sqlDataPtr-> InsertValue("HistoryData",
-                                          "NULL, " +
-                                          to_string(_CurrentTime) + ", " +
-                                          to_string(_S) + ", " +
-                                          to_string(_I) + ", " +
-                                          to_string(_P) + ", " +
-                                          to_string(_R) + ", " +
-                                          to_string(_D)
-                                          );
+                    
+                    if (batchctr < 500){
+                        
+                        statement = statement + "(" + "NULL, " +
+                        to_string(_CurrentTime) + ", " +
+                        to_string(_S) + ", " +
+                        to_string(_I) + ", " +
+                        to_string(_P) + ", " +
+                        to_string(_R) + ", " +
+                        to_string(_D) + "),";
+                        batchctr++;
+                    }
+                    else{
+                        statement = statement + "(" + "NULL, " +
+                        to_string(_CurrentTime) + ", " +
+                        to_string(_S) + ", " +
+                        to_string(_I) + ", " +
+                        to_string(_P) + ", " +
+                        to_string(_R) + ", " +
+                        to_string(_D) + ")";
+                        _sqlDataPtr-> InsertValue("HistoryData",statement, true);
+                        batchctr = 0;
+                        statement = "";
+                        }
+                    
                 }
                 Update();
             }
+            
+            //_sqlDataPtr->EndTransaction();
         } else {
             while (!glfwWindowShouldClose(_Visualization->getWindow())){
                 unsigned long start_s=clock();
@@ -266,7 +308,7 @@ void Architect::Update(SQLStorage* data){
         (*ip)->setTime(_CurrentTime);
         
         
-        (*ip)->Move(rand()%360+1,.1, "IslandHopper");
+        (*ip)->Move(rand()%360+1,.2, "IslandHopper");
         
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
@@ -289,7 +331,7 @@ void Architect::Update(){
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		(*ip)->Move((rand() % 360),.05, "IslandHopper");
+		(*ip)->Move((rand() % 360),.5, "IslandHopper");
         if ((*ip)->getState() != 'D'){
             (*ip)->UpdateDiseaseWithInHost();
         }
@@ -445,5 +487,8 @@ void Architect::AddPerson(double x, double y){
                             to_string((p->getLocation())->getID()));
      */
     AddPerson(p);
-    _Visualization->AddPerson(p);
+    if (_Visualization != NULL) {
+        _Visualization->AddPerson(p);
+    }
+    
 }

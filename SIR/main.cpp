@@ -71,11 +71,11 @@ void FaroeIslands(bool SaveData){
     
     
     normal_distribution<double> icDist(2,0.01);
-    normal_distribution<double> betaDist(0.2,0.01);
-    normal_distribution<double> deltaDist(3./100,0);
+    normal_distribution<double> betaDist(0.5,0.01);
+    normal_distribution<double> deltaDist(0.5,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
-    normal_distribution<double> ILDist(0.001,0.001);
+    normal_distribution<double> ILDist(0.0001,0.00001);
     
     vector<Person*> people;
     
@@ -166,15 +166,15 @@ void FaroeIslands(bool SaveData){
     };
     
     double InitialTime = 0;
-    double EndTime = 200;
-    double TimeStep = 0.1;
+    double EndTime = 5000;
+    double TimeStep = 0.5;
     //int l = floor((EndTime-InitialTime)/TimeStep);
-    string ver = "1";
+    string ver = "3";
     //cout << "Enter version number for multi location simulation: ";
     //cin >> ver;
     
-    //int xdim = maxdim;
-    //int ydim = maxdim;
+    int xdim = maxdim;
+    int ydim = maxdim;
     //Visualization* vis = getVisualization(xdim, ydim, true);
     //vis->setPlaces(islands);
     //vis->setPeople(people);

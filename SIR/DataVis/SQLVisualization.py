@@ -1,8 +1,10 @@
 import mysql.connector
 import matplotlib.pyplot as plt
+from math import floor, log
 from matplotlib import rc
 from ProjectClasses import Location, Person
 import numpy as np
+import collections
 
 class SQLVisualization:
 
@@ -163,14 +165,14 @@ class SQLVisualization:
 
     def PlotHistory(self, fignum):
         h = plt.figure(fignum);
-        ps = plt.plot(self.T, self.S, label="Susceptible")
-        plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
+        #ps = plt.plot(self.T, self.S, label="Susceptible")
+        #plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
         pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)], label="Infected")
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
-        pr = plt.plot(self.T, self.R, label="Recovered")
-        plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-        pd = plt.plot(self.T, self.D, label="Dead")
-        plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
+        #pr = plt.plot(self.T, self.R, label="Recovered")
+        #plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
+        #pd = plt.plot(self.T, self.D, label="Dead")
+        #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
         plt.grid(True)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
         #set(l, 'FontSize', 16)
@@ -178,9 +180,23 @@ class SQLVisualization:
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
-        plt.hist([a+b for a,b in zip(self.P, self.I)],50)
+        #plt.hist([a+b for a,b in zip(self.P, self.I)],50)
+        plt.hist(self.P,50)
         plt.xlabel(r'Time', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
+    def PlotLog(self, fignum):
+        h = plt.figure(fignum);
+        l = sorted(self.P+self.I);
+        counter=collections.Counter(l)
+        #vals = [log(x+1,10) for x in counter.keys()]
+        #freq = [log(x,10) for x in counter.values()]
+        vals = counter.keys()
+        freq = counter.values()
+        pi = plt.plot(vals, freq)
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.setp(pi, 'Color', self.bl, 'LineWidth', 4)
+        plt.grid(True)
 
     def PlotIndividual(self,fignum, ppl):
 

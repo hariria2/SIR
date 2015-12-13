@@ -292,8 +292,9 @@ void Person::Move(double theta, double r, string motionType){
             }
         }
         
-    }else if (motionType == "IslandHopper"){
-        if (getID() == 1){
+    }
+    else if (motionType == "IslandHopper"){
+        /*if (getID() == 1){
             if (_Time == 10){
                 for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
                     if ((*L)->getName()=="Eysturoy"){
@@ -310,7 +311,7 @@ void Person::Move(double theta, double r, string motionType){
                 }
 
             }
-        }
+         }*/
     }
     
     

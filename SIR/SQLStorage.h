@@ -24,6 +24,9 @@ public:
     void CreateDB(string db);
     void CreateTable(string table);
     void InsertValue(string table, string vals, bool paren=false);
+    void InsertValue(string table, string vals, int bathctr, bool paren=false);
+    void StartTransaction();
+    void EndTransaction();
     
 private:
     string _timeStamp;

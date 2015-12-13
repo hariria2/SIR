@@ -141,20 +141,24 @@ void SQLStorage::CreateTable(string table){
 void SQLStorage::InsertValue(string table, string vals, bool paren){
     string statement;
     int query_states;
-    
-    
     if (paren){
         statement = "INSERT INTO "+table+" VALUES " + vals +";";
     } else {
         statement = "INSERT INTO "+table+" VALUES (" + vals +");";
     }
-    // cout << statement << endl;
     
     query_states = mysql_query(_conn, statement.c_str());
     
     if(query_states!=0){
         cout<<mysql_error(_conn)<<endl<<endl;
     }
+}
+void SQLStorage::StartTransaction(){
+    mysql_query(_conn,"START TRANSACTION;");
+}
+void SQLStorage::EndTransaction(){
+    
+    mysql_query(_conn,"COMMIT;");
 }
 
 SQLStorage::~SQLStorage(){

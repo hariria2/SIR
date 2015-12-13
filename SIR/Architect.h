@@ -80,6 +80,7 @@ private:
 	Storage* _dataPtr;
 	string _Store = "None";
     Visualization* _Visualization = NULL;
+    unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	int _S;
 	int _I;
     int _P;
