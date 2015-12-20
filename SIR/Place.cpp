@@ -62,5 +62,5 @@ list<Person*> Place::getOccupants(){
 }
 
 Place::~Place(){
-
+    delete _Occupants;
 }

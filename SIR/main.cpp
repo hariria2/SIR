@@ -161,8 +161,11 @@ void FaroeIslands(bool SaveData){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);                }
+    
             }
+            
         }
+        
     };
     
     double InitialTime = 0;

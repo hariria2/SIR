@@ -227,7 +227,7 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-            
+
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
             if ((time*1000000) < (_TimeStep*1000000)){
                 usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
