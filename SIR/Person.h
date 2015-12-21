@@ -124,6 +124,7 @@ private:
     vector<Person*> _neigbors;
     
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine *_generator;
 	char _State;
     char _Gender;
     int _HasBeenSick = 0;

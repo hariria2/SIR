@@ -20,6 +20,8 @@ Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visuali
     _PeoplePtr    = pp;
     setVisualization(vis);
     PopulationData();
+    _generator = new default_random_engine(_RandSeed);
+    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
 }
 
 Architect::Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d):
@@ -33,6 +35,8 @@ _sqlDataPtr(d)
     _PeoplePtr    = pp;
     _Store        = store;
     PopulationData();
+    _generator = new default_random_engine(_RandSeed);
+    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
 }
 
 Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -47,12 +51,15 @@ Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visuali
     _Store        = store;
     setVisualization(vis);
     PopulationData();
+    _generator = new default_random_engine(_RandSeed);
+    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
 }
 
 
 
 Architect::~Architect() {
-
+    delete _generator;
+    delete _introtimeDist;
 }
 
 // Setters
@@ -128,17 +135,16 @@ void Architect::Simulate(){
     else if (_Store == "MYSQL"){
         PrepDB();
         if (_Visualization == NULL){
-            default_random_engine generator(_RandSeed);
-            uniform_int_distribution<int> introtimeDist(1000, 1500);
             //_sqlDataPtr->StartTransaction();
             int batchctr = 0;
             string statement="";
+            int introtime;
             for (double t = 0; t < _EndTime; t += _TimeStep){
                 int indx  = rand() % _AllPlaces.size();
                 int pindx = rand() % _PeoplePtr.size();
                 (_PeoplePtr[pindx])->setLocation((_AllPlaces[indx]));
                 
-                int introtime = introtimeDist(generator);
+                introtime = (*_introtimeDist)(*_generator);
                 
                 if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
                     //int indx = rand() % _AllPlaces.size();
@@ -149,8 +155,8 @@ void Architect::Simulate(){
                     
                     uniform_real_distribution<double> xdist(xmin, xmax);
                     uniform_real_distribution<double> ydist(ymin, ymax);
-                    double x = xdist(generator);
-                    double y = ydist(generator);
+                    double x = xdist(*_generator);
+                    double y = ydist(*_generator);
                     AddPerson(x,y);
                     cout << "Person Added" << endl;
                 }

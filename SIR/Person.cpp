@@ -18,7 +18,8 @@ Person::Person(int id, string name, int age,
     _Location(location),
     _AvailablePlaces(availplaces)
 {
-	setID(id);
+	_generator = new default_random_engine(_RandSeed);
+    setID(id);
     setAge(age);
 	setName(name);
 	setState(state);
@@ -34,6 +35,7 @@ Person::Person(int id, string name, int age,
     setGender('M');
     setLocation(location);
     setDefaultLocation(location);
+    
 }// end constructor
 
 
@@ -46,6 +48,7 @@ Person::Person(int id, string name, int age,
     _ihdynamics(ihd),
     _AvailablePlaces(availplaces)
 {
+    _generator = new default_random_engine(_RandSeed);
  	setID(id);
     setAge(age);
 	setName(name);
@@ -97,12 +100,11 @@ void Person::setLocation(Place* location){
     double ymin = location->Perimeter[1][0];
     double ymax = location->Perimeter[1][1];
     
-    default_random_engine generator(_RandSeed);
     uniform_real_distribution<double> xdist(xmin, xmax);
     uniform_real_distribution<double> ydist(ymin, ymax);
     
-    double x = xdist(generator);
-    double y = ydist(generator);
+    double x = xdist(*_generator);
+    double y = ydist(*_generator);
     double Co[2] = {x,y};
     
     setCoordinates(Co);
@@ -115,23 +117,21 @@ void Person::setTime(double t){
 	_Time = t;
 }
 void Person::setInfectionPeriod(){
-	default_random_engine generator(_RandSeed);
     normal_distribution<double> distribution(_disease.getAverageInfectionPeriod(),_InfectionVar);
-    double randnum  = distribution(generator);
+    
+    double randnum  = distribution(*_generator);
 	randnum = (randnum < 0)? 0:randnum;
 	_InfectionPeriod = floor(randnum);
 }
 void Person::setIncubationPeriod(){
-	default_random_engine generator(_RandSeed);
 	normal_distribution<double> distribution(_disease.getAverageIncubationPeriod(),_IncubationVar);
-	double randnum  = distribution(generator);
+	double randnum  = distribution(*_generator);
 	randnum = (randnum < 0)? 0:randnum;
 	_IncubationPeriod = floor(randnum);
 }
 void Person::setRecoveryPeriod(){
-    default_random_engine generator(_RandSeed);
     normal_distribution<double> distribution(_disease.getAverageRecoveryPeriod(),_RecoveryVar);
-    double randnum  = distribution(generator);
+    double randnum  = distribution(*_generator);
     randnum = (randnum < 0)? 0:randnum;
     _RecoveryPeriod = floor(randnum);
 }
@@ -247,12 +247,11 @@ void Person::Move(double theta, double r, string motionType){
         }
     }
     
-    default_random_engine generator(_RandSeed);
 
     normal_distribution<double> WSTimeD(8,0.2);
-    double  WSTime = WSTimeD(generator);
+    double  WSTime = WSTimeD(*_generator);
     normal_distribution<double> WETimeD(22,0.2);
-    double  WETime = WETimeD(generator);
+    double  WETime = WETimeD(*_generator);
     
     
     int WSHour = floor(WSTime);
@@ -509,5 +508,5 @@ void Person::addAllConnectionHist(int id){
 }
 
 Person::~Person(){
-
+    delete _generator;
 }

@@ -82,6 +82,8 @@ private:
 	string _Store = "None";
     Visualization* _Visualization = NULL;
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine *_generator;
+    uniform_int_distribution<int> *_introtimeDist;
 	int _S;
 	int _I;
     int _P;

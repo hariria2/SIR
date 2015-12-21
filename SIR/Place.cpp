@@ -17,7 +17,7 @@ Place::Place(int id, string name, string type, double perimeter[2][2], Domain lo
 	setName(name);
 	setType(type);
 	setPerimeter(perimeter);
-    _Occupants = *new list<Person*>;
+    //_Occupants = *new list<Person*>;
 }// end constructor
 
 // setters
@@ -62,5 +62,5 @@ list<Person*> Place::getOccupants(){
 }
 
 Place::~Place(){
-    delete _Occupants;
+    //delete _Occupants;
 }
