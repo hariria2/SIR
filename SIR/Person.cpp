@@ -226,9 +226,10 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 void Person::Update(){
-    
-    Move((rand() % 360),1, "DailyMotion");
-    UpdateDiseaseWithInHost();
+    Move((rand() % 360),0.2, "IslandHopper");
+    if (getState() != 'D'){
+        UpdateDiseaseWithInHost();
+    }
 }
 
 // Utilities
@@ -397,16 +398,16 @@ void Person::UpdateDisease() {
 void Person::UpdateDiseaseWithInHost(){
     
     list<Person*> peeps = _Location->getOccupants();
-
-    double criticalDistance = 0.5;
+    
+    double criticalDistance = 1;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
                 _neigbors.push_back(*ip);
-                addAllConnection((*ip)->getID());
-                addAllConnectionHist((*ip)->getID());
+                //addAllConnection((*ip)->getID());
+                //addAllConnectionHist((*ip)->getID());
             }
         }
     }
@@ -471,6 +472,7 @@ void Person::UpdateDiseaseWithInHost(){
 //        _ihdynamics.HasBeenSick = 1;
 //    }
 
+    _neigbors.clear();
 }
 double Person::Distance(Person* p){
     

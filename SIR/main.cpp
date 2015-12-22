@@ -169,7 +169,7 @@ void FaroeIslands(bool SaveData){
     };
     
     double InitialTime = 0;
-    double EndTime = 5000;
+    double EndTime = 15000;
     double TimeStep = 0.5;
     //int l = floor((EndTime-InitialTime)/TimeStep);
     string ver = "3";

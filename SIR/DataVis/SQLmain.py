@@ -2,7 +2,7 @@ from SQLVisualization import SQLVisualization
 import matplotlib.pyplot as plt
 
 
-vis = SQLVisualization('root','','localhost','sim_v3_12_20_2015')
+vis = SQLVisualization('root','','localhost','sim_v3_12_22_2015')
 #vis = SQLVisualization('root','','localhost','sim_v3_12_14_2015')
 
 vis.getHistoryData()

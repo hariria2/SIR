@@ -121,6 +121,7 @@ void Architect::IncrementTime(){
 	_TimeIndex++;
 }
 void Architect::Simulate(){
+    
 	if (_Store == "FileSystem"){
 		_dataPtr->citySave();
 		_dataPtr->homeSave();
@@ -312,13 +313,7 @@ void Architect::Update(SQLStorage* data){
         "),";
         
         (*ip)->setTime(_CurrentTime);
-        
-        
-        (*ip)->Move(rand()%360+1,.2, "IslandHopper");
-        
-        if ((*ip)->getState() != 'D'){
-            (*ip)->UpdateDiseaseWithInHost();
-        }
+        (*ip)->Update();
 
     }
     SQLStatement.pop_back();
@@ -337,10 +332,7 @@ void Architect::Update(){
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
 		(*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		(*ip)->Move((rand() % 360),.5, "IslandHopper");
-        if ((*ip)->getState() != 'D'){
-            (*ip)->UpdateDiseaseWithInHost();
-        }
+        (*ip)->Update();
 	}
     PopulationData();
 }
