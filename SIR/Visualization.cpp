@@ -64,8 +64,9 @@ void Visualization::setMouseY(float y){
     _MouseY = InvYTrsfrm(WYTransform(_Y-y));
 }
 
-void Visualization::setPeople(vector<Person*> ppl){
+void Visualization::setPeople(list<Person*> ppl){
     _People = ppl;
+    _InitialPopSize = _People.size();
 }
 void Visualization::setPlaces(vector<Place*> places){
     for(auto p = places.cbegin(); p != places.cend(); ++p){
@@ -94,7 +95,7 @@ GLFWwindow* Visualization::getWindow(){
     return _window;
 }
 
-vector<Person*> Visualization::getPeople(){
+list<Person*> Visualization::getPeople(){
     return _People;
 }
 vector<Place*> Visualization::getPlaces(){
@@ -425,13 +426,18 @@ float Visualization::WInvYTrsfrm(double y){
 }
 
 float Visualization::PTransform(double y){
-    double pop = (double) _People.size();
+    double pop = (double) _InitialPopSize;
     return y*2*(1-_YRedFctr)/pop - 1;
 }
 
 void Visualization::AddPerson(Person *p){
     _People.push_back(p);
 }
+
+void Visualization::removePerson(Person *p){
+    _People.remove(p);
+}
+
 
 void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
@@ -444,7 +450,6 @@ void Visualization::addButton(double x, double y, string label){
     Button *b = new Button(bx,by,label, this);
     _Buttons.push_back(b);
 }
-
 
 //==========> Call Backs ===============//
 

@@ -27,9 +27,9 @@ class Visualization;
 class Architect {
 public:
     
-    Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis);
-    Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d);
-    Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d);
+    Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis);
+    Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d);
+    Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d);
     
     virtual ~Architect();
     
@@ -49,7 +49,7 @@ public:
     int getR();
     int getD(); 
     Domain* getDomain();
-	vector<Person*> getPeople();
+	list<Person*> getPeople();
     vector<Place*> getPlaces();
     Visualization* getVisualization();
 
@@ -62,10 +62,13 @@ public:
 	void DisplayTime();
 	void PopulationData();
     void AddPerson(Person *p);
+    void RemovePerson(Person *p);
     void PrepDB();
     
     void AddPerson(double x, double y);
     Place* LocFromCoo(double x, double y);
+    
+    void Funeral(Person* p);
 
 private:
 	double _InitialTime;
@@ -74,7 +77,7 @@ private:
 	double _CurrentTime;
 	int _TimeIndex;
     Economy* _Econ;
-	vector<Person*> _PeoplePtr;
+	list<Person*> _PeoplePtr;
     Domain* _City;
     vector<Place*> _AllPlaces;
     SQLStorage* _sqlDataPtr;

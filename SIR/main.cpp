@@ -78,6 +78,7 @@ void FaroeIslands(bool SaveData){
     normal_distribution<double> ILDist(0.0001,0.00001);
     
     vector<Person*> people;
+    list<Person*> vpeople;
     
     for (int ii=1; ii <= population; ii++){
         string name = "randomName"+to_string(ii);
@@ -115,25 +116,31 @@ void FaroeIslands(bool SaveData){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
+                    vpeople.push_back(ip);
                 }
             }
             else if (ii <= Pop_Str+Pop_Eys){
                 if ((*p)->getName()=="Eysturoy"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
-                    people.push_back(ip);                }
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag){
                 if ((*p)->getName()=="Vagar"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
-                    people.push_back(ip);                }
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo){
                 if ((*p)->getName()=="Suouroy"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
+                    vpeople.push_back(ip);
                 }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San){
@@ -141,26 +148,32 @@ void FaroeIslands(bool SaveData){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
+                    vpeople.push_back(ip);
                 }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor){
                 if ((*p)->getName()=="Borooy"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
-                    people.push_back(ip);                }
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio){
                 if ((*p)->getName()=="Viooy"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
+                    vpeople.push_back(ip);
                 }
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun){
                 if ((*p)->getName()=="Kunoy"){
                     Person *ip = new Person(ii, name, age, state, flu, ihd,
                                             &Island, (*p),islands,10,10,10);
-                    people.push_back(ip);                }
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
     
             }
             
@@ -169,8 +182,8 @@ void FaroeIslands(bool SaveData){
     };
     
     double InitialTime = 0;
-    double EndTime = 15000;
-    double TimeStep = 0.5;
+    double EndTime = 5000;
+    double TimeStep = 1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
     string ver = "3";
     //cout << "Enter version number for multi location simulation: ";
@@ -178,18 +191,18 @@ void FaroeIslands(bool SaveData){
     
     int xdim = maxdim;
     int ydim = maxdim;
-    //Visualization* vis = getVisualization(xdim, ydim, true);
-    //vis->setPlaces(islands);
-    //vis->setPeople(people);
+    Visualization* vis = getVisualization(xdim, ydim, true);
+    vis->setPlaces(islands);
+    vis->setPeople(vpeople);
     
     SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-    Architect archie(InitialTime,EndTime,TimeStep, people,  "MYSQL", &sqldata);
+    //Architect archie(InitialTime,EndTime,TimeStep, people,  "MYSQL", &sqldata);
     
-    //Architect archie(InitialTime,EndTime,TimeStep, people, vis, "MYSQL", &sqldata);
+    Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
     
     //Architect archie(InitialTime,EndTime,TimeStep, people, vis);
-    //vis->Init();
-    //vis->setArchitect(&archie);
+    vis->Init();
+    vis->setArchitect(&archie);
     //vis->RenderSplash();
     archie.setDomain(&Island);
     archie.setPlaces(islands);

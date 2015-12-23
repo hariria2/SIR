@@ -27,7 +27,7 @@ public:
     void setY(int y);
     void setXRedFctr(double xredfctr);
     void setYRedFctr(double yredfctr);
-    void setPeople(vector<Person*> person);
+    void setPeople(list<Person*> person);
     void setPlaces(vector<Place*> places);
     void setMouseX(float x);
     void setMouseY(float y);
@@ -40,7 +40,7 @@ public:
     double getYRedFactr();
     GLFWwindow* getWindow();
     
-    vector<Person*> getPeople();
+    list<Person*> getPeople();
     vector<Place*> getPlaces();
     
     
@@ -75,6 +75,7 @@ public:
     
     void addButton(double x,double y,string label);
     
+    void removePerson(Person* p);
     
     
 private:
@@ -91,11 +92,11 @@ private:
     int _Y;
     double _XRedFctr;
     double _YRedFctr;
-    
+    unsigned long _InitialPopSize;
     float _MouseX;
     float _MouseY;
     
-    vector<Person*> _People;
+    list<Person*> _People;
     vector<Place*>  _Places;
     vector<double> _TT;
     vector<double> _SS;
