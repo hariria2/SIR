@@ -353,9 +353,11 @@ string Storage::listToString(list<int> l){
 }
 
 Storage::~Storage(){
-	delete [] _II;
+	delete [] _TT;
+    delete [] _II;
 	delete [] _SS;
     delete [] _PP;
 	delete [] _RR;
     delete [] _DD;
+    delete [] _XX;
 }

@@ -111,6 +111,7 @@ void SQLStorage::CreateTable(string table){
         "INDX INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
         "PersonID INT UNSIGNED NOT NULL REFERENCES People(ID), " +
         "Time DOUBLE UNSIGNED NOT NULL, " +
+        "Age INT UNSIGNED NOT NULL, "
         "x DOUBLE NOT NULL, " +
         "y DOUBLE NOT NULL, " +
         "LocationID INT UNSIGNED NOT NULL REFERENCES Location(ID), " +

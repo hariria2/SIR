@@ -35,6 +35,7 @@ Person::Person(int id, string name, int age,
     setGender('M');
     setLocation(location);
     setDefaultLocation(location);
+    setLifeExpectancy(85);
     
 }// end constructor
 
@@ -64,6 +65,7 @@ Person::Person(int id, string name, int age,
 	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
     setGender('M');
+    setLifeExpectancy(85);
 }
 
 // Setters
@@ -135,6 +137,9 @@ void Person::setRecoveryPeriod(){
     randnum = (randnum < 0)? 0:randnum;
     _RecoveryPeriod = floor(randnum);
 }
+void Person::setLifeExpectancy(int le){
+    _LifeExpectancy = le;
+}
 void Person::setDisease(Disease d){
 	_disease = d;
 }
@@ -182,6 +187,9 @@ int Person::getIncVar(){
 int Person::getRecVar(){
     return _RecoveryVar;
 }
+int Person::getLifeExpectancy(){
+    return _LifeExpectancy;
+}
 Domain* Person::getDomain(){
     return _City;
 }
@@ -226,9 +234,16 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 void Person::Update(){
-    
-    Move((rand() % 360),1, "DailyMotion");
-    UpdateDiseaseWithInHost();
+    Move((rand() % 360),0.5, "IslandHopper");
+    if (_State != 'D'){
+        UpdateDiseaseWithInHost();
+    }
+    _Age += 1;
+    if (_State != 'D') {
+        if (_Age >= _LifeExpectancy){
+            setState('D');
+        }
+    }
 }
 
 // Utilities
@@ -239,6 +254,9 @@ void Person::Move(double theta, double r, string motionType){
 	double DailyTime = ((hour % 24) + min);
 
     if (getState() == 'D') {
+        if (getLocation()->getType()=="Cemetery"){
+            return;
+        }
         for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
             if ((*L)->getType()=="Cemetery") {
                 setLocation(*L);
@@ -247,7 +265,6 @@ void Person::Move(double theta, double r, string motionType){
         }
     }
     
-
     normal_distribution<double> WSTimeD(8,0.2);
     double  WSTime = WSTimeD(*_generator);
     normal_distribution<double> WETimeD(22,0.2);
@@ -290,7 +307,6 @@ void Person::Move(double theta, double r, string motionType){
                 }
             }
         }
-        
     }
     else if (motionType == "IslandHopper"){
         /*if (getID() == 1){

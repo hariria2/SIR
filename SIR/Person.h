@@ -50,6 +50,7 @@ public:
 	void setInfectionPeriod();
 	void setIncubationPeriod();
     void setRecoveryPeriod();
+    void setLifeExpectancy(int le);
 	void setDisease(Disease d);
     void setInHostDynamics(InHostDynamics ihd);
     void setInfVar(int var);
@@ -78,6 +79,7 @@ public:
     int getInfVar();
     int getIncVar();
     int getRecVar();
+    int getLifeExpectancy();
     list<int> getSIConnections();
     list<int> getSIConnectionsHist();
     list<int> getAllConnections();
@@ -138,6 +140,7 @@ private:
     int _InfectionVar;
     int _IncubationVar;
     int _RecoveryVar;
+    int _LifeExpectancy;
     list<int> _SIConnections;
     list<int> _SIConnectionsHist;
     list<int> _AllConnections;

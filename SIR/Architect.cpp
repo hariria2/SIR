@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis)
+Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis)
 {
     _InitialTime  = t0;
     _EndTime      = te;
@@ -24,7 +24,7 @@ Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visuali
     _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
 }
 
-Architect::Architect(double t0, double te, double ts,vector<Person *> pp, string store, SQLStorage* d):
+Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
 _sqlDataPtr(d)
 {
     _InitialTime  = t0;
@@ -39,7 +39,7 @@ _sqlDataPtr(d)
     _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
 }
 
-Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis, string store, SQLStorage* d):
+Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
     _sqlDataPtr(d)
 {
     _InitialTime  = t0;
@@ -80,7 +80,7 @@ double Architect::getCurrentTime(){
 double Architect::getTimeStep(){
 	return _TimeStep;
 }
-vector<Person*> Architect::getPeople(){
+list<Person*> Architect::getPeople(){
 	return _PeoplePtr;
 }
 vector<Place*> Architect::getPlaces(){
@@ -142,7 +142,7 @@ void Architect::Simulate(){
             for (double t = 0; t < _EndTime; t += _TimeStep){
                 int indx  = rand() % _AllPlaces.size();
                 int pindx = rand() % _PeoplePtr.size();
-                (_PeoplePtr[pindx])->setLocation((_AllPlaces[indx]));
+                //(_PeoplePtr[pindx])->setLocation((_AllPlaces[indx]));
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
@@ -193,7 +193,8 @@ void Architect::Simulate(){
             }
             
             //_sqlDataPtr->EndTransaction();
-        } else {
+        }
+        else {
             while (!glfwWindowShouldClose(_Visualization->getWindow())){
                 unsigned long start_s=clock();
                 if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
@@ -250,7 +251,7 @@ void Architect::Update(Storage* data){
 	data->startMovieSave(_CurrentTime);
 	
     //Econ.computeGDP(PeoplePtr, Econ.getGDP());
-    _Econ->getParameters(_PeoplePtr);
+    //_Econ->getParameters(_PeoplePtr);
     _Econ->Update(_TimeStep);
     IncrementTime();
     for (auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); p++){
@@ -285,21 +286,20 @@ void Architect::Update(Storage* data){
 void Architect::Update(SQLStorage* data){
     vector<Person*> econList;
     string SQLStatement;
-    
+    cout << "Size: " << _PeoplePtr.size() << endl;
     IncrementTime();
-    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         
+        //if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
+        //    econList.push_back(*ip);
+        //}
         
-        if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
-            econList.push_back(*ip);
-        }
         
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-        
-        
         SQLStatement = SQLStatement + "(NULL, " +
         to_string((*ip)->getID()) + ", " +
         to_string((*ip)->getTime()) + ", " +
+        to_string((*ip)->getAge()) + ", " +
         to_string((*ip)->getCoordinates()[0]) + ", " +
         to_string((*ip)->getCoordinates()[1]) + ", " +
         to_string(((*ip)->getLocation())->getID()) + ", '" +
@@ -312,15 +312,15 @@ void Architect::Update(SQLStorage* data){
         "),";
         
         (*ip)->setTime(_CurrentTime);
+        (*ip)->Update();
         
+        cout << "Here is the size: " << _PeoplePtr.size() << endl;
         
-        (*ip)->Move(rand()%360+1,.2, "IslandHopper");
-        
-        if ((*ip)->getState() != 'D'){
-            (*ip)->UpdateDiseaseWithInHost();
-        }
-
-    }
+        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+20){
+            Funeral(*ip);
+            delete (*ip);
+            ip=_PeoplePtr.erase(ip);
+        }    }
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
     
@@ -335,11 +335,13 @@ void Architect::Update(){
     //_Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
     IncrementTime();
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-		(*ip)->setTime(_CurrentTime);
-        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		(*ip)->Move((rand() % 360),.5, "IslandHopper");
-        if ((*ip)->getState() != 'D'){
-            (*ip)->UpdateDiseaseWithInHost();
+        if ((*ip)->getState()=='D'){
+            delete (*ip);
+        }
+        else{
+            (*ip)->setTime(_CurrentTime);
+            ((*ip)->getInHostDynamics()).setMaxInfLev(0);
+            (*ip)->Update();
         }
 	}
     PopulationData();
@@ -389,6 +391,9 @@ void Architect::PopulationData(){
 void Architect::AddPerson(Person *p){
     _PeoplePtr.push_back(p);
     PopulationData();
+}
+void Architect::RemovePerson(Person *p){
+    _PeoplePtr.remove(p);
 }
 void Architect::PrepDB(){
     // ====================>>>>LocationData<<<========================== //
@@ -470,7 +475,8 @@ void Architect::AddPerson(double x, double y){
     
     Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
-    vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
+    vector<Place*> availPlaces = p1->getAvailablePlaces();
+    //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
     Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
     
@@ -497,4 +503,16 @@ void Architect::AddPerson(double x, double y){
         _Visualization->AddPerson(p);
     }
     
+}
+void Architect::Funeral(Person* p){
+    
+    if (_Visualization == NULL) {
+        cout << "Killed : " << p->getID() <<endl;
+        (p->getLocation())->removePerson(p);
+    }
+    else {
+        cout << "Killed : " << p->getID() << " at: " << p->getAge() << endl;
+        (p->getLocation())->removePerson(p);
+        _Visualization->removePerson(p);
+    }
 }
