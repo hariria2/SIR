@@ -240,11 +240,17 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.15, "IslandHopper");
+    Move((rand() % 360),0.2, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
     _Age += 0.1;
+    if ((_Age >= 10) & (_Age - 0.1 < 10)){
+        if (getState() == 'N'){
+            setState('S');
+            _ihdynamics.setT(3);
+        }
+    }
     if (_State != 'D') {
         if (_Age >= _LifeExpectancy){
             Die();
@@ -419,7 +425,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     list<Person*> peeps = _Location->getOccupants();
     
-    double criticalDistance = 10;
+    double criticalDistance = 40;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
@@ -461,7 +467,7 @@ void Person::UpdateDiseaseWithInHost(){
             setState('P');
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 3){
+        }else if (_ihdynamics.getI() > 2.9){
             Die();
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
@@ -469,20 +475,21 @@ void Person::UpdateDiseaseWithInHost(){
             setHasBeenSick(0);
             _ihdynamics.HasBeenSick = 0;
         }
-    }else if (getState() == 'P'){
+    }
+    else if (getState() == 'P'){
         if (_ihdynamics.getI() + 0.01 < _ihdynamics.getMaxInfLev()){
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
         }
-        if (_ihdynamics.getI() > 3){
+        if (_ihdynamics.getI() > 2.9){
             Die();
         }
         else if (_ihdynamics.getI() < 0.2){
             setState('I');
         }
-    }else if (getState() == 'R'){
+    }
+    else if (getState() == 'R'){
         if (_ihdynamics.getI() < 0.1){
-            //_ihdynamics.setT(_ihdynamics.getTi());
             setHasBeenSick(0);
             _ihdynamics.HasBeenSick = 0;
         }

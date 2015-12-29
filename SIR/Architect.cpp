@@ -486,15 +486,17 @@ void Architect::AddPerson(double x, double y){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    /* =================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    _sqlDataPtr->InsertValue("People",
-                            "NULL, '" +
-                            p->getName() + "', "+
-                            to_string(p->getAge()) + ", '" +
-                            p->getGender() + "', " +
-                            to_string((p->getHome())->getID()) + ", " +
-                            to_string((p->getLocation())->getID()));
-     */
+    
+    if (_Store == "MYSQL"){
+        _sqlDataPtr->InsertValue("People",
+                                 "NULL, '" +
+                                 p->getName() + "', "+
+                                 to_string(p->getAge()) + ", '" +
+                                 p->getGender() + "', " +
+                                 to_string((p->getDeafaultLocation())->getID()) + ", " +
+                                 to_string((p->getLocation())->getID()));
+    }
+
     AddPerson(p);
     if (_Visualization != NULL) {
         _Visualization->AddPerson(p);
@@ -517,11 +519,12 @@ void Architect::AddPerson(string NewBirth){
     double y = ydist(*_generator);
     
     unsigned long s = _PeoplePtr.size();
+    cout << "Pop: " << s << endl;
     int id = (int) s + 1;
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0, 2);
+    InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2);
     ihd.setBeta(0.2);
     ihd.setDelta(0.03);
     ihd.setP(0.4);
@@ -533,7 +536,7 @@ void Architect::AddPerson(string NewBirth){
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
-    Person* p = new Person(id, "Alplego", 0, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
+    Person* p = new Person(id, "Alplego", 0, 'N', dis, ihd, _City, loc, availPlaces, 1,1,1);
     
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){
@@ -544,15 +547,15 @@ void Architect::AddPerson(string NewBirth){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    /* =================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
-     _sqlDataPtr->InsertValue("People",
-     "NULL, '" +
-     p->getName() + "', "+
-     to_string(p->getAge()) + ", '" +
-     p->getGender() + "', " +
-     to_string((p->getHome())->getID()) + ", " +
-     to_string((p->getLocation())->getID()));
-     */
+    if (_Store == "MYSQL"){
+        _sqlDataPtr->InsertValue("People",
+                                 "NULL, '" +
+                                 p->getName() + "', "+
+                                 to_string(p->getAge()) + ", '" +
+                                 p->getGender() + "', " +
+                                 to_string((p->getDeafaultLocation())->getID()) + ", " +
+                                 to_string((p->getLocation())->getID()));
+    }
     AddPerson(p);
     if (_Visualization != NULL) {
         _Visualization->AddPerson(p);

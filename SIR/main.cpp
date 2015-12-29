@@ -32,7 +32,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 // ========================= Main ======================
 int main(){
     
-    FaroeIslands(10000, 0.1, "1", false, true);
+    FaroeIslands(20000, 0.5, "2", true, false);
     return 0;
  }
 // ========================= End main =================
@@ -50,14 +50,14 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
     
-    int Pop_Str = 224;
-    int Pop_Eys = 107;
-    int Pop_Vag = 30;
-    int Pop_Suo = 46;
-    int Pop_San = 12;
-    int Pop_Bor = 49;
-    int Pop_Vio = 5;
-    int Pop_Kun = 2;
+    int Pop_Str = 324;
+    int Pop_Eys = 207;
+    int Pop_Vag = 40;
+    int Pop_Suo = 56;
+    int Pop_San = 22;
+    int Pop_Bor = 59;
+    int Pop_Vio = 15;
+    int Pop_Kun = 12;
     
     int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
     Disease flu("Flu", 44, 40, 100);
@@ -69,10 +69,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     normal_distribution<double> ageDist(25,20);
     
-    
+    normal_distribution<double> suDist(3,1);
     normal_distribution<double> icDist(2,0.01);
-    normal_distribution<double> betaDist(0.5,0.01);
-    normal_distribution<double> deltaDist(0.5,0);
+    normal_distribution<double> betaDist(3,0.01);
+    normal_distribution<double> deltaDist(0.1,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
     normal_distribution<double> ILDist(0.0001,0.00001);
@@ -92,21 +92,23 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         }
         double randic  = icDist(generator);
         double ict = (randic < 0.5)? 0.5:randic;
-        InHostDynamics ihd = InHostDynamics(ii,0.01,3,0.0,VirLev,ict);
+        double randsu  = suDist(generator);
+        double sus = (randsu < 0.5)? 0.5:randsu;
+        InHostDynamics ihd = InHostDynamics(ii,0.01,sus,0.0,VirLev,ict);
         double randil = ILDist(generator);
         double il = (randil < 0.0005)? 0.0005:randil;
         ihd.setILRate(il);
         double randbeta  = betaDist(generator);
-        double beta = (randbeta < 0)? 0:randbeta;
+        double beta = (randbeta < 0.01)? 0.01:randbeta;
         ihd.setBeta(beta);
         double randdelta  = deltaDist(generator);
-        double delta = (randdelta < 0)? 0:randdelta;
+        double delta = (randdelta < 0.01)? 0.01:randdelta;
         ihd.setDelta(delta);
         double randP  = PDist(generator);
-        double P = (randP < 0)? 0:randP;
+        double P = (randP < 0.01)? 0.01:randP;
         ihd.setP(P);
         double randC  = CDist(generator);
-        double C = (randC < 0)? 0:randC;
+        double C = (randC < 0.01)? 0.01:randC;
         ihd.setC(C);
         
         for (auto p = islands.cbegin(); p != islands.cend(); ++p){

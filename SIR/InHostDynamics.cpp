@@ -139,10 +139,13 @@ void InHostDynamics::Update(){
     _T = _T + _dt*_dT;
     _I = _I + _dt*_dI;
     _V = _V + _dt*_dV;
-    if (_I < 1e-3){
-        _I=0;
-    }
     
+    /*if (_I < 1e-3){
+        _I=0;
+    }*/
+    if (_V < 1e-3){
+        _V=0;
+    }
 }
 void InHostDynamics::Flow(){
     

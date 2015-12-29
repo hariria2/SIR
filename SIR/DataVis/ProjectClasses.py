@@ -23,6 +23,8 @@ class Person:
 
     def setTime(self, t):
         self._Time = t
+    def setAge(self, age):
+        self._Age = age
     def setX(self, x):
         self._X = x
     def setY(self, y):

@@ -28,7 +28,6 @@ class SQLVisualization:
         self.bl = '#323BAF'
         self.yl = '#AFAF4B'
 
-
     def isMember(self,list, elt):
         for m in list:
             if elt == m:
@@ -103,14 +102,15 @@ class SQLVisualization:
             maxi = data2[idx][11]
             p = Person(id,name, age, gender, homeid, maxi)
             p.setTime([x[2] for x in alldata])
-            p.setX([x[3] for x in alldata])
-            p.setY([x[4] for x in alldata])
-            p.setLocID([x[5] for x in alldata])
-            p.setState([x[6] for x in alldata])
-            p.setHBS([x[7] for x in alldata])
-            p.setSC([x[8] for x in alldata])
-            p.setIC([x[9] for x in alldata])
-            p.setVL([x[10] for x in alldata])
+            p.setAge([x[3] for x in alldata])
+            p.setX([x[4] for x in alldata])
+            p.setY([x[5] for x in alldata])
+            p.setLocID([x[6] for x in alldata])
+            p.setState([x[7] for x in alldata])
+            p.setHBS([x[8] for x in alldata])
+            p.setSC([x[9] for x in alldata])
+            p.setIC([x[10] for x in alldata])
+            p.setVL([x[11] for x in alldata])
             if not (id in self._PersonIDs):
                 self._People.append(p)
                 self._PersonIDs.append(id)
@@ -199,14 +199,11 @@ class SQLVisualization:
         plt.grid(True)
 
     def PlotIndividual(self,fignum, ppl):
-
         h = plt.figure(fignum)
         ymax = 0
         ymin = 0
 
-
         for ii, pe in enumerate(ppl):
-
             if self.isMember(self._PersonIDs, pe):
                 p = self._People(ii);
             else:
@@ -216,7 +213,6 @@ class SQLVisualization:
             SC = p._SC;
             IC = p._IC;
             VL = p._VL;
-
 
         for ii, pe in enumerate(ppl):
             p = self._People[ii]
