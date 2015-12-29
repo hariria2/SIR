@@ -93,6 +93,7 @@ private:
     double _XRedFctr;
     double _YRedFctr;
     unsigned long _InitialPopSize;
+    unsigned long _TotalPopSize;
     float _MouseX;
     float _MouseY;
     

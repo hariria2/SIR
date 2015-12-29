@@ -67,6 +67,7 @@ void Visualization::setMouseY(float y){
 void Visualization::setPeople(list<Person*> ppl){
     _People = ppl;
     _InitialPopSize = _People.size();
+    _TotalPopSize = _InitialPopSize;
 }
 void Visualization::setPlaces(vector<Place*> places){
     for(auto p = places.cbegin(); p != places.cend(); ++p){
@@ -123,12 +124,18 @@ void Visualization::Init(){
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
 }
 void Visualization::Render(){
+    unsigned long S = _Architect->getS();
+    unsigned long E = _Architect->getI();
+    unsigned long I = _Architect->getP();
+    unsigned long R = _Architect->getR();
+    unsigned long D = _Architect->getD();
+    _TotalPopSize = S + E + I + R + D;
     // Update things
     _CurrentTime = _Architect->getCurrentTime();
     _TT.push_back(_CurrentTime);
-    _SS.push_back(_Architect->getS());
-    _II.push_back(_Architect->getI()+_Architect->getP());
-    _RR.push_back(_Architect->getR());
+    _SS.push_back(S);
+    _II.push_back(E + I);
+    _RR.push_back(R);
     
 
     double domx = (_Architect->getDomain())->Boundary[0][1];
@@ -272,6 +279,7 @@ void Visualization::DrawText(const char *text, int length, int x, int y, int fsi
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixd(matrix);
     glMatrixMode(GL_MODELVIEW);
+    delete matrix;
     
 }
 void Visualization::DrawLabel(){
@@ -285,6 +293,7 @@ void Visualization::DrawLabel(){
     string inf = "Infected: ";
     string rec = "Recovered: ";
     string ded = "Dead: ";
+    string tot = "Total: ";
     
     int mntht = _CurrentTime/30;
     sprintf(buffer_t,"%2.2f", _Architect->getMonthlyTime());
@@ -295,6 +304,7 @@ void Visualization::DrawLabel(){
     string infVal = to_string(_Architect->getP());
     string recVal = to_string(_Architect->getR());
     string dedVal = to_string(_Architect->getD());
+    string totVal = to_string(_TotalPopSize);
     glColor3f(1, 0.7, 0);
     DrawText(mnth.data(), (int) mnth.size(), leftedge, _Y - 20, 18);
     DrawText(day.data(), (int) day.size(), leftedge, _Y - 40, 18);
@@ -303,6 +313,7 @@ void Visualization::DrawLabel(){
     DrawText(inf.data(), (int) inf.size(), leftedge, _Y - 100, 18);
     DrawText(rec.data(), (int) rec.size(), leftedge, _Y - 120, 18);
     DrawText(ded.data(), (int) ded.size(), leftedge, _Y - 140, 18);
+    DrawText(tot.data(), (int) tot.size(), leftedge, _Y - 160, 18);
     
     DrawText(mnthVal.data(), (int) mnthVal.size(), rightedge, _Y - 20, 18);
     DrawText(dayVal.data(), (int) dayVal.size(), rightedge, _Y - 40, 18);
@@ -311,6 +322,7 @@ void Visualization::DrawLabel(){
     DrawText(infVal.data(), (int) infVal.size(), rightedge, _Y - 100, 18);
     DrawText(recVal.data(), (int) recVal.size(), rightedge, _Y - 120, 18);
     DrawText(dedVal.data(), (int) dedVal.size(), rightedge, _Y - 140, 18);
+    DrawText(totVal.data(), (int) totVal.size(), rightedge, _Y - 160, 18);
     
     DrawBarGraph(leftedge + 45, _Y*0.05, _Architect->getS(), "S");
     DrawBarGraph(leftedge + 75, _Y*0.05, _Architect->getI()+_Architect->getP(), "I");
@@ -426,7 +438,7 @@ float Visualization::WInvYTrsfrm(double y){
 }
 
 float Visualization::PTransform(double y){
-    double pop = (double) _InitialPopSize;
+    double pop = (double) _TotalPopSize;
     return y*2*(1-_YRedFctr)/pop - 1;
 }
 

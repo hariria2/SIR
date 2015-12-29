@@ -66,6 +66,7 @@ public:
     void PrepDB();
     
     void AddPerson(double x, double y);
+    void AddPerson(string s);
     Place* LocFromCoo(double x, double y);
     
     void Funeral(Person* p);

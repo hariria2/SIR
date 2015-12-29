@@ -141,9 +141,7 @@ void Architect::Simulate(){
             string statement="";
             int introtime;
             for (double t = 0; t < _EndTime; t += _TimeStep){
-                int indx  = rand() % _AllPlaces.size();
-                int pindx = rand() % _PeoplePtr.size();
-                //(_PeoplePtr[pindx])->setLocation((_AllPlaces[indx]));
+                int indx  = rand() % (_AllPlaces.size()-2);
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
@@ -191,6 +189,7 @@ void Architect::Simulate(){
                     
                 }
                 Update();
+                AddPerson("NewBirth");
             }
             
             //_sqlDataPtr->EndTransaction();
@@ -215,11 +214,11 @@ void Architect::Simulate(){
                                       );
             
                 Update(_sqlDataPtr);
-            
-                //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-                //if ((time*1000000) < (_TimeStep*1000000)){
-                //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-                //}
+                AddPerson("NewBirth");
+                double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+                if ((time*1000000) < (_TimeStep*1000000)){
+                    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+                }
             
             }
         }
@@ -235,7 +234,7 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-
+            AddPerson("NewBirth");
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
             if ((time*1000000) < (_TimeStep*1000000)){
                 usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
@@ -314,7 +313,7 @@ void Architect::Update(SQLStorage* data){
         (*ip)->setTime(_CurrentTime);
         (*ip)->Update();
         
-        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+20){
+        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getTimeOfDeath()+5){
             Funeral(*ip);
             delete (*ip);
             ip=_PeoplePtr.erase(ip);
@@ -464,14 +463,12 @@ void Architect::AddPerson(double x, double y){
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.1, 2);
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.3, 2);
     ihd.setBeta(0.2);
     ihd.setDelta(0.03);
     ihd.setP(0.4);
     ihd.setC(0.5);
     ihd.setILRate(0.001);
-    
-    int randPIdx = rand() % _PeoplePtr.size();
     
     Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
@@ -497,6 +494,64 @@ void Architect::AddPerson(double x, double y){
                             p->getGender() + "', " +
                             to_string((p->getHome())->getID()) + ", " +
                             to_string((p->getLocation())->getID()));
+     */
+    AddPerson(p);
+    if (_Visualization != NULL) {
+        _Visualization->AddPerson(p);
+    }
+    
+}
+void Architect::AddPerson(string NewBirth){
+    
+    
+    
+    int indx  = rand() % (_AllPlaces.size()-2); // -1 is here to exclude cemetery from the possible location of birth
+    double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
+    double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
+    double ymin = (_AllPlaces[indx]->Perimeter)[1][0];
+    double ymax = (_AllPlaces[indx]->Perimeter)[1][1];
+    
+    uniform_real_distribution<double> xdist(xmin, xmax);
+    uniform_real_distribution<double> ydist(ymin, ymax);
+    double x = xdist(*_generator);
+    double y = ydist(*_generator);
+    
+    unsigned long s = _PeoplePtr.size();
+    int id = (int) s + 1;
+    Person* p1 = _PeoplePtr.front();
+    double dt = (p1->getInHostDynamics()).getdt();
+    
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0, 2);
+    ihd.setBeta(0.2);
+    ihd.setDelta(0.03);
+    ihd.setP(0.4);
+    ihd.setC(0.5);
+    ihd.setILRate(0.001);
+    
+    Disease dis = (p1->getDisease());
+    Place* loc = LocFromCoo(x,y);
+    vector<Place*> availPlaces = p1->getAvailablePlaces();
+    //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
+    
+    Person* p = new Person(id, "Alplego", 0, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
+    
+    for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
+        if ((*l)->getType()=="Home"){
+            p->setDefaultLocation(*l);
+        }
+    }
+    double coo[2] = {x,y};
+    p->setCoordinates(coo);
+    p->setTime(_CurrentTime);
+    //p->setHasBeenSick(1);
+    /* =================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     _sqlDataPtr->InsertValue("People",
+     "NULL, '" +
+     p->getName() + "', "+
+     to_string(p->getAge()) + ", '" +
+     p->getGender() + "', " +
+     to_string((p->getHome())->getID()) + ", " +
+     to_string((p->getLocation())->getID()));
      */
     AddPerson(p);
     if (_Visualization != NULL) {

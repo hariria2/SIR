@@ -147,6 +147,10 @@ void InHostDynamics::Update(){
 void InHostDynamics::Flow(){
     
     _NE = (_NE > 1)? 1:_NE;
+    _dT = -_Beta*_T*_V;
+    _dI = _Beta*_T*_V - _Delta*_I;
+    _dV = _P*_I - _C*_V + _NE;
+    /*
     if (_T<_Tol){
         if (!HasBeenSick){
             _dT = _ILRate;
@@ -161,7 +165,7 @@ void InHostDynamics::Flow(){
         _dT = -_Beta*_T*_V;
         _dI = _Beta*_T*_V - _Delta*_I;
         _dV = _P*_I - _C*_V + _NE;
-    }
+    }*/
     
 }
 void InHostDynamics::Jacobian(){

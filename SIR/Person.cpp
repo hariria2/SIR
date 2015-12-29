@@ -8,7 +8,7 @@
 
 #include "Person.h"
 
-Person::Person(int id, string name, int age,
+Person::Person(int id, string name, double age,
                char state, Disease dis, InHostDynamics ihd,
                Domain* city, Place* location, vector<Place*> availplaces,
                int inf_var, int inc_var, int rec_var):
@@ -35,12 +35,14 @@ Person::Person(int id, string name, int age,
     setGender('M');
     setLocation(location);
     setDefaultLocation(location);
-    setLifeExpectancy(85);
+    
+    uniform_real_distribution<double> LE(85,95);
+    setLifeExpectancy(LE(*_generator));
     
 }// end constructor
 
 
-Person::Person(int id, string name, int age,
+Person::Person(int id, string name, double age,
                char state, Disease dis, InHostDynamics ihd,
                Domain* city,vector<Place*> availplaces,
                int inf_var, int inc_var, int rec_var,
@@ -65,14 +67,15 @@ Person::Person(int id, string name, int age,
 	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
     setGender('M');
-    setLifeExpectancy(85);
+    uniform_real_distribution<double> LE(85,95);
+    setLifeExpectancy(LE(*_generator));
 }
 
 // Setters
 void Person::setID(int id){
 	_ID = id;
 }
-void Person::setAge(int age){
+void Person::setAge(double age){
     _Age = age;
 }
 void Person::setHasBeenSick(int hbs){
@@ -160,7 +163,7 @@ void Person::setRecVar(int var){
 int Person::getID(){
 	return _ID;
 }
-int Person::getAge(){
+double Person::getAge(){
     return _Age;
 }
 int Person::getHastBeenSick(){
@@ -199,6 +202,9 @@ double* Person::getCoordinates(){
 double Person::getTime(){
 	return _Time;
 }
+double Person::getTimeOfDeath(){
+    return _TimeOfDeath;
+}
 char Person::getState() const{
     return _State;
 }
@@ -234,14 +240,14 @@ list<int> Person::getAllConnectionsHist(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.5, "IslandHopper");
+    Move((rand() % 360),0.15, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
-    _Age += 1;
+    _Age += 0.1;
     if (_State != 'D') {
         if (_Age >= _LifeExpectancy){
-            setState('D');
+            Die();
         }
     }
 }
@@ -399,8 +405,7 @@ void Person::UpdateDisease() {
 			setState('R');
             _RecoveryTime = _Time;
         }else if(infectedTime > _RecoveryPeriod){
-            setState('D');
-            _TimeOfDeath = _Time;
+            Die();
         }
     //}else if(getState()=='R'){
      //   if (RecoveryTime >= 24){
@@ -414,7 +419,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     list<Person*> peeps = _Location->getOccupants();
     
-    double criticalDistance = 1;
+    double criticalDistance = 10;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
@@ -457,7 +462,7 @@ void Person::UpdateDiseaseWithInHost(){
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
         }else if (_ihdynamics.getI() > 3){
-            setState('D');
+            Die();
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
             setState('R');
@@ -470,7 +475,7 @@ void Person::UpdateDiseaseWithInHost(){
             _ihdynamics.HasBeenSick = 1;
         }
         if (_ihdynamics.getI() > 3){
-            setState('D');
+            Die();
         }
         else if (_ihdynamics.getI() < 0.2){
             setState('I');
@@ -498,6 +503,10 @@ double Person::Distance(Person* p){
     double p2y = (p->getCoordinates())[1];
     
     return sqrt(pow((p2x-p1x),2) + pow((p2y - p1y),2));
+}
+void Person::Die(){
+    setState('D');
+    _TimeOfDeath = _Time;
 }
 
 bool Person::operator == (const Person& p) const {

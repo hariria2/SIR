@@ -23,7 +23,7 @@ void readPeopleData();
 void generateSourceData();
 void updatePop(vector<Person*> p1, char s);
 
-void FaroeIslands(bool SaveData=false);
+void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=false, bool ShowVis=true);
 
 
 //=================
@@ -32,14 +32,14 @@ void FaroeIslands(bool SaveData=false);
 // ========================= Main ======================
 int main(){
     
-    FaroeIslands();
+    FaroeIslands(10000, 0.1, "1", false, true);
     return 0;
  }
 // ========================= End main =================
 
 
 // ========================= Example Simulations ==============================
-void FaroeIslands(bool SaveData){
+void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
     
     int maxdim = 115;
     int Boundary[2][2]   = {{0, 90},{0, 100}};
@@ -83,7 +83,7 @@ void FaroeIslands(bool SaveData){
     for (int ii=1; ii <= population; ii++){
         string name = "randomName"+to_string(ii);
         double randage  = ageDist(generator);
-        int age = (randage < 1)? 1:floor(randage);
+        double age = (randage < 1)? 1:floor(randage);
         if (ii == 1){
             VirLev = 0.1;
         } else {
@@ -182,31 +182,53 @@ void FaroeIslands(bool SaveData){
     };
     
     double InitialTime = 0;
-    double EndTime = 5000;
-    double TimeStep = 1;
     //int l = floor((EndTime-InitialTime)/TimeStep);
-    string ver = "3";
     //cout << "Enter version number for multi location simulation: ";
     //cin >> ver;
     
-    int xdim = maxdim;
-    int ydim = maxdim;
-    Visualization* vis = getVisualization(xdim, ydim, true);
-    vis->setPlaces(islands);
-    vis->setPeople(vpeople);
     
-    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-    //Architect archie(InitialTime,EndTime,TimeStep, people,  "MYSQL", &sqldata);
+    if (ShowVis & SaveData){
     
-    Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(islands);
+        vis->setPeople(vpeople);
+        
+        
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
+        vis->Init();
+        vis->setArchitect(&archie);
+        //vis->RenderSplash();
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
+        archie.Simulate();
+    }
+    else if (ShowVis){
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(islands);
+        vis->setPeople(vpeople);
+        
+        
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);;
+        vis->Init();
+        vis->setArchitect(&archie);
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
+        archie.Simulate();
+    }
+    else {
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
+        archie.Simulate();
+    }
     
-    //Architect archie(InitialTime,EndTime,TimeStep, people, vis);
-    vis->Init();
-    vis->setArchitect(&archie);
-    //vis->RenderSplash();
-    archie.setDomain(&Island);
-    archie.setPlaces(islands);
-    archie.Simulate();
+    
 }
 
 // ========================= End Examples ======================================

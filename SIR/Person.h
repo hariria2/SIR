@@ -21,12 +21,12 @@ class Person {
 public:
 	bool IsSingleLocation;
 
-	Person(int id, string name, int age,
+	Person(int id, string name, double age,
            char state, Disease dis, InHostDynamics ihd,
            Domain* city, Place* Location, vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var);
 
-	Person(int id, string name, int age,
+	Person(int id, string name, double age,
            char state, Disease dis, InHostDynamics ihd,
            Domain* city,vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var,
@@ -35,7 +35,7 @@ public:
 	~Person();
 	// Setters
 	void setID(int id);
-    void setAge(int id);
+    void setAge(double id);
     void setX(int x);
     void setY(int y);
     void setHasBeenSick(int hbs);
@@ -59,7 +59,7 @@ public:
 
 	// Getters
 	int getID();
-    int getAge();
+    double getAge();
 
     char getGender();
     int getHastBeenSick();
@@ -71,6 +71,7 @@ public:
     Place* getDeafaultLocation();
     vector<Place*> getAvailablePlaces();
 	double getTime();
+    double getTimeOfDeath();
 	Disease getDisease() const;
     InHostDynamics getInHostDynamics() const;
 	int getInfectionPeriod();
@@ -95,6 +96,7 @@ public:
 	void ContractDisease(Disease d);
 	void UpdateDisease();
     void UpdateDiseaseWithInHost();
+    void Die();
     
     
 	bool operator == (const Person& p) const;
@@ -108,7 +110,7 @@ public:
 
 private:
 	int _ID;
-    int _Age;
+    double _Age;
 	string _Name;
 	double _Time;
     double _X;
