@@ -63,6 +63,7 @@ public:
     void Jacobian();
     
     int HasBeenSick = 0;
+    
 private:
     
     int _ID;

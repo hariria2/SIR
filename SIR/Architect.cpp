@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
+    _introtimeDist = new uniform_int_distribution<int>(500, 700);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -36,7 +36,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
+    _introtimeDist = new uniform_int_distribution<int>(500, 700);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -52,7 +52,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1000, 1500);
+    _introtimeDist = new uniform_int_distribution<int>(500, 700);
 }
 
 
@@ -189,7 +189,9 @@ void Architect::Simulate(){
                     
                 }
                 Update();
-                AddPerson("NewBirth");
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+                    AddPerson("NewBirth");
+                }
             }
             
             //_sqlDataPtr->EndTransaction();
@@ -214,7 +216,9 @@ void Architect::Simulate(){
                                       );
             
                 Update(_sqlDataPtr);
-                AddPerson("NewBirth");
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+                    AddPerson("NewBirth");
+                }
                 double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
                 if ((time*1000000) < (_TimeStep*1000000)){
                     usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
@@ -234,7 +238,9 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-            AddPerson("NewBirth");
+            if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+                AddPerson("NewBirth");
+            }
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
             if ((time*1000000) < (_TimeStep*1000000)){
                 usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
@@ -293,7 +299,6 @@ void Architect::Update(SQLStorage* data){
         //    econList.push_back(*ip);
         //}
         
-        
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         SQLStatement = SQLStatement + "(NULL, " +
         to_string((*ip)->getID()) + ", " +
@@ -334,7 +339,8 @@ void Architect::Update(){
     //_Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
     IncrementTime();
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-		(*ip)->setTime(_CurrentTime);
+        
+        (*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         (*ip)->Update();
         if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+20){
@@ -477,6 +483,7 @@ void Architect::AddPerson(double x, double y){
     
     Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
     
+    p->setTravelerQ(true);
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){
             p->setDefaultLocation(*l);
@@ -519,7 +526,6 @@ void Architect::AddPerson(string NewBirth){
     double y = ydist(*_generator);
     
     unsigned long s = _PeoplePtr.size();
-    cout << "Pop: " << s << endl;
     int id = (int) s + 1;
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
@@ -546,6 +552,7 @@ void Architect::AddPerson(string NewBirth){
     double coo[2] = {x,y};
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
+    //p->setTravelerQ(true);
     //p->setHasBeenSick(1);
     if (_Store == "MYSQL"){
         _sqlDataPtr->InsertValue("People",

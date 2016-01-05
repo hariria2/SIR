@@ -56,6 +56,7 @@ public:
     void setInfVar(int var);
     void setIncVar(int var);
     void setRecVar(int var);
+    void setTravelerQ(bool tq);
 
 	// Getters
 	int getID();
@@ -85,6 +86,7 @@ public:
     list<int> getSIConnectionsHist();
     list<int> getAllConnections();
     list<int> getAllConnectionsHist();
+    bool getTraverlerQ();
 
     
     void Update();
@@ -120,6 +122,7 @@ private:
     double _RecoveryTime;
     double _TimeOfDeath;
 	double _Coordinates[2];
+    bool _TravelerQ = false;
     
 	Disease _disease;
     

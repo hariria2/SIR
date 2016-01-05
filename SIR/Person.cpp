@@ -36,7 +36,7 @@ Person::Person(int id, string name, double age,
     setLocation(location);
     setDefaultLocation(location);
     
-    uniform_real_distribution<double> LE(85,95);
+    uniform_real_distribution<double> LE(77,82);
     setLifeExpectancy(LE(*_generator));
     
 }// end constructor
@@ -67,9 +67,9 @@ Person::Person(int id, string name, double age,
 	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
     setGender('M');
-    uniform_real_distribution<double> LE(85,95);
+    uniform_real_distribution<double> LE(77,82);
     setLifeExpectancy(LE(*_generator));
-}
+    }
 
 // Setters
 void Person::setID(int id){
@@ -158,6 +158,9 @@ void Person::setIncVar(int var){
 void Person::setRecVar(int var){
     _RecoveryVar = var;
 };
+void Person::setTravelerQ(bool tq){
+    _TravelerQ = tq;
+};
 
 // Getters
 int Person::getID(){
@@ -238,13 +241,16 @@ list<int> Person::getAllConnections(){
 list<int> Person::getAllConnectionsHist(){
     return _AllConnectionsHist;
 }
+bool Person::getTraverlerQ(){
+    return _TravelerQ;
+}
 
 void Person::Update(){
     Move((rand() % 360),0.2, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
-    _Age += 0.1;
+    _Age += 0.0027/0.1;
     if ((_Age >= 10) & (_Age - 0.1 < 10)){
         if (getState() == 'N'){
             setState('S');
@@ -321,24 +327,18 @@ void Person::Move(double theta, double r, string motionType){
         }
     }
     else if (motionType == "IslandHopper"){
-        /*if (getID() == 1){
-            if (_Time == 10){
+        
+        if (_Time != 0 & (fmod(_Time,10)) < 1e-3){
+            if (_TravelerQ){
+                int lid = rand() % (_AvailablePlaces.size()-2) + 1;
                 for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
-                    if ((*L)->getName()=="Eysturoy"){
+                    if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
                         setLocation(*L);
                     }
                 }
 
             }
-            if (_Time == 20){
-                for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
-                    if ((*L)->getName()=="Streymoy"){
-                        setLocation(*L);
-                    }
-                }
-
-            }
-         }*/
+        }
     }
     
     
@@ -473,7 +473,7 @@ void Person::UpdateDiseaseWithInHost(){
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
             setState('R');
             setHasBeenSick(0);
-            _ihdynamics.HasBeenSick = 0;
+            _ihdynamics.HasBeenSick = 1;
         }
     }
     else if (getState() == 'P'){

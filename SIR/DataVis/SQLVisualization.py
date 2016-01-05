@@ -12,6 +12,7 @@ class SQLVisualization:
     re = [0.7, 0.2, 0.3];
     bl = [0.2, 0.3, 0.7];
     yl = [0.7, 0.7, 0.3];
+    bk = [0  ,   0,   0];
     plt.rc('font', family='serif')
 
     def __init__(self,usrnm,psswd,hst,db):
@@ -22,7 +23,8 @@ class SQLVisualization:
         self._PersonIDs = []
         self._Locations = []
         self._LocationIDs = []
-
+        self._AllInfected = False
+        self._AllPopulations = True;
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -165,28 +167,41 @@ class SQLVisualization:
 
     def PlotHistory(self, fignum):
         h = plt.figure(fignum);
-        #ps = plt.plot(self.T, self.S, label="Susceptible")
-        #plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
-        pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)], label="Infected")
+        if self._AllPopulations:
+            ps = plt.plot(self.T, self.S, label="Susceptible")
+            plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
+            pr = plt.plot(self.T, self.R, label="Recovered")
+            plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
+            pd = plt.plot(self.T, self.D, label="Dead")
+            plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
+
+        if self._AllInfected:
+            pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)], label="Infected")
+        else:
+            pi = plt.plot(self.T, self.P, label="Infected")
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
-        #pr = plt.plot(self.T, self.R, label="Recovered")
-        #plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-        #pd = plt.plot(self.T, self.D, label="Dead")
-        #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
+
         plt.grid(True)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
-        #set(l, 'FontSize', 16)
+
         plt.xlabel(r'Time', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
-        #plt.hist([a+b for a,b in zip(self.P, self.I)],50)
-        plt.hist(self.P,50)
-        plt.xlabel(r'Time', fontsize=18)
-        plt.ylabel(r'Population', fontsize=18)
+        if self._AllInfected:
+            l = [x for x in self.P+self.I if x != 0]
+        else:
+            l = [x for x in self.P if x != 0]
+
+        plt.hist(l,50,color=self.bk)
+        plt.xlabel(r'Avalanche Size', fontsize=18)
+        plt.ylabel(r'Number of Occurences', fontsize=18)
     def PlotLog(self, fignum):
         h = plt.figure(fignum);
-        l = sorted(self.P+self.I);
+        if self._AllInfected:
+            l = sorted([x for x in self.P+self.I if x != 0]);
+        else:
+            l = sorted([x for x in self.P if x != 0]);
         counter=collections.Counter(l)
         #vals = [log(x+1,10) for x in counter.keys()]
         #freq = [log(x,10) for x in counter.values()]
@@ -195,7 +210,9 @@ class SQLVisualization:
         pi = plt.plot(vals, freq)
         plt.xscale('log')
         plt.yscale('log')
-        plt.setp(pi, 'Color', self.bl, 'LineWidth', 4)
+        plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
+        plt.xlabel(r'Avalancche Size', fontsize=18)
+        plt.ylabel(r'Number of Occurances', fontsize=18)
         plt.grid(True)
 
     def PlotIndividual(self,fignum, ppl):

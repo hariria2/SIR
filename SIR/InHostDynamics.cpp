@@ -143,8 +143,12 @@ void InHostDynamics::Update(){
     /*if (_I < 1e-3){
         _I=0;
     }*/
-    if (_V < 1e-3){
+    if (_V < 1e-2){
         _V=0;
+    }
+    if (HasBeenSick==1 & _I < 0.05){
+        _V=0;
+        _I=0;
     }
 }
 void InHostDynamics::Flow(){

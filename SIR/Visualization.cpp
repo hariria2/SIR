@@ -129,7 +129,7 @@ void Visualization::Render(){
     unsigned long I = _Architect->getP();
     unsigned long R = _Architect->getR();
     unsigned long D = _Architect->getD();
-    _TotalPopSize = S + E + I + R + D;
+    _TotalPopSize = S + E + I + R;
     // Update things
     _CurrentTime = _Architect->getCurrentTime();
     _TT.push_back(_CurrentTime);
@@ -443,8 +443,12 @@ float Visualization::WInvYTrsfrm(double y){
 }
 
 float Visualization::PTransform(double y){
-    double pop = (double) _TotalPopSize;
-    return y*2*(1-_YRedFctr)/pop - 1;
+    //double pop = (double) _InitialPopSize;
+    if (_TotalPopSize > _InitialPopSize){
+        return y*2*(1-_YRedFctr)/_TotalPopSize - 1;
+    }else{
+        return y*2*(1-_YRedFctr)/_InitialPopSize - 1;
+        }
 }
 
 void Visualization::AddPerson(Person *p){
@@ -485,14 +489,14 @@ void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double 
     _visualization->setMouseX(xpos);
     _visualization->setMouseY(ypos);
     
-    cout << "X: " << _visualization->getMouseX() << ", " << "Y: " << _visualization->getMouseY() << endl;
+    //cout << "X: " << _visualization->getMouseX() << ", " << "Y: " << _visualization->getMouseY() << endl;
 }
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         (_visualization->_Buttons.front())->setClicked(true);
-        _visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
-        _visualization->testPrint();
+        //_visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
+        //_visualization->testPrint();
         //cout << _visualization->getMouseX() << endl;
         (_visualization->_Architect)->AddPerson(_visualization->getMouseX(),_visualization->getMouseY());
         

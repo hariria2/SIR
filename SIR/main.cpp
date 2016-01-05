@@ -29,10 +29,23 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 //=================
 
 
+
+/******** Data Measles *************
+ 
+ Sizes of distributions: 1 to 4450
+ Birth rate: 1 birth per day.
+ Introduction of disease: 1 every 600 days. 
+ Total population: 25000
+ Epidemic time T: Number of months there are cases. Integer > 1
+ Epidemic size: Sum(C(M),{M,1,T})
+
+****************************/
+
+
 // ========================= Main ======================
 int main(){
     
-    FaroeIslands(20000, 0.5, "2", true, false);
+    FaroeIslands(36500, 1, "2", true, false);
     return 0;
  }
 // ========================= End main =================
@@ -50,8 +63,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
     
-    int Pop_Str = 324;
-    int Pop_Eys = 207;
+    int Pop_Str = 224;
+    int Pop_Eys = 107;
     int Pop_Vag = 40;
     int Pop_Suo = 56;
     int Pop_San = 22;
@@ -71,7 +84,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     normal_distribution<double> suDist(3,1);
     normal_distribution<double> icDist(2,0.01);
-    normal_distribution<double> betaDist(3,0.01);
+    normal_distribution<double> betaDist(2,0.01);
     normal_distribution<double> deltaDist(0.1,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);
@@ -182,6 +195,11 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         }
         
     };
+    srand((int) time(NULL));
+    for (int ii=0; ii < 50; ii++){
+        people[rand()%(people.size())]->setTravelerQ(true);
+    }
+    
     
     double InitialTime = 0;
     //int l = floor((EndTime-InitialTime)/TimeStep);
