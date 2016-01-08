@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 700);
+    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -36,7 +36,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 700);
+    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -52,7 +52,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 700);
+    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
 }
 
 

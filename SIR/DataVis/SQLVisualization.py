@@ -5,14 +5,10 @@ from matplotlib import rc
 from ProjectClasses import Location, Person
 import numpy as np
 import collections
+from scipy import stats
 
 class SQLVisualization:
 
-    gr = [0.2, 0.7, 0.3];
-    re = [0.7, 0.2, 0.3];
-    bl = [0.2, 0.3, 0.7];
-    yl = [0.7, 0.7, 0.3];
-    bk = [0  ,   0,   0];
     plt.rc('font', family='serif')
 
     def __init__(self,usrnm,psswd,hst,db):
@@ -25,22 +21,23 @@ class SQLVisualization:
         self._LocationIDs = []
         self._AllInfected = False
         self._AllPopulations = True;
+        self._Peaks = [];
+        self._PeakTimes = [];
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
         self.yl = '#AFAF4B'
+        self.bk = '#000000'
 
     def isMember(self,list, elt):
         for m in list:
             if elt == m:
                 return True
         return False
-
     def getHistoryData(self):
         sqlquery = 'SELECT * FROM HistoryData';
         self._Cursor.execute(sqlquery);
         data = self._Cursor.fetchall();
-
         self.T = [row[1] for row in data]
         self.S = [row[2] for row in data]
         self.I = [row[3] for row in data]
@@ -162,9 +159,38 @@ class SQLVisualization:
                     self._Locations.append(d)
                     self._LocationIDs.append(id)
 
+    def countPeakes(self):
+        te = self.T[-1]
+        dt = self.T[1]-self.T[0]
+        n  = int(floor(te/(30.*dt)));
+        ii = 0
+
+        if self._AllInfected:
+            l = [x for x in self.P+self.I]
+        else:
+            l = [x for x in self.P]
+
+        while ii < n:
+            ii = self.peakQ(l,ii,dt,0)
+            ii = ii + 1
+
+
+    def peakQ(self,data,ii,dt,ps):
+        s = max(data[int(ii*30/dt):int(30*((1+ii)/dt))])
+        while s > 0:
+            ps = s
+            ii = ii + 1
+            s = sum(data[int(ii*30/dt):int(30*((1+ii)/dt))])
+        if ps > 0:
+            self._Peaks.append(ps)
+            self._PeakTimes.append(self.T[int((ii-1)*30/dt)]) # Look into this
+            # TODO
+            # Index running bigger than the length of the list.
+        return ii
+
+
     def Render(self):
         plt.show()
-
     def PlotHistory(self, fignum):
         h = plt.figure(fignum);
         if self._AllPopulations:
@@ -172,11 +198,11 @@ class SQLVisualization:
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-            pd = plt.plot(self.T, self.D, label="Dead")
-            plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
+            #pd = plt.plot(self.T, self.D, label="Dead")
+            #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
 
         if self._AllInfected:
-            pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)], label="Infected")
+            pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)],label="Infected")
         else:
             pi = plt.plot(self.T, self.P, label="Infected")
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
@@ -188,33 +214,40 @@ class SQLVisualization:
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
-        if self._AllInfected:
-            l = [x for x in self.P+self.I if x != 0]
-        else:
-            l = [x for x in self.P if x != 0]
-
-        plt.hist(l,50,color=self.bk)
+        #if self._AllInfected:
+        #    l = [x for x in self.P+self.I if x != 0]
+        #else:
+        #    l = [x for x in self.P if x != 0]
+        l = sorted(self._Peaks)
+        plt.hist(l,20,color=self.bk)
         plt.xlabel(r'Avalanche Size', fontsize=18)
         plt.ylabel(r'Number of Occurences', fontsize=18)
+        plt.grid(True)
     def PlotLog(self, fignum):
         h = plt.figure(fignum);
-        if self._AllInfected:
-            l = sorted([x for x in self.P+self.I if x != 0]);
-        else:
-            l = sorted([x for x in self.P if x != 0]);
-        counter=collections.Counter(l)
-        #vals = [log(x+1,10) for x in counter.keys()]
-        #freq = [log(x,10) for x in counter.values()]
-        vals = counter.keys()
-        freq = counter.values()
-        pi = plt.plot(vals, freq)
-        plt.xscale('log')
-        plt.yscale('log')
-        plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
-        plt.xlabel(r'Avalancche Size', fontsize=18)
-        plt.ylabel(r'Number of Occurances', fontsize=18)
-        plt.grid(True)
+        #if self._AllInfected:
+        #    l = sorted([x for x in self.P+self.I if x != 0]);
+        #else:
+        #    l = sorted([x for x in self.P if x != 0]);
+        l = self._Peaks
 
+        counter=collections.Counter(l)
+        vals = [log(x+1,10) for x in counter.keys()]
+        freq = [log(x,10) for x in counter.values()]
+        ml = int(floor(len(freq)*0.7))
+        slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
+        #vals = counter.keys()
+        #freq = counter.values()
+        pi = plt.plot(vals, freq)
+        pl = plt.plot(vals, [slope*x+intercept for x in vals])
+        plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
+        #plt.xscale('log')
+        #plt.yscale('log')
+        plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
+        plt.xlabel(r'Avalanche Size', fontsize=18)
+        plt.ylabel(r'Number of Occurances', fontsize=18)
+        plt.title(r'Slope: %2.2f' %slope, fontsize=18)
+        plt.grid(True)
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)
         ymax = 0

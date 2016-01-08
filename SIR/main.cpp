@@ -45,7 +45,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 // ========================= Main ======================
 int main(){
     
-    FaroeIslands(36500, 1, "2", true, false);
+    FaroeIslands(36502, 1, "1", true, false);
     return 0;
  }
 // ========================= End main =================
