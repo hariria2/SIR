@@ -35,9 +35,9 @@ Person::Person(int id, string name, double age,
     setGender('M');
     setLocation(location);
     setDefaultLocation(location);
-    
     uniform_real_distribution<double> LE(77,82);
     setLifeExpectancy(LE(*_generator));
+    initZone();
     
 }// end constructor
 
@@ -69,6 +69,7 @@ Person::Person(int id, string name, double age,
     setGender('M');
     uniform_real_distribution<double> LE(77,82);
     setLifeExpectancy(LE(*_generator));
+    initZone();
     }
 
 // Setters
@@ -115,6 +116,24 @@ void Person::setLocation(Place* location){
     setCoordinates(Co);
     
 }
+void Person::initZone(){
+    
+    Zone* zone = ZoneFromCo(_Coordinates[0],_Coordinates[1]);
+    _Zone = zone;
+    _Zone->addPerson(this);
+    
+}
+void Person::setZone(){
+
+    if (_Zone->getOccupants().size() != 0){
+        _Zone->removePerson(this);
+    }
+    Zone* zone = ZoneFromCo(_Coordinates[0],_Coordinates[1]);
+    _Zone = zone;
+    _Zone->addPerson(this);
+    
+}
+
 void Person::setDefaultLocation(Place* location){
     _DefaultLocation = location;
 }
@@ -365,6 +384,7 @@ void Person::Move(double theta, double r, string motionType){
 
 	_Coordinates[0] = x;
 	_Coordinates[1] = y;
+    setZone();
 }
 void Person::UpdateDisease() {
     
@@ -423,8 +443,8 @@ void Person::UpdateDisease() {
 }
 void Person::UpdateDiseaseWithInHost(){
     
-    list<Person*> peeps = _Location->getOccupants();
-    
+    //list<Person*> peeps = _Location->getOccupants();
+    list<Person*> peeps = _Zone->getOccupants();
     double criticalDistance = 40;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
@@ -539,6 +559,25 @@ void Person::addAllConnectionHist(int id){
     _AllConnectionsHist.sort();
     _AllConnectionsHist.unique();
 }
+
+Zone* Person::ZoneFromCo(double x, double y){
+    
+    double xmin, xmax, ymin, ymax;
+    
+    for(auto z = (_Location->getZones())->cbegin(); z != (_Location->getZones())->cend(); ++z){
+        
+        xmin = (*z)->Perimeter[0][0];
+        xmax = (*z)->Perimeter[0][1];
+        ymin = (*z)->Perimeter[1][0];
+        ymax = (*z)->Perimeter[1][1];
+        if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+            return *z;
+        }
+    }
+    
+    return _Location->getZones()->front();
+}
+
 
 Person::~Person(){
     delete _generator;

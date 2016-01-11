@@ -12,10 +12,14 @@
 #include <random>
 
 #include "Place.h"
+#include "Zone.h"
 #include "Disease.h"
 #include "InHostDynamics.h"
 
 using namespace std;
+
+//class Place;
+//class Zone;
 
 class Person {      	
 public:
@@ -44,6 +48,8 @@ public:
 	void setCoordinates(double coordinates[2]);
     void setState(char state);
 	void setLocation(Place* location);
+    void setZone();
+    void initZone();
     void setDefaultLocation(Place* location);
     void setAvailPlaces(vector<Place*> availplaces);
 	void setTime(double t);
@@ -88,6 +94,7 @@ public:
     list<int> getAllConnectionsHist();
     bool getTraverlerQ();
 
+    Zone* ZoneFromCo(double x, double y);
     
     void Update();
     
@@ -138,6 +145,7 @@ private:
 	Domain* _City;
 	Place* _Location;
     Place* _DefaultLocation;
+    Zone* _Zone;
     vector<Place*> _AvailablePlaces;
 	int _InfectionPeriod;
 	int _IncubationPeriod;

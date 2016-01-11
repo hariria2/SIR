@@ -68,6 +68,9 @@ void Architect::setDomain(Domain *city){
 };
 void Architect::setPlaces(vector<Place *> places){
     _AllPlaces = places;
+    for (auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p){
+        (*p)->setZoneNeighborhood();
+    }
 }
 void Architect::setVisualization(Visualization *vis){
     _Visualization = vis;
@@ -298,7 +301,7 @@ void Architect::Update(SQLStorage* data){
         //if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
         //    econList.push_back(*ip);
         //}
-        
+        //(*ip)->setZone();
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         SQLStatement = SQLStatement + "(NULL, " +
         to_string((*ip)->getID()) + ", " +
@@ -339,7 +342,7 @@ void Architect::Update(){
     //_Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
     IncrementTime();
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-        
+        //(*ip)->setZone();
         (*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         (*ip)->Update();
