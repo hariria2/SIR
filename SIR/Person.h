@@ -73,6 +73,7 @@ public:
 	string getName() const;
 	double* getCoordinates();
     char getState() const;
+    bool getNewInf();
     Domain* getDomain();
 	Place* getLocation();
     Place* getDeafaultLocation();
@@ -140,6 +141,7 @@ private:
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine *_generator;
 	char _State;
+    bool _NewInf=false;
     char _Gender;
     int _HasBeenSick = 0;
 	Domain* _City;

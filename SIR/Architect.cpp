@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
+    _introtimeDist = new uniform_int_distribution<int>(250, 350);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -36,7 +36,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
+    _introtimeDist = new uniform_int_distribution<int>(250, 350);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -52,7 +52,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 1000);
+    _introtimeDist = new uniform_int_distribution<int>(250, 350);
 }
 
 
@@ -114,6 +114,9 @@ int Architect::getR(){
 int Architect::getD(){
     return _D;
 }
+int Architect::getN(){
+    return _N;
+}
 Domain* Architect::getDomain(){
     return _City;
 }
@@ -174,7 +177,8 @@ void Architect::Simulate(){
                         to_string(_I) + ", " +
                         to_string(_P) + ", " +
                         to_string(_R) + ", " +
-                        to_string(_D) + "),";
+                        to_string(_D) + ", " +
+                        to_string(_N) + "),";
                         batchctr++;
                     }
                     else{
@@ -184,7 +188,8 @@ void Architect::Simulate(){
                         to_string(_I) + ", " +
                         to_string(_P) + ", " +
                         to_string(_R) + ", " +
-                        to_string(_D) + ")";
+                        to_string(_D) + ", " +
+                        to_string(_N) + ")";
                         _sqlDataPtr-> InsertValue("HistoryData",statement, true);
                         batchctr = 0;
                         statement = "";
@@ -376,10 +381,14 @@ void Architect::PopulationData(){
     _P = 0;
     _R = 0;
     _D = 0;
+    _N = 0;
     
     for(auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip) {
         if (((*ip)->getState()) == 'I'){
             _I += 1;
+            if ((*ip)->getNewInf()){
+                _N += 1;
+            }
         }
         else if(((*ip)->getState()) == 'P'){
             _P += 1;

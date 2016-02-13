@@ -1,6 +1,6 @@
 import mysql.connector
 import matplotlib.pyplot as plt
-from math import floor, log
+from math import floor, log10
 from matplotlib import rc
 from ProjectClasses import Location, Person
 import numpy as np
@@ -21,8 +21,10 @@ class SQLVisualization:
         self._LocationIDs = []
         self._AllInfected = False
         self._AllPopulations = True;
+        self._PeaksOnly = True;
         self._Peaks = [];
         self._PeakTimes = [];
+        self._PeakRes = 30.
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -44,6 +46,8 @@ class SQLVisualization:
         self.P = [row[4] for row in data]
         self.R = [row[5] for row in data]
         self.D = [row[6] for row in data]
+        self.N = [row[7] for row in data]
+
     def getPerson(self, ids):
         query1 = '';
         query2 = '';
@@ -162,32 +166,40 @@ class SQLVisualization:
     def countPeakes(self):
         te = self.T[-1]
         dt = self.T[1]-self.T[0]
-        n  = int(floor(te/(30.*dt)));
+        n  = int(floor(te/(self._PeakRes*dt)));
         ii = 0
 
         if self._AllInfected:
-            l = [x for x in self.P+self.I]
+            l = [a+b for a,b in zip(self.P, self.I)]
         else:
-            l = [x for x in self.P]
+            l = [x for x in self.N]
 
         while ii < n:
             ii = self.peakQ(l,ii,dt,0)
             ii = ii + 1
-
-
     def peakQ(self,data,ii,dt,ps):
-        s = max(data[int(ii*30/dt):int(30*((1+ii)/dt))])
-        while s > 0:
-            ps = s
+        s = max(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+        ps = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))]);
+        n = 0;
+        # The end bit of the while loop logic is to account for the case where simulation ends in the middle of an epidemic.
+        while s > 0 and int(floor((1+ii)*self._PeakRes/dt))<len(self.T):
             ii = ii + 1
-            s = sum(data[int(ii*30/dt):int(30*((1+ii)/dt))])
+            """
+            if int(floor((1+ii)*self._PeakRes/dt)) > len(self.T):
+                s  = max(data[int(floor(ii*self._PeakRes/dt)):len(self.T)])
+                nn = sum(self.N[int(floor(ii*self._PeakRes/dt)):len(self.T)])
+            else:
+                s   = max(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+                nn  = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+            """
+            s   = max(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+            nn  = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+            ps = sum([ps,nn])
+            n  = n + 1;
         if ps > 0:
             self._Peaks.append(ps)
-            self._PeakTimes.append(self.T[int((ii-1)*30/dt)]) # Look into this
-            # TODO
-            # Index running bigger than the length of the list.
+            self._PeakTimes.append(self.T[int((ii-floor(n/2.))*self._PeakRes/dt)])
         return ii
-
 
     def Render(self):
         plt.show()
@@ -197,15 +209,24 @@ class SQLVisualization:
             ps = plt.plot(self.T, self.S, label="Susceptible")
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered")
+            pn = plt.plot(self.T, self.N,label="Newly Infected")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
             #pd = plt.plot(self.T, self.D, label="Dead")
             #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
 
         if self._AllInfected:
             pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)],label="Infected")
+            pn = plt.plot(self.T, self.N,label="Newly Infected")
+            if self._PeaksOnly:
+                pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
         else:
             pi = plt.plot(self.T, self.P, label="Infected")
+            pn = plt.plot(self.T, self.N,label="Newly Infected")
+            if self._PeaksOnly:
+                pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
+
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
+        plt.setp(pn, 'Color', self.bl, 'LineWidth', 4)
 
         plt.grid(True)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
@@ -214,27 +235,36 @@ class SQLVisualization:
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
-        #if self._AllInfected:
-        #    l = [x for x in self.P+self.I if x != 0]
-        #else:
-        #    l = [x for x in self.P if x != 0]
-        l = sorted(self._Peaks)
+
+        if self._PeaksOnly:
+            l = self._Peaks
+        else:
+            if self._AllInfected:
+                l = [a+b for a,b in zip(self.P, self.I) if a+b != 0]
+                #l = [x for x in self.N if x != 0]
+            else:
+                l = [x for x in self.N if x != 0]
+
         plt.hist(l,20,color=self.bk)
         plt.xlabel(r'Avalanche Size', fontsize=18)
         plt.ylabel(r'Number of Occurences', fontsize=18)
         plt.grid(True)
     def PlotLog(self, fignum):
         h = plt.figure(fignum);
-        #if self._AllInfected:
-        #    l = sorted([x for x in self.P+self.I if x != 0]);
-        #else:
-        #    l = sorted([x for x in self.P if x != 0]);
-        l = self._Peaks
+
+        if self._PeaksOnly:
+            l = self._Peaks
+        else:
+            if self._AllInfected:
+                l = sorted([a+b for a,b in zip(self.P, self.I) if a+b != 0])
+                #l = sorted([x for x in self.N if x != 0]);
+            else:
+                l = sorted([x for x in self.N if x != 0]);
 
         counter=collections.Counter(l)
-        vals = [log(x+1,10) for x in counter.keys()]
-        freq = [log(x,10) for x in counter.values()]
-        ml = int(floor(len(freq)*0.7))
+        vals = [log10(x) for x in counter.keys()]
+        freq = [log10(x) for x in counter.values()]
+        ml = int(floor(len(freq)*0.4))
         slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
         #vals = counter.keys()
         #freq = counter.values()

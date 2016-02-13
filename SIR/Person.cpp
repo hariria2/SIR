@@ -230,6 +230,9 @@ double Person::getTimeOfDeath(){
 char Person::getState() const{
     return _State;
 }
+bool Person::getNewInf(){
+    return _NewInf;
+}
 string Person::getName() const{
     return _Name;
 }
@@ -265,7 +268,7 @@ bool Person::getTraverlerQ(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.2, "IslandHopper");
+    Move((rand() % 360),0.5, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
@@ -443,11 +446,29 @@ void Person::UpdateDisease() {
 }
 void Person::UpdateDiseaseWithInHost(){
     
-    //list<Person*> peeps = _Location->getOccupants();
-    list<Person*> peeps = _Zone->getOccupants();
-    double criticalDistance = 40;
+    list<Person*> peeps = _Location->getOccupants();
+    
+    /*list<Zone*> zn = _Zone->getNeighborZones();
+    //list<Person*> peeps; // = _Zone->getOccupants();
+    //list<Person*> np;
+    for (auto z=zn.cbegin(); z != zn.cend(); ++z){
+
+        np = (*z)->getOccupants();
+        if (np.size() > 0){
+            peeps.insert(peeps.cend(),np.cbegin(),np.cend());
+        }
+     }
+    */
+    
+    double criticalDistance = 20;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        
+        if (getID() != ((*ip)->getID())){
+            _neigbors.push_back(*ip);
+            //addAllConnection((*ip)->getID());
+            //addAllConnectionHist((*ip)->getID());
+        }
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
@@ -459,6 +480,7 @@ void Person::UpdateDiseaseWithInHost(){
     }
     double totalVirion = 0;
 
+    
     double dist;
     
     for(auto ip = _neigbors.cbegin(); ip != _neigbors.cend(); ++ip){
@@ -467,6 +489,7 @@ void Person::UpdateDiseaseWithInHost(){
             totalVirion += ((*ip)->_ihdynamics.getV())/pow(dist,2);
         }
     }
+    
     _ihdynamics.setT0(_Time);
     _ihdynamics.setNE(0.01*totalVirion);
     _ihdynamics.Simulate();
@@ -479,10 +502,11 @@ void Person::UpdateDiseaseWithInHost(){
     else if (getState() == 'S'){
         if (_ihdynamics.getV() > 0.2){
             setState('I');
+            _NewInf = true;
         }
     }
     else if (getState() == 'I'){
-        
+        _NewInf = false;
         if (_ihdynamics.getI() > 0.3 & _ihdynamics.getI() < 3 & _HasBeenSick==0){
             setState('P');
             setHasBeenSick(1);
@@ -497,6 +521,7 @@ void Person::UpdateDiseaseWithInHost(){
         }
     }
     else if (getState() == 'P'){
+        _NewInf = false;
         if (_ihdynamics.getI() + 0.01 < _ihdynamics.getMaxInfLev()){
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
@@ -509,6 +534,7 @@ void Person::UpdateDiseaseWithInHost(){
         }
     }
     else if (getState() == 'R'){
+        _NewInf = false;
         if (_ihdynamics.getI() < 0.1){
             setHasBeenSick(0);
             _ihdynamics.HasBeenSick = 0;

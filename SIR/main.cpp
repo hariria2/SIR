@@ -7,6 +7,7 @@
 #include "Storage.h"
 #include "SQLStorage.h"
 #include "Economy.h"
+#include <thread>
 
 using namespace std;
 
@@ -41,11 +42,28 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 
 ****************************/
 
+static const int num_threads = 1;
+void call_from_thread(){
+    FaroeIslands(36502, 0.1, "1", true, true);
+}
 
 // ========================= Main ======================
 int main(){
     
     FaroeIslands(36502, 1, "1", true, false);
+    /*
+    thread t[num_threads];
+    
+    for (int i = 0; i < num_threads; ++i) {
+        t[i] = thread(call_from_thread);
+    }
+    
+    
+    for (int i = 0; i < num_threads; i++){
+        t[i].join();
+    }
+    */
+     
     return 0;
  }
 // ========================= End main =================
@@ -84,7 +102,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     normal_distribution<double> suDist(3,1);
     normal_distribution<double> icDist(2,0.01);
-    normal_distribution<double> betaDist(2,0.01);
+    normal_distribution<double> betaDist(3,0.01);
     normal_distribution<double> deltaDist(0.1,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(0.8,0);

@@ -47,7 +47,8 @@ public:
     int getI();
     int getP();
     int getR();
-    int getD(); 
+    int getD();
+    int getN();
     Domain* getDomain();
 	list<Person*> getPeople();
     vector<Place*> getPlaces();
@@ -93,5 +94,6 @@ private:
     int _P;
 	int _R;
     int _D;
+    int _N;
 };
 #endif /* ARCHITECT_H_ */
