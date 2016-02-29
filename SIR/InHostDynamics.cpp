@@ -156,7 +156,7 @@ void InHostDynamics::Flow(){
     _NE = (_NE > 1)? 1:_NE;
     _dT = -_Beta*_T*_V;
     _dI = _Beta*_T*_V - _Delta*_I;
-    _dV = _P*_I - _C*_V + 10*_NE;
+    _dV = _P*_I - _C*_V + _NE;
     /*
     if (_T<_Tol){
         if (!HasBeenSick){

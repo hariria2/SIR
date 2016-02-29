@@ -173,16 +173,20 @@ class SQLVisualization:
             l = [a+b for a,b in zip(self.P, self.I)]
         else:
             l = [x for x in self.N]
+            #l = [a+b for a,b in zip(self.P, self.I)]
 
         while ii < n:
             ii = self.peakQ(l,ii,dt,0)
             ii = ii + 1
     def peakQ(self,data,ii,dt,ps):
+
         s = max(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
-        ps = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))]);
+        ps = sum(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))]);
         n = 0;
         # The end bit of the while loop logic is to account for the case where simulation ends in the middle of an epidemic.
-        while s > 0 and int(floor((1+ii)*self._PeakRes/dt))<len(self.T):
+        while s > 1 and int(floor((1+ii)*self._PeakRes/dt))<len(self.T):
+
+
             ii = ii + 1
             """
             if int(floor((1+ii)*self._PeakRes/dt)) > len(self.T):
@@ -193,10 +197,11 @@ class SQLVisualization:
                 nn  = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
             """
             s   = max(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
-            nn  = sum(self.N[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
-            ps = sum([ps,nn])
+            nn  = sum(data[int(floor(ii*self._PeakRes/dt)):int(floor((1+ii)*self._PeakRes/dt))])
+            ps = ps + nn
             n  = n + 1;
-        if ps > 0:
+
+        if s > 0:
             self._Peaks.append(ps)
             self._PeakTimes.append(self.T[int((ii-floor(n/2.))*self._PeakRes/dt)])
         return ii
@@ -208,7 +213,7 @@ class SQLVisualization:
         if self._AllPopulations:
             ps = plt.plot(self.T, self.S, label="Susceptible")
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
-            pr = plt.plot(self.T, self.R, label="Recovered")
+            pr = plt.plot(self.T, self.bk, label="Recovered")
             pn = plt.plot(self.T, self.N,label="Newly Infected")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
             #pd = plt.plot(self.T, self.D, label="Dead")
@@ -225,13 +230,15 @@ class SQLVisualization:
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
 
-        plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
-        plt.setp(pn, 'Color', self.bl, 'LineWidth', 4)
+        #plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
+        plt.setp(pn, 'Color', self.re, 'LineWidth', 4)
+        #plt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
+
 
         plt.grid(True)
-        plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
+        #plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
 
-        plt.xlabel(r'Time', fontsize=18)
+        plt.xlabel(r'Time (years)', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
@@ -246,7 +253,7 @@ class SQLVisualization:
                 l = [x for x in self.N if x != 0]
 
         plt.hist(l,20,color=self.bk)
-        plt.xlabel(r'Avalanche Size', fontsize=18)
+        plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'Number of Occurences', fontsize=18)
         plt.grid(True)
     def PlotLog(self, fignum):
@@ -266,17 +273,19 @@ class SQLVisualization:
         freq = [log10(x) for x in counter.values()]
         ml = int(floor(len(freq)*0.4))
         slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
-        #vals = counter.keys()
-        #freq = counter.values()
+        vals = counter.keys()
+        freq = counter.values()
         pi = plt.plot(vals, freq)
-        pl = plt.plot(vals, [slope*x+intercept for x in vals])
+
+        pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
+
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.setp(pi, 'Color', self.bk, 'LineWidth', 2)
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
-        #plt.xscale('log')
-        #plt.yscale('log')
-        plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
-        plt.xlabel(r'Avalanche Size', fontsize=18)
+        plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'Number of Occurances', fontsize=18)
-        plt.title(r'Slope: %2.2f' %slope, fontsize=18)
+        #plt.title(r'Slope: %2.2f' %slope, fontsize=18)
         plt.grid(True)
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)

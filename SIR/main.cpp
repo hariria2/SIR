@@ -42,15 +42,22 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 
 ****************************/
 
-static const int num_threads = 1;
-void call_from_thread(){
-    FaroeIslands(36502, 0.1, "1", true, true);
+//static const int num_threads = 1;
+void call_from_thread(string ver){
+    FaroeIslands(36502, 0.1, ver, true, false);
 }
 
 // ========================= Main ======================
 int main(){
-    
-    FaroeIslands(36502, 1, "1", true, false);
+    //thread t1(call_from_thread,"1");
+    //thread t2(call_from_thread,"2");
+    //thread t3(call_from_thread,"3");
+    //thread t4(call_from_thread,"4");
+    //t1.join();
+    //t2.join();
+    //t3.join();
+    //t4.join();
+    FaroeIslands(36502, 1, "2", true, false);
     /*
     thread t[num_threads];
     
@@ -80,7 +87,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-    
+    /*
     int Pop_Str = 224;
     int Pop_Eys = 107;
     int Pop_Vag = 40;
@@ -89,6 +96,18 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 59;
     int Pop_Vio = 15;
     int Pop_Kun = 12;
+    */
+    
+    
+    int Pop_Str = 1024;
+    int Pop_Eys = 507;
+    int Pop_Vag = 200;
+    int Pop_Suo = 256;
+    int Pop_San = 102;
+    int Pop_Bor = 259;
+    int Pop_Vio = 55;
+    int Pop_Kun = 52;
+    
     
     int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
     Disease flu("Flu", 44, 40, 100);
@@ -103,9 +122,9 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     normal_distribution<double> suDist(3,1);
     normal_distribution<double> icDist(2,0.01);
     normal_distribution<double> betaDist(3,0.01);
-    normal_distribution<double> deltaDist(0.1,0);
+    normal_distribution<double> deltaDist(0.8,0);
     normal_distribution<double> PDist(.4,0);
-    normal_distribution<double> CDist(0.8,0);
+    normal_distribution<double> CDist(1.0,0);
     normal_distribution<double> ILDist(0.0001,0.00001);
     
     vector<Person*> people;
@@ -259,6 +278,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         archie.Simulate();
     }
     else {
+        cout << "version: " << ver << endl;
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
         archie.setDomain(&Island);

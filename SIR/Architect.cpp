@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(250, 350);
+    _introtimeDist = new uniform_int_distribution<int>(500, 600);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -36,7 +36,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(250, 350);
+    _introtimeDist = new uniform_int_distribution<int>(500, 600);
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -52,7 +52,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(250, 350);
+    _introtimeDist = new uniform_int_distribution<int>(500, 600);
 }
 
 
@@ -197,7 +197,7 @@ void Architect::Simulate(){
                     
                 }
                 Update();
-                if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
                     AddPerson("NewBirth");
                 }
             }
@@ -224,7 +224,7 @@ void Architect::Simulate(){
                                       );
             
                 Update(_sqlDataPtr);
-                if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
                     AddPerson("NewBirth");
                 }
                 double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -246,7 +246,7 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-            if (_CurrentTime != 0 & (fmod(_CurrentTime,5)) < 1e-3){
+            if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
                 AddPerson("NewBirth");
             }
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -351,7 +351,7 @@ void Architect::Update(){
         (*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         (*ip)->Update();
-        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+20){
+        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+5){
             Funeral(*ip);
             delete (*ip);
             ip=_PeoplePtr.erase(ip);

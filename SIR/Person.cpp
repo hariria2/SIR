@@ -268,12 +268,12 @@ bool Person::getTraverlerQ(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.5, "IslandHopper");
+    Move((rand() % 360),0.05, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
-    _Age += 0.0027/0.1;
-    if ((_Age >= 10) & (_Age - 0.1 < 10)){
+    _Age += 0.0027/0.05;
+    if ((_Age >= 10) & (_Age - 0.1 < 15)){
         if (getState() == 'N'){
             setState('S');
             _ihdynamics.setT(3);
@@ -460,7 +460,7 @@ void Person::UpdateDiseaseWithInHost(){
      }
     */
     
-    double criticalDistance = 20;
+    double criticalDistance = .5;
     
     for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
         
@@ -511,7 +511,7 @@ void Person::UpdateDiseaseWithInHost(){
             setState('P');
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 2.9){
+        }else if (_ihdynamics.getI() > 2.6){
             Die();
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
@@ -526,7 +526,7 @@ void Person::UpdateDiseaseWithInHost(){
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
         }
-        if (_ihdynamics.getI() > 2.9){
+        if (_ihdynamics.getI() > 2.6){
             Die();
         }
         else if (_ihdynamics.getI() < 0.2){
