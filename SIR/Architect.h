@@ -71,14 +71,14 @@ public:
     void Funeral(Person* p);
 
 private:
-	double _InitialTime;
+	list<Person*> _PeoplePtr;
+    vector<Place*> _AllPlaces;
+    double _InitialTime;
 	double _EndTime;
 	double _TimeStep;
 	double _CurrentTime;
 	int _TimeIndex;
-	list<Person*> _PeoplePtr;
     Domain* _City;
-    vector<Place*> _AllPlaces;
     SQLStorage* _sqlDataPtr;
 	string _Store = "None";
     Visualization* _Visualization = NULL;

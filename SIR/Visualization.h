@@ -80,6 +80,13 @@ public:
     
 private:
     
+    list<Person*> _People;
+    vector<Place*>  _Places;
+    vector<double> _TT;
+    vector<double> _SS;
+    vector<double> _II;
+    vector<double> _RR;
+    
     Architect* _Architect;
     
     GLFWwindow* _window;
@@ -96,16 +103,6 @@ private:
     unsigned long _TotalPopSize;
     float _MouseX;
     float _MouseY;
-    
-    list<Person*> _People;
-    vector<Place*>  _Places;
-    vector<double> _TT;
-    vector<double> _SS;
-    vector<double> _II;
-    vector<double> _RR;
-    
-    vector<class Button*> _Buttons;
-    
     
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

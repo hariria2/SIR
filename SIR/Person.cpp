@@ -224,18 +224,6 @@ vector<Place*> Person::getAvailablePlaces(){
 InHostDynamics Person::getInHostDynamics() const{
     return _ihdynamics;
 }
-list<int> Person::getSIConnections(){
-    return _SIConnections;
-}
-list<int> Person::getSIConnectionsHist(){
-    return _SIConnectionsHist;
-}
-list<int> Person::getAllConnections(){
-    return _AllConnections;
-}
-list<int> Person::getAllConnectionsHist(){
-    return _AllConnectionsHist;
-}
 bool Person::getTraverlerQ(){
     return _TravelerQ;
 }
@@ -316,30 +304,28 @@ void Person::Move(double theta, double r, string motionType){
 }
 void Person::UpdateDiseaseWithInHost(){
     
-    list<Person*> peeps = *_Location->getOccupants();
+    list<Person*>* peeps = _Location->getOccupants();
     
     double criticalDistance = .5;
     
-    for(auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
-        
-        if (getID() != ((*ip)->getID())){
-            _neigbors.push_back(*ip);
-        }
+    /*
+    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
         
         if (Distance(*ip) < criticalDistance){
             if (getID() != ((*ip)->getID())){
                 _neigbors.push_back(*ip);
             }
         }
-    }
+    }*/
     double totalVirion = 0;
 
     
     double dist;
     
-    for(auto ip = _neigbors.cbegin(); ip != _neigbors.cend(); ++ip){
+    //for(auto ip = _neigbors.cbegin(); ip != _neigbors.cend(); ++ip){
+    for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
         dist = Distance(*ip);
-        if (dist != 0){
+        if (dist != 0 & dist < criticalDistance){
             totalVirion += ((*ip)->_ihdynamics.getV())/pow(dist,2);
         }
     }
@@ -419,27 +405,6 @@ void Person::Die(){
 bool Person::operator == (const Person& p) const {
 	return (p._ID == this->_ID);
 }
-void Person::addSIConnection(int id){
-    _SIConnections.push_back(id);
-    _SIConnections.sort();
-    _SIConnections.unique();
-}
-void Person::addSIConnectionHist(int id){
-    _SIConnectionsHist.push_back(id);
-    _SIConnectionsHist.sort();
-    _SIConnectionsHist.unique();
-}
-void Person::addAllConnection(int id){
-    _AllConnections.push_back(id);
-    _AllConnections.sort();
-    _AllConnections.unique();
-}
-void Person::addAllConnectionHist(int id){
-    _AllConnectionsHist.push_back(id);
-    _AllConnectionsHist.sort();
-    _AllConnectionsHist.unique();
-}
-
 Person::~Person(){
     delete _generator;
 }

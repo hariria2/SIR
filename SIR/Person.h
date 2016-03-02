@@ -81,10 +81,6 @@ public:
     int getIncVar();
     int getRecVar();
     int getLifeExpectancy();
-    list<int> getSIConnections();
-    list<int> getSIConnectionsHist();
-    list<int> getAllConnections();
-    list<int> getAllConnectionsHist();
     bool getTraverlerQ();
     
     void Update();
@@ -107,7 +103,18 @@ public:
 
 
 private:
-	int _ID;
+	
+    vector<Place*> _AvailablePlaces;
+    Domain* _City;
+    Place* _Location;
+    Place* _DefaultLocation;
+    InHostDynamics _ihdynamics;
+    vector<Person*> _neigbors;
+
+    unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine *_generator;
+    
+    int _ID;
     double _Age;
 	string _Name;
 	double _Time;
@@ -120,21 +127,13 @@ private:
 	double _Coordinates[2];
     bool _TravelerQ = false;
     
-    
-    InHostDynamics _ihdynamics;
-    
-    vector<Person*> _neigbors;
-    
-    unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine *_generator;
+
 	char _State;
     bool _NewInf=false;
     char _Gender;
     int _HasBeenSick = 0;
-	Domain* _City;
-	Place* _Location;
-    Place* _DefaultLocation;
-    vector<Place*> _AvailablePlaces;
+	
+    
 	int _InfectionPeriod;
 	int _IncubationPeriod;
     int _RecoveryPeriod;
@@ -142,10 +141,6 @@ private:
     int _IncubationVar;
     int _RecoveryVar;
     int _LifeExpectancy;
-    list<int> _SIConnections;
-    list<int> _SIConnectionsHist;
-    list<int> _AllConnections;
-    list<int> _AllConnectionsHist;
 };
 
 #endif /* PERSON_H_ */
