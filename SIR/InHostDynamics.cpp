@@ -8,7 +8,7 @@
 
 #include "InHostDynamics.h"
 
-InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol){
+InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol,int incubationPeriod, int infectionPeriod, int recoveryPeriod){
     setID(id);
     setdt(ti);
     setT(sc);
@@ -16,6 +16,9 @@ InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double v
     setV(vi);
     setTi(sc);
     setTol(tol);
+    setAverageIncubationPeriod(incubationPeriod);
+    setAverageInfectionPeriod(infectionPeriod);
+    setAverageRecoveryPeriod(recoveryPeriod);
 }
 
 // setters
@@ -64,6 +67,15 @@ void InHostDynamics::setTol(double tol){
 void InHostDynamics::setILRate(double ilrate){
     _ILRate = ilrate;
 }
+void InHostDynamics::setAverageInfectionPeriod(int ip){
+    _AverageInfectionPeriod = ip;
+}
+void InHostDynamics::setAverageIncubationPeriod(int ip){
+    _AverageIncubationPeriod = ip;
+}
+void InHostDynamics::setAverageRecoveryPeriod(int rp){
+    _AverageRecoveryPeriod = rp;
+}
 
 // getters
 int InHostDynamics::getID(){
@@ -110,6 +122,15 @@ double InHostDynamics::getTol(){
 }
 double InHostDynamics::getILRate(){
     return _ILRate;
+}
+int InHostDynamics::getAverageInfectionPeriod(){
+    return _AverageInfectionPeriod;
+}
+int InHostDynamics::getAverageIncubationPeriod(){
+    return _AverageIncubationPeriod;
+}
+int InHostDynamics::getAverageRecoveryPeriod(){
+    return _AverageRecoveryPeriod;
 }
 
 //utilities

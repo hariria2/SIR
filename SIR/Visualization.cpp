@@ -159,7 +159,6 @@ void Visualization::Render(){
     
     PlotSIR();
     
-    addButton(710, 500, "test"); // This shouldn't be here. 
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
@@ -464,13 +463,6 @@ void Visualization::testPrint(){
     cout << "=====>THIS IS A TEST<=====" << endl;
 }
 
-void Visualization::addButton(double x, double y, string label){
-    double bx = XTransform(x);
-    double by = YTransform(y);
-
-    Button *b = new Button(bx,by,label, this);
-    _Buttons.push_back(b);
-}
 
 //==========> Call Backs ===============//
 
@@ -494,7 +486,6 @@ void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double 
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        (_visualization->_Buttons.front())->setClicked(true);
         //_visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
         //_visualization->testPrint();
         //cout << _visualization->getMouseX() << endl;

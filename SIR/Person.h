@@ -12,26 +12,22 @@
 #include <random>
 
 #include "Place.h"
-#include "Zone.h"
-#include "Disease.h"
 #include "InHostDynamics.h"
 
 using namespace std;
 
-//class Place;
-//class Zone;
 
 class Person {      	
 public:
 	bool IsSingleLocation;
 
 	Person(int id, string name, double age,
-           char state, Disease dis, InHostDynamics ihd,
+           char state,  InHostDynamics ihd,
            Domain* city, Place* Location, vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var);
 
 	Person(int id, string name, double age,
-           char state, Disease dis, InHostDynamics ihd,
+           char state, InHostDynamics ihd,
            Domain* city,vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var,
            bool IsSingleLocation);
@@ -48,8 +44,6 @@ public:
 	void setCoordinates(double coordinates[2]);
     void setState(char state);
 	void setLocation(Place* location);
-    void setZone();
-    void initZone();
     void setDefaultLocation(Place* location);
     void setAvailPlaces(vector<Place*> availplaces);
 	void setTime(double t);
@@ -57,7 +51,6 @@ public:
 	void setIncubationPeriod();
     void setRecoveryPeriod();
     void setLifeExpectancy(int le);
-	void setDisease(Disease d);
     void setInHostDynamics(InHostDynamics ihd);
     void setInfVar(int var);
     void setIncVar(int var);
@@ -80,7 +73,6 @@ public:
     vector<Place*> getAvailablePlaces();
 	double getTime();
     double getTimeOfDeath();
-	Disease getDisease() const;
     InHostDynamics getInHostDynamics() const;
 	int getInfectionPeriod();
 	int getIncubationPeriod();
@@ -94,8 +86,6 @@ public:
     list<int> getAllConnections();
     list<int> getAllConnectionsHist();
     bool getTraverlerQ();
-
-    Zone* ZoneFromCo(double x, double y);
     
     void Update();
     
@@ -103,8 +93,6 @@ public:
 	double Distance(Person* p);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
     void Move(double theta, double r, string type = "IslandHopper");
-	void ContractDisease(Disease d);
-	void UpdateDisease();
     void UpdateDiseaseWithInHost();
     void Die();
     
@@ -132,7 +120,6 @@ private:
 	double _Coordinates[2];
     bool _TravelerQ = false;
     
-	Disease _disease;
     
     InHostDynamics _ihdynamics;
     
@@ -147,7 +134,6 @@ private:
 	Domain* _City;
 	Place* _Location;
     Place* _DefaultLocation;
-    Zone* _Zone;
     vector<Place*> _AvailablePlaces;
 	int _InfectionPeriod;
 	int _IncubationPeriod;

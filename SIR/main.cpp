@@ -1,13 +1,15 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 #include "Domain.h"
 #include "Place.h"
-#include "Disease.h"
 #include "InHostDynamics.h"
 #include "Person.h"
 #include "Architect.h"
-#include "Storage.h"
 #include "SQLStorage.h"
-#include "Economy.h"
 #include <thread>
+
 
 using namespace std;
 
@@ -110,7 +112,6 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     
     int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
-    Disease flu("Flu", 44, 40, 100);
     char state = 'S';
     double VirLev = 0.0;
     
@@ -144,7 +145,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         double ict = (randic < 0.5)? 0.5:randic;
         double randsu  = suDist(generator);
         double sus = (randsu < 0.5)? 0.5:randsu;
-        InHostDynamics ihd = InHostDynamics(ii,0.01,sus,0.0,VirLev,ict);
+        InHostDynamics ihd = InHostDynamics(ii,0.01,sus,0.0,VirLev,ict,44, 40, 100);
         double randil = ILDist(generator);
         double il = (randil < 0.0005)? 0.0005:randil;
         ihd.setILRate(il);
@@ -165,7 +166,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             if (ii <= Pop_Str){
                 if ((*p)->getName()=="Streymoy"){
                     
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -173,7 +174,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if (ii <= Pop_Str+Pop_Eys){
                 if ((*p)->getName()=="Eysturoy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -181,7 +182,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag){
                 if ((*p)->getName()=="Vagar"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -189,7 +190,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo){
                 if ((*p)->getName()=="Suouroy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -197,7 +198,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San){
                 if ((*p)->getName()=="Sandoy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -205,7 +206,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor){
                 if ((*p)->getName()=="Borooy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -213,7 +214,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio){
                 if ((*p)->getName()=="Viooy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);
@@ -221,7 +222,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun){
                 if ((*p)->getName()=="Kunoy"){
-                    Person *ip = new Person(ii, name, age, state, flu, ihd,
+                    Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     people.push_back(ip);
                     vpeople.push_back(ip);

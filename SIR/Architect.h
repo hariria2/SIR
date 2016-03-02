@@ -10,14 +10,13 @@
 
 #include <iostream>
 #include <list>
-#include "Storage.h"
 #include "SQLStorage.h"
 #include "Domain.h"
 #include "Place.h"
-#include "Economy.h"
 #include "Visualization.h"
-
-
+#include "Person.h"
+#include <random>
+#include <vector>
 
 
 using namespace std;
@@ -57,7 +56,6 @@ public:
 	// Utilities
 	void IncrementTime();
 	void Simulate();
-	void Update(Storage* dPtr);
     void Update(SQLStorage* dPtr);
 	void Update();
 	void DisplayTime();
@@ -78,12 +76,10 @@ private:
 	double _TimeStep;
 	double _CurrentTime;
 	int _TimeIndex;
-    Economy* _Econ;
 	list<Person*> _PeoplePtr;
     Domain* _City;
     vector<Place*> _AllPlaces;
     SQLStorage* _sqlDataPtr;
-	Storage* _dataPtr;
 	string _Store = "None";
     Visualization* _Visualization = NULL;
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();

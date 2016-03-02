@@ -11,12 +11,10 @@
 #include <iostream>
 #include <list>
 #include "Domain.h"
-#include "Zone.h"
 
 using namespace std;
 
 class Person;
-class Zone;
 
 class Place {
 
@@ -31,10 +29,7 @@ public:
 	void setPerimeter(double Perimeter[2][2]);
     void setInfectionRadius(int r);
 	void addPerson(Person* p);
-    void addZone(Zone* z);
 	void removePerson(Person* p);
-    void setZones();
-    void setZoneNeighborhood();
     
 
 	int getID();
@@ -42,10 +37,7 @@ public:
 	string getType();
 	string getLocation();
     int getInfectionRadius();
-    list<Zone*>* getZones();
-	list<Person*> getOccupants();
-    int getXZones();
-    int getYZones();
+	list<Person*>* getOccupants();
 	bool operator == (const Place& p) const;
 
 private:
@@ -54,10 +46,7 @@ private:
 	string _Name;
 	string _Type;
 	Domain _Location;
-    list<Zone*> _Zones;
 	list<Person*> _Occupants;
-    int _XZones;
-    int _YZones;
 
 };
 

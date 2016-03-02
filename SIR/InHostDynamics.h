@@ -17,7 +17,7 @@ using namespace std;
 class InHostDynamics {
 public:
     
-    InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol);
+    InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol,int incubationPeriod, int infectionPeriod, int recoveryPeriod);
     
     ~InHostDynamics();
     
@@ -38,7 +38,16 @@ public:
     void setTol(double tol);
     void setILRate(double ilrate);
     
+    void setAverageInfectionPeriod(int x);
+    void setAverageIncubationPeriod(int x);
+    void setAverageRecoveryPeriod(int x);
+    
     // getters
+    int getAverageInfectionPeriod();
+    int getAverageIncubationPeriod();
+    int getAverageRecoveryPeriod();
+    
+   
     int getID();
     double getdt();
     double getT0();
@@ -69,6 +78,10 @@ private:
     int _ID;
     double _dt;
     int _t0;
+    
+    int _AverageInfectionPeriod;
+    int _AverageIncubationPeriod;
+    int _AverageRecoveryPeriod;
     
     // state variables and derivatives
     double _V;

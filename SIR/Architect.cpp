@@ -68,9 +68,6 @@ void Architect::setDomain(Domain *city){
 };
 void Architect::setPlaces(vector<Place *> places){
     _AllPlaces = places;
-    for (auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p){
-        (*p)->setZoneNeighborhood();
-    }
 }
 void Architect::setVisualization(Visualization *vis){
     _Visualization = vis;
@@ -128,18 +125,7 @@ void Architect::IncrementTime(){
 }
 void Architect::Simulate(){
     
-	if (_Store == "FileSystem"){
-		_dataPtr->citySave();
-		_dataPtr->homeSave();
-		_dataPtr->workSave();
-		_dataPtr->schoolSave();
-        _dataPtr->cemeterySave();
-		for (double t = 0; t < _EndTime; t += _TimeStep){
-			Update(_dataPtr);
-		}
-        _dataPtr->writeSIR();
-	}
-    else if (_Store == "MYSQL"){
+	if (_Store == "MYSQL"){
         PrepDB();
         if (_Visualization == NULL){
             //_sqlDataPtr->StartTransaction();
@@ -193,7 +179,7 @@ void Architect::Simulate(){
                         _sqlDataPtr-> InsertValue("HistoryData",statement, true);
                         batchctr = 0;
                         statement = "";
-                        }
+                    }
                     
                 }
                 Update();
@@ -201,40 +187,36 @@ void Architect::Simulate(){
                     AddPerson("NewBirth");
                 }
             }
-            
-            //_sqlDataPtr->EndTransaction();
-        }
-        else {
+
+        }else {
             while (!glfwWindowShouldClose(_Visualization->getWindow())){
                 unsigned long start_s=clock();
                 if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
-                    cout << "time " << _CurrentTime << "!" << endl;
-                }
+                cout << "time " << _CurrentTime << "!" << endl;
+            }
+        
+            _Visualization->Render();
+        
+            _sqlDataPtr-> InsertValue("HistoryData",
+                                    "NULL, " +
+                                    to_string(_CurrentTime) + ", " +
+                                    to_string(_S) + ", " +
+                                    to_string(_I) + ", " +
+                                    to_string(_P) + ", " +
+                                    to_string(_R) + ", " +
+                                    to_string(_D)
+                                    );
             
-                _Visualization->Render();
-            
-                _sqlDataPtr-> InsertValue("HistoryData",
-                                      "NULL, " +
-                                      to_string(_CurrentTime) + ", " +
-                                      to_string(_S) + ", " +
-                                      to_string(_I) + ", " +
-                                      to_string(_P) + ", " +
-                                      to_string(_R) + ", " +
-                                      to_string(_D)
-                                      );
-            
-                Update(_sqlDataPtr);
-                if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
-                    AddPerson("NewBirth");
-                }
-                double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            Update(_sqlDataPtr);
+            if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
+                AddPerson("NewBirth");
+            }
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
                 if ((time*1000000) < (_TimeStep*1000000)){
                     usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
                 }
-            
             }
         }
-        
     }
 	else{
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
@@ -259,54 +241,12 @@ void Architect::Simulate(){
 	}
     cout << "Simulation Complete. Thank you...!" << endl;
 }
-void Architect::Update(Storage* data){
-    
-	data->saveSIR(_TimeIndex, _CurrentTime, _S, _I, _P, _R, _D);
-	data->startMovieSave(_CurrentTime);
-	
-    //Econ.computeGDP(PeoplePtr, Econ.getGDP());
-    //_Econ->getParameters(_PeoplePtr);
-    _Econ->Update(_TimeStep);
-    IncrementTime();
-    for (auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); p++){
-        (*p)->Update();
-    }
-	/*  did not erase yet because this block has storage code
-    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-		data->movieSave((*ip)->getID(),
-                        (*ip)->getName(),
-                        (*ip)->getTime(),
-                        (*ip)->getCoordinates(),
-                       ((*ip)->getLocation())->getName(),
-                        (*ip)->getState(),
-                        (*ip)->getHastBeenSick(),
-                       ((*ip)->getInHostDynamics()).getT(),
-                       ((*ip)->getInHostDynamics()).getI(),
-                       ((*ip)->getInHostDynamics()).getV(),
-                       ((*ip)->getInHostDynamics()).getMaxInfLev(),
-                        ((*ip)->getSIConnections()),
-                        ((*ip)->getSIConnectionsHist()),
-                        ((*ip)->getAllConnections()),
-                        ((*ip)->getAllConnectionsHist()));
-        
-		(*ip)->setTime(_CurrentTime);
-        (*ip)->Update();
-	}
-	*/
-     data->endMovieSave();
-    PopulationData();
-}
 void Architect::Update(SQLStorage* data){
     vector<Person*> econList;
     string SQLStatement;
     IncrementTime();
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
-        
-        //if ((*ip)->getState() != 'I' || (*ip)->getState() != 'D') {
-        //    econList.push_back(*ip);
-        //}
-        //(*ip)->setZone();
+    
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         SQLStatement = SQLStatement + "(NULL, " +
         to_string((*ip)->getID()) + ", " +
@@ -336,18 +276,14 @@ void Architect::Update(SQLStorage* data){
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
     
-    //_Econ.computeGDP(econList, Econ.getGDP());
-    //_Econ->getParameters(econList);
-    //_Econ.Update(TimeStep);
     PopulationData();
     
 }
 void Architect::Update(){
 	
-    //_Econ->computeGDP(_PeoplePtr, _Econ->getGDP());
     IncrementTime();
-	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-        //(*ip)->setZone();
+    
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
         (*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
         (*ip)->Update();
@@ -356,7 +292,9 @@ void Architect::Update(){
             delete (*ip);
             ip=_PeoplePtr.erase(ip);
         }
-	}
+    }
+ 
+	
     PopulationData();
 }
 void Architect::DisplayTime(){
@@ -481,19 +419,18 @@ void Architect::AddPerson(double x, double y){
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.3, 2);
+    InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.3, 2,44, 40, 100);
     ihd.setBeta(0.2);
     ihd.setDelta(0.03);
     ihd.setP(0.4);
     ihd.setC(0.5);
     ihd.setILRate(0.001);
     
-    Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
-    Person* p = new Person(id, "Alplego", 20, 'S', dis, ihd, _City, loc, availPlaces, 1,1,1);
+    Person* p = new Person(id, "Alplego", 20, 'S', ihd, _City, loc, availPlaces, 1,1,1);
     
     p->setTravelerQ(true);
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
@@ -542,19 +479,18 @@ void Architect::AddPerson(string NewBirth){
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
-    InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2);
+    InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2,44, 40, 100);
     ihd.setBeta(0.2);
     ihd.setDelta(0.03);
     ihd.setP(0.4);
     ihd.setC(0.5);
     ihd.setILRate(0.001);
     
-    Disease dis = (p1->getDisease());
     Place* loc = LocFromCoo(x,y);
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
-    Person* p = new Person(id, "Alplego", 0, 'N', dis, ihd, _City, loc, availPlaces, 1,1,1);
+    Person* p = new Person(id, "Alplego", 0, 'N', ihd, _City, loc, availPlaces, 1,1,1);
     
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){

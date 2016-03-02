@@ -8,20 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81C45A61B6A9353007007FA /* SQLStorage.cpp */; };
-		D86FE8F31BF12CD1002077A2 /* Button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D86FE8F11BF12CD0002077A2 /* Button.cpp */; };
 		D87484241AB36A78007EC18E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D87484231AB36A78007EC18E /* main.cpp */; };
 		D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D01AB36B3A00726652 /* Architect.cpp */; };
-		D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D51AB36B3A00726652 /* Disease.cpp */; };
 		D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D71AB36B3A00726652 /* Domain.cpp */; };
 		D8B403E51AB36B3A00726652 /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D91AB36B3A00726652 /* Person.cpp */; };
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
-		D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DE1AB36B3A00726652 /* Storage.cpp */; };
 		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; };
 		D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A21BCF173200FE27FA /* OpenGL.framework */; };
 		D8E077A51BCF173A00FE27FA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A41BCF173A00FE27FA /* GLUT.framework */; };
 		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
-		D8F1704A1B77F10600316080 /* Economy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8F170481B77F10600316080 /* Economy.cpp */; };
-		D8F24CCD1C42EDE800690C03 /* Zone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8F24CCB1C42EDE800690C03 /* Zone.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,32 +34,22 @@
 /* Begin PBXFileReference section */
 		D81C45A61B6A9353007007FA /* SQLStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLStorage.cpp; sourceTree = "<group>"; };
 		D81C45A71B6A9353007007FA /* SQLStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLStorage.h; sourceTree = "<group>"; };
-		D86FE8F11BF12CD0002077A2 /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Button.cpp; sourceTree = "<group>"; };
-		D86FE8F21BF12CD1002077A2 /* Button.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Button.hpp; sourceTree = "<group>"; };
 		D87484201AB36A78007EC18E /* SIR */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SIR; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87484231AB36A78007EC18E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D8B403D01AB36B3A00726652 /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Architect.cpp; sourceTree = "<group>"; };
 		D8B403D11AB36B3A00726652 /* Architect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Architect.h; sourceTree = "<group>"; };
-		D8B403D51AB36B3A00726652 /* Disease.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Disease.cpp; sourceTree = "<group>"; };
-		D8B403D61AB36B3A00726652 /* Disease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Disease.h; sourceTree = "<group>"; };
 		D8B403D71AB36B3A00726652 /* Domain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Domain.cpp; sourceTree = "<group>"; };
 		D8B403D81AB36B3A00726652 /* Domain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Domain.h; sourceTree = "<group>"; };
 		D8B403D91AB36B3A00726652 /* Person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Person.cpp; sourceTree = "<group>"; };
 		D8B403DA1AB36B3A00726652 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		D8B403DB1AB36B3A00726652 /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Place.cpp; sourceTree = "<group>"; };
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
-		D8B403DE1AB36B3A00726652 /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
-		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
 		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualization.h; sourceTree = "<group>"; };
 		D8E077A21BCF173200FE27FA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		D8E077A41BCF173A00FE27FA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		D8E1B1C61C43581E00A15C0C /* Zone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zone.h; sourceTree = "<group>"; };
 		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };
 		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InHostDynamics.cpp; sourceTree = "<group>"; };
-		D8F170481B77F10600316080 /* Economy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Economy.cpp; sourceTree = "<group>"; };
-		D8F170491B77F10600316080 /* Economy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Economy.h; sourceTree = "<group>"; };
-		D8F24CCB1C42EDE800690C03 /* Zone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Zone.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,27 +90,17 @@
 				D8E077A11BCF15E600FE27FA /* Visualization.h */,
 				D8E0779E1BCF144C00FE27FA /* Visualization.cpp */,
 				D81C45A71B6A9353007007FA /* SQLStorage.h */,
-				D8F170481B77F10600316080 /* Economy.cpp */,
-				D86FE8F11BF12CD0002077A2 /* Button.cpp */,
-				D86FE8F21BF12CD1002077A2 /* Button.hpp */,
-				D8F170491B77F10600316080 /* Economy.h */,
 				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
 				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484231AB36A78007EC18E /* main.cpp */,
 				D8B403D01AB36B3A00726652 /* Architect.cpp */,
 				D8B403D11AB36B3A00726652 /* Architect.h */,
-				D8B403D51AB36B3A00726652 /* Disease.cpp */,
-				D8B403D61AB36B3A00726652 /* Disease.h */,
 				D8B403D71AB36B3A00726652 /* Domain.cpp */,
 				D8B403D81AB36B3A00726652 /* Domain.h */,
 				D8B403D91AB36B3A00726652 /* Person.cpp */,
 				D8B403DA1AB36B3A00726652 /* Person.h */,
 				D8B403DB1AB36B3A00726652 /* Place.cpp */,
 				D8B403DC1AB36B3A00726652 /* Place.h */,
-				D8B403DE1AB36B3A00726652 /* Storage.cpp */,
-				D8B403DF1AB36B3A00726652 /* Storage.h */,
-				D8F24CCB1C42EDE800690C03 /* Zone.cpp */,
-				D8E1B1C61C43581E00A15C0C /* Zone.h */,
 			);
 			path = SIR;
 			sourceTree = "<group>";
@@ -189,16 +164,11 @@
 				D87484241AB36A78007EC18E /* main.cpp in Sources */,
 				D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */,
 				D8B403E51AB36B3A00726652 /* Person.cpp in Sources */,
-				D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */,
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
-				D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */,
 				D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */,
-				D8F24CCD1C42EDE800690C03 /* Zone.cpp in Sources */,
 				D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */,
 				D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */,
 				D8B403E61AB36B3A00726652 /* Place.cpp in Sources */,
-				D8F1704A1B77F10600316080 /* Economy.cpp in Sources */,
-				D86FE8F31BF12CD1002077A2 /* Button.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
