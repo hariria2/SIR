@@ -16,6 +16,7 @@
 
 using namespace std;
 
+class Place;
 
 class Person {      	
 public:
@@ -56,6 +57,7 @@ public:
     void setIncVar(int var);
     void setRecVar(int var);
     void setTravelerQ(bool tq);
+    void setNeighbors(list<Person*>* n);
 
 	// Getters
 	int getID();
@@ -71,6 +73,7 @@ public:
 	Place* getLocation();
     Place* getDeafaultLocation();
     vector<Place*> getAvailablePlaces();
+    list<Person*>* getNeighbors();
 	double getTime();
     double getTimeOfDeath();
     InHostDynamics getInHostDynamics() const;
@@ -104,12 +107,13 @@ public:
 
 private:
 	
+    list<Person*>* _Neighbors;
     vector<Place*> _AvailablePlaces;
     Domain* _City;
     Place* _Location;
     Place* _DefaultLocation;
     InHostDynamics _ihdynamics;
-    vector<Person*> _neigbors;
+    
 
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine *_generator;

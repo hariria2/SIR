@@ -128,7 +128,7 @@ void Visualization::Render(){
     unsigned long E = _Architect->getI();
     unsigned long I = _Architect->getP();
     unsigned long R = _Architect->getR();
-    unsigned long D = _Architect->getD();
+    //unsigned long D = _Architect->getD();
     _TotalPopSize = S + E + I + R;
     // Update things
     _CurrentTime = _Architect->getCurrentTime();

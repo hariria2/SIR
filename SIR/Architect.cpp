@@ -22,6 +22,10 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
     _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
+        (*ip)->setNeighbors(&_PeoplePtr);
+    }
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -37,6 +41,9 @@ _sqlDataPtr(d)
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
     _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
+        (*ip)->setNeighbors(&_PeoplePtr);
+    }
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -53,6 +60,9 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
     _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
+        (*ip)->setNeighbors(&_PeoplePtr);
+    }
 }
 
 
@@ -183,7 +193,7 @@ void Architect::Simulate(){
                     
                 }
                 Update();
-                if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
+                for (int i = 0; i<=5; i++){
                     AddPerson("NewBirth");
                 }
             }
@@ -207,11 +217,11 @@ void Architect::Simulate(){
                                     to_string(_D)
                                     );
             
-            Update(_sqlDataPtr);
-            if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
-                AddPerson("NewBirth");
-            }
-            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+                Update(_sqlDataPtr);
+                for (int i = 0; i<=5; i++){
+                    AddPerson("NewBirth");
+                }
+                double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
                 if ((time*1000000) < (_TimeStep*1000000)){
                     usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
                 }
@@ -228,7 +238,7 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-            if (_CurrentTime != 0 & (fmod(_CurrentTime,1)) < 1e-3){
+            for (int i = 0; i<=5; i++){
                 AddPerson("NewBirth");
             }
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -237,7 +247,6 @@ void Architect::Simulate(){
             }
             
         }
-
 	}
     cout << "Simulation Complete. Thank you...!" << endl;
 }
@@ -283,6 +292,32 @@ void Architect::Update(){
 	
     IncrementTime();
     
+    
+    list<Person*> peeps;
+    
+    
+    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); ++pl){
+        //(*pl)->setDistanceMatrix();
+        peeps = *(*pl)->getOccupants();
+        
+        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+            if ((*pl)->getType()=="Cemetery"){
+                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
+                    Funeral(*ip);
+                    delete (*ip);
+                    ip=_PeoplePtr.erase(ip);
+                }
+                
+            }else{
+                (*ip)->setNeighbors(&peeps);
+                (*ip)->setTime(_CurrentTime);
+                ((*ip)->getInHostDynamics()).setMaxInfLev(0);
+                (*ip)->Update();
+            }
+        }
+    }
+    
+    /*
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
         (*ip)->setTime(_CurrentTime);
         ((*ip)->getInHostDynamics()).setMaxInfLev(0);
@@ -292,9 +327,8 @@ void Architect::Update(){
             delete (*ip);
             ip=_PeoplePtr.erase(ip);
         }
-    }
+    }*/
  
-	
     PopulationData();
 }
 void Architect::DisplayTime(){

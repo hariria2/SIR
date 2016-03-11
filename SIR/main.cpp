@@ -44,11 +44,6 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 
 ****************************/
 
-//static const int num_threads = 1;
-void call_from_thread(string ver){
-    FaroeIslands(36502, 0.1, ver, true, false);
-}
-
 // ========================= Main ======================
 int main(){
     //thread t1(call_from_thread,"1");
@@ -59,7 +54,7 @@ int main(){
     //t2.join();
     //t3.join();
     //t4.join();
-    FaroeIslands(36502, 1, "2", true, false);
+    FaroeIslands(36502, 1, "3", true, false);
     /*
     thread t[num_threads];
     
@@ -100,7 +95,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Kun = 12;
     */
     
-    
+    /*
     int Pop_Str = 1024;
     int Pop_Eys = 507;
     int Pop_Vag = 200;
@@ -109,6 +104,17 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 259;
     int Pop_Vio = 55;
     int Pop_Kun = 52;
+    */
+    
+    
+    int Pop_Str = 4024;
+    int Pop_Eys = 2007;
+    int Pop_Vag = 800;
+    int Pop_Suo = 856;
+    int Pop_San = 202;
+    int Pop_Bor = 859;
+    int Pop_Vio = 205;
+    int Pop_Kun = 202;
     
     
     int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
@@ -120,7 +126,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     normal_distribution<double> ageDist(25,20);
     
-    normal_distribution<double> suDist(3,1);
+    normal_distribution<double> suDist(2.8,1);
     normal_distribution<double> icDist(2,0.01);
     normal_distribution<double> betaDist(3,0.01);
     normal_distribution<double> deltaDist(0.8,0);

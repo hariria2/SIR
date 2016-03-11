@@ -24,7 +24,7 @@ class SQLVisualization:
         self._PeaksOnly = True;
         self._Peaks = [];
         self._PeakTimes = [];
-        self._PeakRes = 30.
+        self._PeakRes = 1.
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -213,7 +213,7 @@ class SQLVisualization:
         if self._AllPopulations:
             ps = plt.plot(self.T, self.S, label="Susceptible")
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
-            pr = plt.plot(self.T, self.bk, label="Recovered")
+            pr = plt.plot(self.T, self.R, label="Recovered")
             pn = plt.plot(self.T, self.N,label="Newly Infected")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
             #pd = plt.plot(self.T, self.D, label="Dead")
