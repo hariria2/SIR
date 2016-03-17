@@ -235,7 +235,7 @@ bool Person::getTraverlerQ(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.01, "IslandHopper");
+    Move((rand() % 360),0.05, "IslandHopper");
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }

@@ -24,7 +24,7 @@ class SQLVisualization:
         self._PeaksOnly = True;
         self._Peaks = [];
         self._PeakTimes = [];
-        self._PeakRes = 1.
+        self._PeakRes = 30.
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -47,6 +47,34 @@ class SQLVisualization:
         self.R = [row[5] for row in data]
         self.D = [row[6] for row in data]
         self.N = [row[7] for row in data]
+
+    def getMonthlyData(self):
+        sqlquery = 'SELECT * FROM HistoryData';
+        self._Cursor.execute(sqlquery);
+        data = self._Cursor.fetchall();
+        self.MT = []
+        self.MN = []
+        t = 0;
+        while t < self.T[-1]-30:
+            self.MT.append(self.T[t])
+            self.MN.append(sum(self.N[t:t+30]))
+            t += 30
+
+    def getMonthlyPeaks(self):
+        peaks = []
+        peaktimes = []
+        peak = self.MN[0];
+        for idx,pq in enumerate(self.MN):
+
+            if pq > 0:
+                peak += pq
+            else:
+                peaks.append(peak)
+                peaktimes.append(self.MT[idx])
+                peak = 0
+
+        self.MPeaks = [x for x in peaks if x !=0]
+        self.MPeakTimes = [x for x,y in zip(peaktimes, peaks) if y !=0]
 
     def getPerson(self, ids):
         query1 = '';
@@ -232,8 +260,7 @@ class SQLVisualization:
 
         #plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
         plt.setp(pn, 'Color', self.re, 'LineWidth', 4)
-        #plt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
-
+        #xplt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
 
         plt.grid(True)
         #plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
@@ -271,10 +298,11 @@ class SQLVisualization:
         counter=collections.Counter(l)
         vals = [log10(x) for x in counter.keys()]
         freq = [log10(x) for x in counter.values()]
-        ml = int(floor(len(freq)*0.4))
+        ml = int(floor(len(freq)*0.6))
         slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
         vals = counter.keys()
         freq = counter.values()
+        pi = plt.plot(vals, freq,'k.') #this is a hack. Get rid of it.
         pi = plt.plot(vals, freq)
 
         pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
@@ -285,7 +313,42 @@ class SQLVisualization:
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'Number of Occurances', fontsize=18)
-        #plt.title(r'Slope: %2.2f' %slope, fontsize=18)
+        plt.title(r'Slope: %2.2f' %slope, fontsize=18)
+        plt.grid(True)
+
+    def MPlotHistogram(self, fignum):
+        h = plt.figure(fignum);
+
+        l = self.MPeaks
+
+        plt.hist(l,20,color=self.bk)
+        plt.xlabel(r'Epidemic Size', fontsize=18)
+        plt.ylabel(r'Number of Occurences', fontsize=18)
+        plt.grid(True)
+    def MPlotLog(self, fignum):
+        h = plt.figure(fignum);
+
+        l = self.MPeaks
+
+        counter=collections.Counter(l)
+        vals = [log10(x) for x in counter.keys()]
+        freq = [log10(x) for x in counter.values()]
+        ml = int(floor(len(freq)*0.6))
+        slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
+        vals = counter.keys()
+        freq = counter.values()
+        pi = plt.plot(vals, freq,'k.') #this is a hack. Get rid of it.
+        pi = plt.plot(vals, freq)
+
+        pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
+
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.setp(pi, 'Color', self.bk, 'LineWidth', 2)
+        plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
+        plt.xlabel(r'Epidemic Size', fontsize=18)
+        plt.ylabel(r'Number of Occurances', fontsize=18)
+        plt.title(r'Slope: %2.2f' %slope, fontsize=18)
         plt.grid(True)
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)

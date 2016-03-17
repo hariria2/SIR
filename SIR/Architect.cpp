@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    _introtimeDist = new uniform_int_distribution<int>(600, 700);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -40,7 +40,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    _introtimeDist = new uniform_int_distribution<int>(600, 700);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -59,7 +59,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(500, 600);
+    _introtimeDist = new uniform_int_distribution<int>(600, 700);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -136,7 +136,15 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
     
 	if (_Store == "MYSQL"){
+        
         PrepDB();
+        
+        if (_N>0){
+            _BirthRate = 0;
+        } else {
+            _BirthRate = 1;
+        }
+        
         if (_Visualization == NULL){
             //_sqlDataPtr->StartTransaction();
             int batchctr = 0;
@@ -193,7 +201,8 @@ void Architect::Simulate(){
                     
                 }
                 Update();
-                for (int i = 0; i<=5; i++){
+                
+                for (int i = 0; i<=_BirthRate; i++){
                     AddPerson("NewBirth");
                 }
             }
@@ -218,7 +227,8 @@ void Architect::Simulate(){
                                     );
             
                 Update(_sqlDataPtr);
-                for (int i = 0; i<=5; i++){
+                
+                for (int i = 0; i<=_BirthRate; i++){
                     AddPerson("NewBirth");
                 }
                 double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -238,7 +248,8 @@ void Architect::Simulate(){
             _Visualization->Render();
             
             Update();
-            for (int i = 0; i<=5; i++){
+            
+            for (int i = 0; i<=_BirthRate; i++){
                 AddPerson("NewBirth");
             }
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
