@@ -7,14 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81C45A61B6A9353007007FA /* SQLStorage.cpp */; };
 		D87484241AB36A78007EC18E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D87484231AB36A78007EC18E /* main.cpp */; };
 		D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D01AB36B3A00726652 /* Architect.cpp */; };
-		D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D51AB36B3A00726652 /* Disease.cpp */; };
 		D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D71AB36B3A00726652 /* Domain.cpp */; };
 		D8B403E51AB36B3A00726652 /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D91AB36B3A00726652 /* Person.cpp */; };
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
-		D8B403E71AB36B3A00726652 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DD1AB36B3A00726652 /* README.md */; };
-		D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DE1AB36B3A00726652 /* Storage.cpp */; };
+		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; };
+		D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A21BCF173200FE27FA /* OpenGL.framework */; };
+		D8E077A51BCF173A00FE27FA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A41BCF173A00FE27FA /* GLUT.framework */; };
+		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,21 +32,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D81C45A61B6A9353007007FA /* SQLStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLStorage.cpp; sourceTree = "<group>"; };
+		D81C45A71B6A9353007007FA /* SQLStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLStorage.h; sourceTree = "<group>"; };
 		D87484201AB36A78007EC18E /* SIR */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SIR; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87484231AB36A78007EC18E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		D8B403D01AB36B3A00726652 /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Architect.cpp; sourceTree = "<group>"; };
 		D8B403D11AB36B3A00726652 /* Architect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Architect.h; sourceTree = "<group>"; };
-		D8B403D51AB36B3A00726652 /* Disease.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Disease.cpp; sourceTree = "<group>"; };
-		D8B403D61AB36B3A00726652 /* Disease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Disease.h; sourceTree = "<group>"; };
 		D8B403D71AB36B3A00726652 /* Domain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Domain.cpp; sourceTree = "<group>"; };
 		D8B403D81AB36B3A00726652 /* Domain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Domain.h; sourceTree = "<group>"; };
 		D8B403D91AB36B3A00726652 /* Person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Person.cpp; sourceTree = "<group>"; };
 		D8B403DA1AB36B3A00726652 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		D8B403DB1AB36B3A00726652 /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Place.cpp; sourceTree = "<group>"; };
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
-		D8B403DD1AB36B3A00726652 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		D8B403DE1AB36B3A00726652 /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
-		D8B403DF1AB36B3A00726652 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
+		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
+		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualization.h; sourceTree = "<group>"; };
+		D8E077A21BCF173200FE27FA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		D8E077A41BCF173A00FE27FA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };
+		D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InHostDynamics.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8E077A51BCF173A00FE27FA /* GLUT.framework in Frameworks */,
+				D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +68,8 @@
 		D87484171AB36A78007EC18E = {
 			isa = PBXGroup;
 			children = (
+				D8E077A41BCF173A00FE27FA /* GLUT.framework */,
+				D8E077A21BCF173200FE27FA /* OpenGL.framework */,
 				D87484221AB36A78007EC18E /* SIR */,
 				D87484211AB36A78007EC18E /* Products */,
 			);
@@ -77,20 +86,21 @@
 		D87484221AB36A78007EC18E /* SIR */ = {
 			isa = PBXGroup;
 			children = (
+				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,
+				D8E077A11BCF15E600FE27FA /* Visualization.h */,
+				D8E0779E1BCF144C00FE27FA /* Visualization.cpp */,
+				D81C45A71B6A9353007007FA /* SQLStorage.h */,
+				D8E242BE1B43203100AC0D10 /* InHostDynamics.h */,
+				D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */,
 				D87484231AB36A78007EC18E /* main.cpp */,
 				D8B403D01AB36B3A00726652 /* Architect.cpp */,
 				D8B403D11AB36B3A00726652 /* Architect.h */,
-				D8B403D51AB36B3A00726652 /* Disease.cpp */,
-				D8B403D61AB36B3A00726652 /* Disease.h */,
 				D8B403D71AB36B3A00726652 /* Domain.cpp */,
 				D8B403D81AB36B3A00726652 /* Domain.h */,
 				D8B403D91AB36B3A00726652 /* Person.cpp */,
 				D8B403DA1AB36B3A00726652 /* Person.h */,
 				D8B403DB1AB36B3A00726652 /* Place.cpp */,
 				D8B403DC1AB36B3A00726652 /* Place.h */,
-				D8B403DD1AB36B3A00726652 /* README.md */,
-				D8B403DE1AB36B3A00726652 /* Storage.cpp */,
-				D8B403DF1AB36B3A00726652 /* Storage.h */,
 			);
 			path = SIR;
 			sourceTree = "<group>";
@@ -152,11 +162,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D87484241AB36A78007EC18E /* main.cpp in Sources */,
+				D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */,
 				D8B403E51AB36B3A00726652 /* Person.cpp in Sources */,
-				D8B403E81AB36B3A00726652 /* Storage.cpp in Sources */,
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
-				D8B403E31AB36B3A00726652 /* Disease.cpp in Sources */,
-				D8B403E71AB36B3A00726652 /* README.md in Sources */,
+				D81C45A81B6A9353007007FA /* SQLStorage.cpp in Sources */,
+				D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */,
 				D8B403E01AB36B3A00726652 /* Architect.cpp in Sources */,
 				D8B403E61AB36B3A00726652 /* Place.cpp in Sources */,
 			);
@@ -198,9 +208,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -233,8 +246,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -242,6 +258,22 @@
 		D87484281AB36A78007EC18E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glfw3/3.1.1/include,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/mysql/5.6.26/lib,
+					/usr/local/Cellar/glfw3/3.1.1/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lm",
+					"-lz",
+					"-lglfw3",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -249,6 +281,22 @@
 		D87484291AB36A78007EC18E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glfw3/3.1.1/include,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/mysql/5.6.26/lib,
+					/usr/local/Cellar/glfw3/3.1.1/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lm",
+					"-lz",
+					"-lglfw3",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

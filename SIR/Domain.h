@@ -8,8 +8,6 @@
 #define DOMAIN_H_
 
 #include <iostream>
-#include <string>
-//#include <list>
 
 using namespace std;
 
@@ -36,7 +34,7 @@ public:
 
 
 private:
-	string Name;
+	string _Name;
 
 };
 

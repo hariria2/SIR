@@ -9,113 +9,142 @@
 #define PERSON_H_
 
 #include <iostream>
-#include <string>
+#include <random>
+
 #include "Place.h"
-#include "Disease.h"
+#include "InHostDynamics.h"
 
 using namespace std;
 
-class Person {
+class Place;
+
+class Person {      	
 public:
 	bool IsSingleLocation;
 
-	Person(int id, string name, int age,
-           char state, Disease dis,
-           Domain* city,    Place* home,
-           Place* school,   Place* work,
-           Place* cemetery, Place* Location,
-           double homeco[2],  double workco[2],
-           double schoolco[2],double cemeteryco[2],
+	Person(int id, string name, double age,
+           char state,  InHostDynamics ihd,
+           Domain* city, Place* Location, vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var);
 
-	Person(int id, string name, int age,
-           char state, Disease dis,
-           Domain* city, Place* home,
-           double homeco[2],
+	Person(int id, string name, double age,
+           char state, InHostDynamics ihd,
+           Domain* city,vector<Place*> availplaces,
            int inf_var, int inc_var, int rec_var,
            bool IsSingleLocation);
 
 	~Person();
 	// Setters
 	void setID(int id);
-    void setAge(int id);
+    void setAge(double id);
+    void setX(int x);
+    void setY(int y);
+    void setHasBeenSick(int hbs);
+    void setGender(char g);
 	void setName(string name);
 	void setCoordinates(double coordinates[2]);
-    void setHomeCoordinates(double homeco[2]);
-    void setWorkCoordinates(double workco[2]);
-    void setSchoolCoordinates(double schoolco[2]);
-    void setCemeteryCoordinates(double cemeteryco[2]);
     void setState(char state);
 	void setLocation(Place* location);
+    void setDefaultLocation(Place* location);
+    void setAvailPlaces(vector<Place*> availplaces);
 	void setTime(double t);
 	void setInfectionPeriod();
 	void setIncubationPeriod();
     void setRecoveryPeriod();
-	void setDisease(Disease d);
+    void setLifeExpectancy(int le);
+    void setInHostDynamics(InHostDynamics ihd);
     void setInfVar(int var);
     void setIncVar(int var);
     void setRecVar(int var);
+    void setTravelerQ(bool tq);
+    void setNeighbors(list<Person*>* n);
 
 	// Getters
 	int getID();
-    int getAge();
+    double getAge();
+
+    char getGender();
+    int getHastBeenSick();
 	string getName() const;
 	double* getCoordinates();
-    double* getHomeCoordinates();
-    double* getWorkCoordinates();
-    double* getSchoolCoordinates();
-    double* getCemeteryCoordinates();
     char getState() const;
+    bool getNewInf();
     Domain* getDomain();
-    Place* getHome();
 	Place* getLocation();
+    Place* getDeafaultLocation();
+    vector<Place*> getAvailablePlaces();
+    list<Person*>* getNeighbors();
 	double getTime();
-	Disease getDisease() const;
+    double getTimeOfDeath();
+    InHostDynamics getInHostDynamics() const;
 	int getInfectionPeriod();
 	int getIncubationPeriod();
     int getRecoveryPeriod();
     int getInfVar();
     int getIncVar();
     int getRecVar();
-
-
+    int getLifeExpectancy();
+    bool getTraverlerQ();
+    
+    void Update();
+    
 	// Utilities
 	double Distance(Person* p);
-	void Move(double theta, double r);
-	void Move2(double theta, double r);
-	void ContractDisease(Disease d);
-	void UpdateDisease();
+	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
+    void Move(double theta, double r, string type = "IslandHopper");
+    void UpdateDiseaseWithInHost();
+    void Die();
+    
+    
 	bool operator == (const Person& p) const;
+    
+    void addSIConnection(int id);
+    void addSIConnectionHist(int id);
+    void addAllConnection(int id);
+    void addAllConnectionHist(int id);
+    
 
 
 private:
-	int ID;
-    int Age;
-	string Name;
-	double Time;
-	double TimeInfected;
-	double IncubationTime;
-    double RecoveryTime;
-    double TimeOfDeath;
-	double Coordinates[2];
-    double HomeCoordinates[2];
-    double WorkCoordinates[2];
-    double SchoolCoordinates[2];
-    double CemeteryCoordinates[2];
-	Disease disease;
-	char State;
-	Domain* City;
-	Place* Home;
-	Place* School;
-	Place* Work;
-    Place* Cemetery;
-	Place* Location;
-	int InfectionPeriod;
-	int IncubationPeriod;
-    int RecoveryPeriod;
-    int InfectionVar;
-    int IncubationVar;
-    int RecoveryVar;
+	
+    list<Person*>* _Neighbors;
+    vector<Place*> _AvailablePlaces;
+    Domain* _City;
+    Place* _Location;
+    Place* _DefaultLocation;
+    InHostDynamics _ihdynamics;
+    
+
+    unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine *_generator;
+    
+    int _ID;
+    double _Age;
+	string _Name;
+	double _Time;
+    double _X;
+    double _Y;
+	double _TimeInfected;
+	double _IncubationTime;
+    double _RecoveryTime;
+    double _TimeOfDeath;
+	double _Coordinates[2];
+    bool _TravelerQ = false;
+    
+
+	char _State;
+    bool _NewInf=false;
+    char _Gender;
+    int _HasBeenSick = 0;
+	
+    
+	int _InfectionPeriod;
+	int _IncubationPeriod;
+    int _RecoveryPeriod;
+    int _InfectionVar;
+    int _IncubationVar;
+    int _RecoveryVar;
+    int _LifeExpectancy;
 };
 
 #endif /* PERSON_H_ */

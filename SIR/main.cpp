@@ -1,281 +1,332 @@
-
 #include <iostream>
-#include <iomanip>
-#include <sstream> 
-#include <string>
-#include <list>
-#include <vector>
-#include <cmath>
 #include <fstream>
-#include <random>
-#include <ctime>
+#include <sstream>
+#include <iomanip>
 #include "Domain.h"
 #include "Place.h"
-#include "Disease.h"
+#include "InHostDynamics.h"
 #include "Person.h"
 #include "Architect.h"
-#include "Storage.h"
- 
+#include "SQLStorage.h"
+#include <thread>
+
+
 using namespace std;
 
 // Function prototyping
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B);
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B);
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain);
 void getDefaultCoordinates(Place* location, double co[2]);
-void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries);
+void readIslandData(string FileName, Domain *city, vector<Place*> &islands);
 void readPeopleData();
 void generateSourceData();
+void updatePop(vector<Person*> p1, char s);
 
-void Example1_SingleLocation(bool SaveData=true);
-void Example1_MultiLocation(bool SaveData=true);
-void Example2_MultiLocation(bool SaveData=true);
+void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=false, bool ShowVis=true);
+
+
 //=================
 
-// Main ==================
+
+
+/******** Data Measles *************
+ 
+ Sizes of distributions: 1 to 4450
+ Birth rate: 1 birth per day.
+ Introduction of disease: 1 every 600 days. 
+ Total population: 25000
+ Epidemic time T: Number of months there are cases. Integer > 1
+ Epidemic size: Sum(C(M),{M,1,T})
+
+****************************/
+
+// ========================= Main ======================
 int main(){
+    //thread t1(call_from_thread,"1");
+    //thread t2(call_from_thread,"2");
+    //thread t3(call_from_thread,"3");
+    //thread t4(call_from_thread,"4");
+    //t1.join();
+    //t2.join();
+    //t3.join();
+    //t4.join();
+    FaroeIslands(36502, 1, "2", true, false);
+    /*
+    thread t[num_threads];
     
-    Example1_SingleLocation();
-    //Example1_MultiLocation();
-    //Example2_MultiLocation();
- 	return 0;
+    for (int i = 0; i < num_threads; ++i) {
+        t[i] = thread(call_from_thread);
+    }
+    
+    
+    for (int i = 0; i < num_threads; i++){
+        t[i].join();
+    }
+    */
+     
+    return 0;
  }
-// End main===============
+// ========================= End main =================
 
 
-// Example Simulations ==============================
-void Example1_SingleLocation(bool SaveData){
-    int maxdim = 2000;
+// ========================= Example Simulations ==============================
+void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
     
-    // Setting up parameters
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    int homeBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
+    int maxdim = 115;
+    int Boundary[2][2]   = {{0, 90},{0, 100}};
+    Domain Island("Faroe", Boundary);
     
+    vector<Place*> islands;
     
-    // Instantiate Classes
-    Domain myCity("DiseasVille", cityBoundary);
-    Place home(1, "home", "Home", homeBoundary,myCity);
+    readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-    double hco[2];
+/*
+    int Pop_Str = 224;
+    int Pop_Eys = 107;
+    int Pop_Vag = 40;
+    int Pop_Suo = 56;
+    int Pop_San = 22;
+    int Pop_Bor = 59;
+    int Pop_Vio = 15;
+    int Pop_Kun = 12;
+*/
+
+    int Pop_Str = 1024;
+    int Pop_Eys = 507;
+    int Pop_Vag = 200;
+    int Pop_Suo = 256;
+    int Pop_San = 102;
+    int Pop_Bor = 259;
+    int Pop_Vio = 55;
+    int Pop_Kun = 52;
     
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
+
+    /*
+    int Pop_Str = 4024;
+    int Pop_Eys = 2007;
+    int Pop_Vag = 800;
+    int Pop_Suo = 856;
+    int Pop_San = 202;
+    int Pop_Bor = 859;
+    int Pop_Vio = 205;
+    int Pop_Kun = 202;
+    */
+     
+    /*
+    int Pop_Str = 8024;
+    int Pop_Eys = 4007;
+    int Pop_Vag = 1600;
+    int Pop_Suo = 1656;
+    int Pop_San = 402;
+    int Pop_Bor = 1659;
+    int Pop_Vio = 405;
+    int Pop_Kun = 402;
+    */
+    int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
+    char state = 'S';
+    double VirLev = 0.0;
+    cout << "Total starting pop is: " << population << endl;
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
     
+    normal_distribution<double> ageDist(25,20);
     
-    homes.push_back(&home);
-    int population = 2000;
-    
-    Disease flu("Flu", 25, 40, 200);
+    normal_distribution<double> suDist(2.8,1);
+    normal_distribution<double> icDist(2,0.01);
+    normal_distribution<double> betaDist(3,0.01);
+    normal_distribution<double> deltaDist(0.8,0);
+    normal_distribution<double> PDist(.4,0);
+    normal_distribution<double> CDist(1.0,0);
+    normal_distribution<double> ILDist(0.0001,0.00001);
     
     vector<Person*> people;
-    for (int i=0; i < population; i++){
-        string name = "randomName"+to_string(i);
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
-        
-        normal_distribution<double> ageDist(25,20);
+    list<Person*> vpeople;
+    
+    for (int ii=1; ii <= population; ii++){
+        string name = "randomName"+to_string(ii);
         double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
+        double age = (randage < 1)? 1:floor(randage);
+        if (ii == 1){
+            VirLev = 0.1;
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
+        double randic  = icDist(generator);
+        double ict = (randic < 0.5)? 0.5:randic;
+        double randsu  = suDist(generator);
+        double sus = (randsu < 0.5)? 0.5:randsu;
+        InHostDynamics ihd = InHostDynamics(ii,0.01,sus,0.0,VirLev,ict,44, 40, 100);
+        double randil = ILDist(generator);
+        double il = (randil < 0.0005)? 0.0005:randil;
+        ihd.setILRate(il);
+        double randbeta  = betaDist(generator);
+        double beta = (randbeta < 0.01)? 0.01:randbeta;
+        ihd.setBeta(beta);
+        double randdelta  = deltaDist(generator);
+        double delta = (randdelta < 0.01)? 0.01:randdelta;
+        ihd.setDelta(delta);
+        double randP  = PDist(generator);
+        double P = (randP < 0.01)? 0.01:randP;
+        ihd.setP(P);
+        double randC  = CDist(generator);
+        double C = (randC < 0.01)? 0.01:randC;
+        ihd.setC(C);
         
-        getDefaultCoordinates(&home, hco);
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, &home, hco, 25,40,15, true);
-
-        people.push_back(p);
+        for (auto p = islands.cbegin(); p != islands.cend(); ++p){
+            if (ii <= Pop_Str){
+                if ((*p)->getName()=="Streymoy"){
+                    
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if (ii <= Pop_Str+Pop_Eys){
+                if ((*p)->getName()=="Eysturoy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag){
+                if ((*p)->getName()=="Vagar"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo){
+                if ((*p)->getName()=="Suouroy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San){
+                if ((*p)->getName()=="Sandoy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor){
+                if ((*p)->getName()=="Borooy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio){
+                if ((*p)->getName()=="Viooy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+            }
+            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun){
+                if ((*p)->getName()=="Kunoy"){
+                    Person *ip = new Person(ii, name, age, state, ihd,
+                                            &Island, (*p),islands,10,10,10);
+                    people.push_back(ip);
+                    vpeople.push_back(ip);
+                }
+    
+            }
+            
+        }
+        
     };
-    (people.front())->setState('I');
+    srand((int) time(NULL));
+    for (int ii=0; ii < 50; ii++){
+        people[rand()%(people.size())]->setTravelerQ(true);
+    }
+    
     
     double InitialTime = 0;
-    double EndTime = 200;
-    double TimeStep = 1;
-    int l = floor((EndTime-InitialTime)/TimeStep);
+    //int l = floor((EndTime-InitialTime)/TimeStep);
+    //cout << "Enter version number for multi location simulation: ";
+    //cin >> ver;
     
     
-    if (SaveData) {
-        string ver;
-        cout << "Enter version number for single location simulation: ";
-        cin >> ver;
-        string dataFolder = "data_single_v"+ver+"_";
-        string movieFolder = "movie_single_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
-        archie.Simulate();
-        data.writeSIR();
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people);
-        archie.Simulate();
-    }
-}
-void Example1_MultiLocation(bool SaveData){
+    if (ShowVis & SaveData){
     
-    int maxdim = 2000;
-    
-    // Setting up parameters
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    int homeBoundary[2][2]   = {{1400,1900},{100, 1900}};
-    int homeBoundary1[2][2]  = {{1400,1900},{100, 800}};
-    int homeBoundary2[2][2]  = {{1400,1900},{900, 1900}};
-    int schoolBoundary[2][2] = {{500 ,1000},{100,  800}};
-    int workBoundary[2][2]   = {{100  ,800},{1200,1600}};
-    int cemeBoundary[2][2]   = {{100, 400},{100, 400}};
-    
-    
-    // Instantiate Classes
-    Domain myCity("DiseasVille", cityBoundary);
-    
-    Place school(1, "DiseaseHigh", "School", schoolBoundary, myCity);
-    Place home(1, "home", "Home", homeBoundary,myCity);
-    Place home1(1, "home", "Home", homeBoundary1,myCity);
-    Place home2(1, "home", "Home", homeBoundary2,myCity);
-    Place work(1, "work", "Work", workBoundary, myCity);
-    Place cemetery(1, "cemetery", "Cemetery", cemeBoundary,myCity);
-    
-    double hco[2];
-    double wco[2];
-    double sco[2];
-    double cco[2];
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-
-    //GenerateHomes(homes,homeBoundary,hsize,myCity);
-    
-    //homes.push_back(&home);
-    homes.push_back(&home1);
-    //homes.push_back(&home2);
-    works.push_back(&work);
-    schools.push_back(&school);
-    cemeteries.push_back(&cemetery);
-    
-    int population = 1000;
-    
-    Disease flu("Flu", 24, 34, 40);
-    
-    vector<Person*> people;
-    for (int i=0; i < population; i++){
-        string name = "randomName"+to_string(i);
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
-        normal_distribution<double> distribution(10,3);
-        double randnum  = distribution(generator);
-        int a = (randnum < 0)? 0:floor(randnum);
-        a = (a % 2) + 1;
-        getDefaultCoordinates(homes.front(), hco);
-        getDefaultCoordinates(&work, wco);
-        getDefaultCoordinates(&school, sco);
-        getDefaultCoordinates(&cemetery, cco);
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(islands);
+        vis->setPeople(vpeople);
         
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
         
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes.front(),
-                               &school, &work, &cemetery, homes.front(),
-                               hco,wco,sco,cco,5,5,5);
-        
-        p->setLocation(homes.front());
-        (a==1)? p->setLocation(homes.front()):p->setLocation(homes.back());
-        people.push_back(p);
-    };
-    (people.front())->setState('I');
-    
-    double InitialTime = 0;
-    double EndTime = 200;
-    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
-    int l = floor((EndTime-InitialTime)/TimeStep);
-
-    if (SaveData) {
-        string ver;
-        cout << "Enter version number for single location simulation: ";
-        cin >> ver;
-        string dataFolder = "data_multi_v"+ver+"_";
-        string movieFolder = "movie_multi_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
-        archie.Simulate();
-        data.writeSIR();
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people);
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
+        vis->Init();
+        vis->setArchitect(&archie);
+        //vis->RenderSplash();
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
         archie.Simulate();
     }
-}
-void Example2_MultiLocation(bool SaveData){
-    
-    int maxdim = 2000;
-    int cityBoundary[2][2]   = {{0, maxdim},{0, maxdim}};
-    Domain myCity("DiseasVille", cityBoundary);
-    
-    vector<Place*> homes;
-    vector<Place*> works;
-    vector<Place*> schools;
-    vector<Place*> cemeteries;
-    
-    readCityData(&myCity, homes, works, schools, cemeteries);
-    
-    double hco[2];
-    double wco[2];
-    double sco[2];
-    double cco[2];
-    
-    int population = 2000;
-    
-    Disease flu("Flu", 24, 30, 30);
-    
-    vector<Person*> people;
-    for (int i=0; i < population; i++){
+    else if (ShowVis){
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(islands);
+        vis->setPeople(vpeople);
         
-        unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-        default_random_engine generator(seed);
         
-        string name = "randomName"+to_string(i);
-
-        int randHIdx = rand() % homes.size();
-        int randWIdx = rand() % works.size();
-        int randSIdx = rand() % schools.size();
-        int randCIdx = rand() % cemeteries.size();
-        
-        getDefaultCoordinates(homes[randHIdx], hco);
-        getDefaultCoordinates(works[randWIdx], wco);
-        getDefaultCoordinates(schools[randSIdx], sco);
-        getDefaultCoordinates(cemeteries[randCIdx], cco);
-        
-        normal_distribution<double> ageDist(25,20);
-        double randage  = ageDist(generator);
-        int age = (randage < 0)? 0:floor(randage);
-        
-        Person *p = new Person(i, name, age, 'S', flu, &myCity, homes[randHIdx],
-                               schools[randSIdx], works[randWIdx], cemeteries[randCIdx], homes[randHIdx],
-                               hco,wco,sco,cco,10,10,10);
-        
-        p->setLocation(homes[randHIdx]);
-        people.push_back(p);
-    };
-    (people.front())->setState('I');
-    
-    double InitialTime = 0;
-    double EndTime = 400;
-    double TimeStep = 1; // TODO Fix the naming of the time files for fractional times.
-    int l = floor((EndTime-InitialTime)/TimeStep);
-    
-    if (SaveData) {
-        string ver;
-        cout << "Enter version number for single location simulation: ";
-        cin >> ver;
-        string dataFolder = "data_multi_v"+ver+"_";
-        string movieFolder = "movie_multi_v"+ver+"_";
-        Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-        Architect archie(InitialTime,EndTime,TimeStep, people, true, &data);
-        archie.Simulate();
-        data.writeSIR();
-    }else{
-        Architect archie(InitialTime,EndTime,TimeStep, people);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);;
+        vis->Init();
+        vis->setArchitect(&archie);
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
         archie.Simulate();
     }
+    else {
+        cout << "version: " << ver << endl;
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
+        archie.setDomain(&Island);
+        archie.setPlaces(islands);
+        archie.Simulate();
+    }
+    
+    
 }
-// End Examples ======================================
 
-// Utilities ===========================================
+// ========================= End Examples ======================================
+
+// ========================= Utilities ===========================================
+
+template <typename T>
+vector<T> operator+(const vector<T> &A, const vector<T> &B)
+{
+    std::vector<T> AB;
+    AB.reserve( A.size() + B.size() );                // preallocate memory
+    AB.insert( AB.end(), A.begin(), A.end() );        // add A;
+    AB.insert( AB.end(), B.begin(), B.end() );        // add B;
+    return AB;
+}
+
+template <typename T>
+vector<T> &operator+=(vector<T> &A, const vector<T> &B)
+{
+    A.reserve( A.size() + B.size() );                // preallocate memory without erasing original data
+    A.insert( A.end(), B.begin(), B.end() );         // add B;
+    return A;                                        // here A could be named AB
+}
+
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain){
  
 	int xdist  = homesize[1];
@@ -296,49 +347,48 @@ void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], 
 	int n = 0;
  
 	for (int i = 0; i < xnum; i++){
- for ( int j = 0; j < ynum; j++){
- homedimx[n][0] = x[0];
- homedimx[n][1] = x[1];
- homedimy[n][0] = y[0];
- homedimy[n][1] = y[1];
- for (int i = 0; i < 2; i++){
- y[i] = y[i] + 2*ydist;
- }
- n += 1;
- }
- y[0] = perimeter[1][0]+floor(ydist/2);
- y[1] = perimeter[1][0]+ydist+floor(ydist/2);
- for (int i = 0; i < 2; i++){
- x[i] = x[i] + 2*xdist;
- }
+        for ( int j = 0; j < ynum; j++){
+            homedimx[n][0] = x[0];
+            homedimx[n][1] = x[1];
+            homedimy[n][0] = y[0];
+            homedimy[n][1] = y[1];
+            for (int i = 0; i < 2; i++){
+                y[i] = y[i] + 2*ydist;
+            }
+            n += 1;
+        }
+        y[0] = perimeter[1][0]+floor(ydist/2);
+        y[1] = perimeter[1][0]+ydist+floor(ydist/2);
+        for (int i = 0; i < 2; i++){
+            x[i] = x[i] + 2*xdist;
+        }
  
-	}
+    }
  
-	int perim[2][2];
+	double perim[2][2];
 	for (int i=0; i<total; i++){
- for (int n=0;n<2;n++){
- perim[0][n] = homedimx[i][n];
- perim[1][n] = homedimy[i][n];
- }
+        for (int n=0;n<2;n++){
+            perim[0][n] = homedimx[i][n];
+            perim[1][n] = homedimy[i][n];
+        }
  Place* p = new Place(i, "home", "Home", perim, domain);
  homes.push_back(p);
 	}
  }
 void getDefaultCoordinates(Place* location, double co[2]){
     
-    double x = rand() % (location->Perimeter[0][1] - location->Perimeter[0][0] + 1) + location->Perimeter[0][0];
-    double y = rand() % (location->Perimeter[1][1] - location->Perimeter[1][0] + 1) + location->Perimeter[1][0];
+    double x = fmod(rand(),(location->Perimeter[0][1] - location->Perimeter[0][0] + 1)) + location->Perimeter[0][0];
+    double y = fmod(rand(),(location->Perimeter[1][1] - location->Perimeter[1][0] + 1)) + location->Perimeter[1][0];
     co[0] = x;
     co[1] = y;
 }
-void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, vector<Place*> &schools, vector<Place*> &cemeteries){
-    string cityFileName = "../Source/cityPlan.csv";
-    ifstream cityFile;
-    cityFile.open(cityFileName, ios_base::in);
+void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
+    ifstream File;
+    File.open(FileName, ios_base::in);
     
-    if (cityFile.is_open()){
-        cout << "File opened correctly. The contents are: " << endl;
-     
+    if (File.is_open()){
+        cout << "Island File opened correctly." << endl;
+        
         string sID;
         string name;
         string type;
@@ -346,67 +396,54 @@ void readCityData(Domain *city, vector<Place*> &homes, vector<Place*> &works, ve
         string sxmax;
         string symin;
         string symax;
-      
-        while (cityFile.good()){
+    
+        while (File.good()){
             
-            
-            
-            getline(cityFile, sID, ',');
+            getline(File, sID, ',');
             int ID = atoi(sID.c_str());
-            cout << "ID: " << sID << endl;
             
-            getline(cityFile, name, ',');
-            cout << "Name: " << name << endl;
-
-            getline(cityFile, type, ',');
-            cout << "Type: " << type << endl;
+            getline(File, name, ',');
             
-            getline(cityFile, sxmin, ',');
-            int xmin = atoi(sxmin.c_str());
-            cout << "xmin: " << xmin << endl;
+            getline(File, type, ',');
             
-            getline(cityFile, sxmax, ',');
-            int xmax = atoi(sxmax.c_str());
-            cout << "xmax: " << xmax << endl;
+            getline(File, sxmin, ',');
+            double xmin = atof(sxmin.c_str());
             
-            getline(cityFile, symin, ',');
-            int ymin = atoi(symin.c_str());
-            cout << "ymin: " << ymin << endl;
+            getline(File, sxmax, ',');
+            double xmax = atof(sxmax.c_str());
             
-            getline(cityFile, symax, '\r');
-            int ymax = atoi(symax.c_str());
-            cout << "ymax: " << ymax << endl;
+            getline(File, symin, ',');
+            double ymin = atof(symin.c_str());
+            
+            getline(File, symax, '\r');
+            double ymax = atof(symax.c_str());
             
             
+            double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
             
-            int boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-
-            if (type == "Home"){
-                cout << "Im here" << endl;
-                Place *h = new Place(ID, name, type, boundary, *city);
-                homes.push_back(h);
-            }else if (type == "Work"){
-                Place *w = new Place(ID, name, type, boundary, *city);
-                works.push_back(w);
-            }else if (type == "School"){
-                Place *s = new Place(ID, name, type, boundary, *city);
-                schools.push_back(s);
-            }else if (type == "Cemetery"){
-                Place *c = new Place(ID, name, type, boundary, *city);
-                cemeteries.push_back(c);
-            }
+            Place *h = new Place(ID, name, type, boundary, *city);
+            islands.push_back(h);
             
         }
         cout << "Finished reading the file. Will close now. " << endl;
-        cityFile.close();
+        File.close();
     } else {
         cout << "File did not open correctly." << endl;
     }
 };
+
 void readPeopleData(){
     
 }
 void generateSourceData(){
     
 }
-// End utilities ======================================
+void updatePop(vector<Person*> p1, char s){
+    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
+        if ((*ip)->getState() != s){
+            (*ip)->setState(s);
+            break;
+        }
+    }
+}
+// ========================= End utilities ======================================
