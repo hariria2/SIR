@@ -21,7 +21,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 700);
+    _introtimeDist = new uniform_int_distribution<int>(650, 750);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -40,7 +40,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 700);
+    _introtimeDist = new uniform_int_distribution<int>(650, 750);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -59,7 +59,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(600, 700);
+    _introtimeDist = new uniform_int_distribution<int>(650, 750);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -167,7 +167,7 @@ void Architect::Simulate(){
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
                     AddPerson(x,y);
-                    cout << "Person Added" << endl;
+                    cout << "=====================>>>>>Person Added<<<<<==============" << endl;
                 }
                 
                 if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){

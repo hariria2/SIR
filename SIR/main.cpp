@@ -54,7 +54,7 @@ int main(){
     //t2.join();
     //t3.join();
     //t4.join();
-    FaroeIslands(36502, .1, "1", false, true);
+    FaroeIslands(36502, 1, "2", true, false);
     /*
     thread t[num_threads];
     
@@ -84,7 +84,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-
+/*
     int Pop_Str = 224;
     int Pop_Eys = 107;
     int Pop_Vag = 40;
@@ -93,8 +93,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 59;
     int Pop_Vio = 15;
     int Pop_Kun = 12;
-    
-/*
+*/
+
     int Pop_Str = 1024;
     int Pop_Eys = 507;
     int Pop_Vag = 200;
@@ -104,7 +104,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Vio = 55;
     int Pop_Kun = 52;
     
-*/
+
     /*
     int Pop_Str = 4024;
     int Pop_Eys = 2007;
@@ -138,7 +138,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     normal_distribution<double> suDist(2.8,1);
     normal_distribution<double> icDist(2,0.01);
     normal_distribution<double> betaDist(3,0.01);
-    normal_distribution<double> deltaDist(0.5,0);
+    normal_distribution<double> deltaDist(0.8,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(1.0,0);
     normal_distribution<double> ILDist(0.0001,0.00001);

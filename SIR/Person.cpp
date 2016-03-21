@@ -235,7 +235,11 @@ bool Person::getTraverlerQ(){
 }
 
 void Person::Update(){
-    Move((rand() % 360),0.05, "IslandHopper");
+    if (_State == 'P' | _State == 'I'){
+        Move((rand() % 360),0.026, "IslandHopper");
+    }else{
+        Move((rand() % 360),0.05, "IslandHopper");
+    }
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
@@ -258,7 +262,6 @@ void Person::Move(double theta, double r, string motionType){
 	//int hour    = floor(_Time);
 	//double min  = _Time - hour;
 	//double DailyTime = ((hour % 24) + min);
-
     
     if (_State == 'D') {
         if (_Location->getType()=="Cemetery"){
@@ -275,12 +278,12 @@ void Person::Move(double theta, double r, string motionType){
     
     
     if (_TravelerQ){
-        int lid = rand() % (_AvailablePlaces.size()-2) + 1;
+       /* int lid = rand() % (_AvailablePlaces.size()-2) + 1;
         for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
             if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
                 setLocation(*L);
             }
-        }
+        }*/
         
     }
     
@@ -315,7 +318,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = .01;
+    double criticalDistance = .375;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
@@ -338,25 +341,6 @@ void Person::UpdateDiseaseWithInHost(){
             totalVirion += ((*ip)->_ihdynamics.getV())/dist;
         }
     }
-    
-    /*
-    //double dist;
-    string key;
-     //for(auto ip = _neigbors.cbegin(); ip != _neigbors.cend(); ++ip){
-    for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
-     
-        key = to_string(_ID)+to_string((*ip)->getID());
-        if (_ID == (*ip)->getID()){
-            dist = 0;
-        }else{
-            //dist = (getLocation())->_DistanceMatrix[key];
-            dist =(getLocation())->_DistanceMatrix[_ID][(*ip)->getID()];
-        }
-        if (dist != 0 & dist < criticalDistance){
-            totalVirion += ((*ip)->_ihdynamics.getV())/pow(dist,2);
-        }
-    }*/
-    
     
     _ihdynamics.setT0(_Time);
     _ihdynamics.setNE(0.01*totalVirion);

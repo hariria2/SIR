@@ -23,8 +23,11 @@ class SQLVisualization:
         self._AllPopulations = True;
         self._PeaksOnly = True;
         self._Peaks = [];
+        self._MPeaks = [];
         self._PeakTimes = [];
+        self._MPeakTimes = [];
         self._PeakRes = 30.
+        self._Prob = [];
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -66,6 +69,7 @@ class SQLVisualization:
         peak = self.MN[0];
         for idx,pq in enumerate(self.MN):
 
+
             if pq > 0:
                 peak += pq
             else:
@@ -73,8 +77,8 @@ class SQLVisualization:
                 peaktimes.append(self.MT[idx])
                 peak = 0
 
-        self.MPeaks = [x for x in peaks if x !=0]
-        self.MPeakTimes = [x for x,y in zip(peaktimes, peaks) if y !=0]
+        self._MPeaks = [x for x in peaks if x !=0]
+        self._MPeakTimes = [x for x,y in zip(peaktimes, peaks) if y !=0]
 
     def getPerson(self, ids):
         query1 = '';
@@ -260,7 +264,7 @@ class SQLVisualization:
 
         #plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
         plt.setp(pn, 'Color', self.re, 'LineWidth', 4)
-        #xplt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
+        #plt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
 
         plt.grid(True)
         #plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
@@ -319,37 +323,59 @@ class SQLVisualization:
     def MPlotHistogram(self, fignum):
         h = plt.figure(fignum);
 
-        l = self.MPeaks
+        l = self._MPeaks
 
         plt.hist(l,20,color=self.bk)
-        plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'Number of Occurences', fontsize=18)
         plt.grid(True)
     def MPlotLog(self, fignum):
         h = plt.figure(fignum);
 
-        l = self.MPeaks
+        l = self._MPeaks
 
         counter=collections.Counter(l)
-        vals = [log10(x) for x in counter.keys()]
-        freq = [log10(x) for x in counter.values()]
-        ml = int(floor(len(freq)*0.6))
-        slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
-        vals = counter.keys()
-        freq = counter.values()
-        pi = plt.plot(vals, freq,'k.') #this is a hack. Get rid of it.
-        pi = plt.plot(vals, freq)
+        cc = collections.OrderedDict(sorted(counter.items()))
+        vals = cc.keys()
+
+        ml = int(floor(len(vals)*0.6))
+        xl = [log10(x) for x in vals[0:ml]]
+        yl = [log10(x) for x in self._Prob[0:ml]]
+        slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
+
+        pi = plt.plot(vals, self._Prob,'k.',markersize=10) #this is a hack. Get rid of it.
+        pi = plt.plot(vals, self._Prob)
+
 
         pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
 
+        plt.ylim((0.01,1.1))
         plt.xscale('log')
         plt.yscale('log')
         plt.setp(pi, 'Color', self.bk, 'LineWidth', 2)
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
-        plt.ylabel(r'Number of Occurances', fontsize=18)
-        plt.title(r'Slope: %2.2f' %slope, fontsize=18)
+        plt.ylabel(r'P(>s)', fontsize=18)
+        plt.title(r'Slope: %2.2f' %(-slope+2), fontsize=18)
         plt.grid(True)
+
+    def ComputeProb(self):
+        l = self._MPeaks
+
+        counter=collections.Counter(l)
+        cc = collections.OrderedDict(sorted(counter.items()))
+
+        sp = cc.keys()
+        ns = cc.values()
+        ssp = sum([n for s, n in zip(sp,ns)]);
+
+        for ii in range(len(sp)):
+            sspi = sum([n for s, n in zip(sp[ii:len(sp)],ns[ii:len(sp)])])
+            self._Prob.append((float(sspi)/float(ssp)))
+
+
+
+
+
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)
         ymax = 0
