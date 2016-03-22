@@ -335,6 +335,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     double dist;
     
+    
     for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
         dist = Distance(*ip);
         if (dist != 0 & dist < criticalDistance){

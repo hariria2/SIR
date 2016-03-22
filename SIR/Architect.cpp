@@ -135,28 +135,27 @@ void Architect::IncrementTime(){
 }
 void Architect::Simulate(){
     
-	if (_Store == "MYSQL"){
+    if (_N>0){
+        _BirthRate = 0;
+    } else {
+        _BirthRate = 1;
+    }
+
+    if (_Store == "MYSQL"){
         
         PrepDB();
-        
-        if (_N>0){
-            _BirthRate = 0;
-        } else {
-            _BirthRate = 1;
-        }
-        
+        int batchctr = 0;
+        string statement="";
+        int introtime;
         if (_Visualization == NULL){
-            //_sqlDataPtr->StartTransaction();
-            int batchctr = 0;
-            string statement="";
-            int introtime;
+            
             for (double t = 0; t < _EndTime; t += _TimeStep){
                 int indx  = rand() % (_AllPlaces.size()-2);
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
                 if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
-                    //int indx = rand() % _AllPlaces.size();
+                    
                     double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
                     double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
                     double ymin = (_AllPlaces[indx]->Perimeter)[1][0];
@@ -210,22 +209,58 @@ void Architect::Simulate(){
         }else {
             while (!glfwWindowShouldClose(_Visualization->getWindow())){
                 unsigned long start_s=clock();
-                if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
-                cout << "time " << _CurrentTime << "!" << endl;
-            }
         
             _Visualization->Render();
         
-            _sqlDataPtr-> InsertValue("HistoryData",
-                                    "NULL, " +
-                                    to_string(_CurrentTime) + ", " +
-                                    to_string(_S) + ", " +
-                                    to_string(_I) + ", " +
-                                    to_string(_P) + ", " +
-                                    to_string(_R) + ", " +
-                                    to_string(_D)
-                                    );
-            
+                int indx  = rand() % (_AllPlaces.size()-2);
+                
+                introtime = (*_introtimeDist)(*_generator);
+                
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
+                    
+                    double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
+                    double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
+                    double ymin = (_AllPlaces[indx]->Perimeter)[1][0];
+                    double ymax = (_AllPlaces[indx]->Perimeter)[1][1];
+                    
+                    uniform_real_distribution<double> xdist(xmin, xmax);
+                    uniform_real_distribution<double> ydist(ymin, ymax);
+                    double x = xdist(*_generator);
+                    double y = ydist(*_generator);
+                    AddPerson(x,y);
+                    cout << "=====================>>>>>Person Added<<<<<==============" << endl;
+                }
+                
+                if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
+                    cout << "time " << _CurrentTime << "!" << endl;
+                    
+                    if (batchctr < 50){
+                        
+                        statement = statement + "(" + "NULL, " +
+                        to_string(_CurrentTime) + ", " +
+                        to_string(_S) + ", " +
+                        to_string(_I) + ", " +
+                        to_string(_P) + ", " +
+                        to_string(_R) + ", " +
+                        to_string(_D) + ", " +
+                        to_string(_N) + "),";
+                        batchctr++;
+                    }
+                    else{
+                        statement = statement + "(" + "NULL, " +
+                        to_string(_CurrentTime) + ", " +
+                        to_string(_S) + ", " +
+                        to_string(_I) + ", " +
+                        to_string(_P) + ", " +
+                        to_string(_R) + ", " +
+                        to_string(_D) + ", " +
+                        to_string(_N) + ")";
+                        _sqlDataPtr-> InsertValue("HistoryData",statement, true);
+                        batchctr = 0;
+                        statement = "";
+                    }
+                    
+                }
                 Update(_sqlDataPtr);
                 
                 for (int i = 0; i<=_BirthRate; i++){
@@ -252,6 +287,7 @@ void Architect::Simulate(){
             for (int i = 0; i<=_BirthRate; i++){
                 AddPerson("NewBirth");
             }
+            
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
             if ((time*1000000) < (_TimeStep*1000000)){
                 usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
@@ -265,33 +301,46 @@ void Architect::Update(SQLStorage* data){
     vector<Person*> econList;
     string SQLStatement;
     IncrementTime();
-    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
     
-        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-        SQLStatement = SQLStatement + "(NULL, " +
-        to_string((*ip)->getID()) + ", " +
-        to_string((*ip)->getTime()) + ", " +
-        to_string((*ip)->getAge()) + ", " +
-        to_string((*ip)->getCoordinates()[0]) + ", " +
-        to_string((*ip)->getCoordinates()[1]) + ", " +
-        to_string(((*ip)->getLocation())->getID()) + ", '" +
-        (*ip)->getState() + "', " +
-        to_string((*ip)->getHastBeenSick()) + ", " +
-        to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
-        to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
-        to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
-        to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
-        "),";
+    list<Person*> peeps;
+    
+    
+    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); ++pl){
         
-        (*ip)->setTime(_CurrentTime);
-        (*ip)->Update();
+        peeps = *(*pl)->getOccupants();
         
-        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getTimeOfDeath()+5){
-            Funeral(*ip);
-            delete (*ip);
-            ip=_PeoplePtr.erase(ip);
+        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+            SQLStatement = SQLStatement + "(NULL, " +
+            to_string((*ip)->getID()) + ", " +
+            to_string((*ip)->getTime()) + ", " +
+            to_string((*ip)->getAge()) + ", " +
+            to_string((*ip)->getCoordinates()[0]) + ", " +
+            to_string((*ip)->getCoordinates()[1]) + ", " +
+            to_string(((*ip)->getLocation())->getID()) + ", '" +
+            (*ip)->getState() + "', " +
+            to_string((*ip)->getHastBeenSick()) + ", " +
+            to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
+            to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
+            to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
+            to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
+            "),";
+
+            if ((*pl)->getType()=="Cemetery"){
+                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
+                    Funeral(*ip);
+                    delete (*ip);
+                    ip=_PeoplePtr.erase(ip);
+                }
+                
+            }else{
+                (*ip)->setNeighbors(&peeps);
+                (*ip)->setTime(_CurrentTime);
+                ((*ip)->getInHostDynamics()).setMaxInfLev(0);
+                (*ip)->Update();
+            }
         }
     }
+
     
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
@@ -308,7 +357,7 @@ void Architect::Update(){
     
     
     for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); ++pl){
-        //(*pl)->setDistanceMatrix();
+
         peeps = *(*pl)->getOccupants();
         
         for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
@@ -327,18 +376,6 @@ void Architect::Update(){
             }
         }
     }
-    
-    /*
-    for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip){
-        (*ip)->setTime(_CurrentTime);
-        ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-        (*ip)->Update();
-        if ((*ip)->getState()=='D' & (*ip)->getAge() >= (*ip)->getLifeExpectancy()+5){
-            Funeral(*ip);
-            delete (*ip);
-            ip=_PeoplePtr.erase(ip);
-        }
-    }*/
  
     PopulationData();
 }

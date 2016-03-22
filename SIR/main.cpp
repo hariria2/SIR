@@ -54,7 +54,7 @@ int main(){
     //t2.join();
     //t3.join();
     //t4.join();
-    FaroeIslands(36502, 1, "2", true, false);
+    FaroeIslands(36502, 1, "1", true, true);
     /*
     thread t[num_threads];
     
@@ -84,7 +84,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-/*
+
     int Pop_Str = 224;
     int Pop_Eys = 107;
     int Pop_Vag = 40;
@@ -93,8 +93,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 59;
     int Pop_Vio = 15;
     int Pop_Kun = 12;
-*/
 
+/*
     int Pop_Str = 1024;
     int Pop_Eys = 507;
     int Pop_Vag = 200;
@@ -103,7 +103,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 259;
     int Pop_Vio = 55;
     int Pop_Kun = 52;
-    
+*/
 
     /*
     int Pop_Str = 4024;
@@ -271,6 +271,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         
         SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
         Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
+        
         vis->Init();
         vis->setArchitect(&archie);
         //vis->RenderSplash();
@@ -286,7 +287,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         vis->setPeople(vpeople);
         
         
-        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);;
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);
         vis->Init();
         vis->setArchitect(&archie);
         archie.setDomain(&Island);
