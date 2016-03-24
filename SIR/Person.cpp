@@ -318,7 +318,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = .375;
+    double criticalDistance = .38;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){

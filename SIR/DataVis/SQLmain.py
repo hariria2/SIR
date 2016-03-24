@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 
 #vis = SQLVisualization('root','','localhost','sim_v1_3_4_2016')
 #vis = SQLVisualization('root','','localhost','sim_v2_3_20_2016')
-vis = SQLVisualization('root','','localhost','sim_v2_3_21_2016')
+#vis = SQLVisualization('root','','localhost','sim_v2_3_21_2016')
+#vis = SQLVisualization('root','','localhost','sim_v1_3_22_2016')
+vis = SQLVisualization('root','','localhost','sim_v4_3_23_2016')
 
 vis._AllInfected = False;  # Exposed + Infected. I usually want False
 vis._AllPopulations = True;
