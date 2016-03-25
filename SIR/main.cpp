@@ -45,7 +45,13 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 ****************************/
 
 // ========================= Main ======================
+
+double dt = .1;
+double tend = 36502;
+const double ageIncrement = dt/365;
 int main(){
+    
+    
     //thread t1(call_from_thread,"1");
     //thread t2(call_from_thread,"2");
     //thread t3(call_from_thread,"3");
@@ -54,7 +60,7 @@ int main(){
     //t2.join();
     //t3.join();
     //t4.join();
-    FaroeIslands(36502, 1, "4", true, false);
+    FaroeIslands(tend, dt, "1", true, true);
     /*
     thread t[num_threads];
     
@@ -84,7 +90,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-/*
+
     int Pop_Str = 224;
     int Pop_Eys = 107;
     int Pop_Vag = 40;
@@ -93,8 +99,9 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 59;
     int Pop_Vio = 15;
     int Pop_Kun = 12;
-*/
 
+
+    /*
     int Pop_Str = 1024;
     int Pop_Eys = 507;
     int Pop_Vag = 200;
@@ -103,7 +110,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 259;
     int Pop_Vio = 55;
     int Pop_Kun = 52;
-
+     */
 
     /*
     int Pop_Str = 4024;
@@ -135,7 +142,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     normal_distribution<double> ageDist(25,20);
     
-    normal_distribution<double> suDist(2.8,1);
+    normal_distribution<double> suDist(3.2,1);
     normal_distribution<double> icDist(2,0.01);
     normal_distribution<double> betaDist(3,0.01);
     normal_distribution<double> deltaDist(0.7,0);
@@ -183,6 +190,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -191,6 +199,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Eysturoy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -199,6 +208,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Vagar"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -207,6 +217,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Suouroy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -215,6 +226,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Sandoy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -223,6 +235,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Borooy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -231,6 +244,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Viooy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -239,6 +253,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                 if ((*p)->getName()=="Kunoy"){
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
+                    ip->setAgeIncrement(ageIncrement);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }

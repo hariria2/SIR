@@ -6,22 +6,26 @@ import matplotlib.pyplot as plt
 #vis = SQLVisualization('root','','localhost','sim_v2_3_20_2016')
 #vis = SQLVisualization('root','','localhost','sim_v2_3_21_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_3_22_2016')
-vis = SQLVisualization('root','','localhost','sim_v4_3_23_2016')
+#vis = SQLVisualization('root','','localhost','sim_v4_3_23_2016')
+vis = SQLVisualization('root','','localhost','sim_v1_3_25_2016')
 
 vis._AllInfected = False;  # Exposed + Infected. I usually want False
 vis._AllPopulations = True;
 vis._PeaksOnly = True;
 vis.getHistoryData()
 
-popOnly = False;
+popOnly = True;
 
 
 if popOnly:
     vis.PlotHistory(1)
-    vis.getMonthlyData()
-    plt.figure(2)
-    pi = plt.plot(vis.MT,vis.MN)
-    plt.ylabel('Number of infection incidences')
+    #vis.getMonthlyData()
+    #plt.figure(2)
+    #pi = plt.plot(vis.MT,vis.MN)
+    #plt.ylabel('Number of infection incidences')
+
+    vis.PlotIndividual(3, [1,11,476])
+
 else:
     vis.getMonthlyData()
     vis.getMonthlyPeaks()
@@ -45,11 +49,6 @@ else:
     plt.xlabel('Time (days)',fontsize=18)
     plt.setp(pi, 'Color', vis.re, 'LineWidth', 2)
 
-    #vis.PlotIndividual(2, [1,11,476])
 
-###
-#Show that I can reproduce the power law.
-#Show what parameters affect the destruction of power law.
-###
 
 vis.Render()

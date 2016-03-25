@@ -36,7 +36,8 @@ public:
 	~Person();
 	// Setters
 	void setID(int id);
-    void setAge(double id);
+    void setAge(double a);
+    void setAgeIncrement(double ai);
     void setX(int x);
     void setY(int y);
     void setHasBeenSick(int hbs);
@@ -120,6 +121,7 @@ private:
     
     int _ID;
     double _Age;
+    double _AgeIncrement;
 	string _Name;
 	double _Time;
     double _X;

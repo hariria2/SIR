@@ -43,6 +43,7 @@ class SQLVisualization:
         sqlquery = 'SELECT * FROM HistoryData';
         self._Cursor.execute(sqlquery);
         data = self._Cursor.fetchall();
+        
         self.T = [row[1] for row in data]
         self.S = [row[2] for row in data]
         self.I = [row[3] for row in data]

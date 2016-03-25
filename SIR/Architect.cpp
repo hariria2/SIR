@@ -138,7 +138,7 @@ void Architect::Simulate(){
     if (_N>0){
         _BirthRate = 0;
     } else {
-        _BirthRate = 1;
+        _BirthRate = 0;
     }
 
     if (_Store == "MYSQL"){
@@ -201,7 +201,7 @@ void Architect::Simulate(){
                 }
                 Update();
                 
-                for (int i = 0; i<=_BirthRate; i++){
+                for (int i = 0; i<_BirthRate; i++){
                     AddPerson("NewBirth");
                 }
             }
@@ -234,7 +234,7 @@ void Architect::Simulate(){
                 if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
                     cout << "time " << _CurrentTime << "!" << endl;
                     
-                    if (batchctr < 50){
+                    if (batchctr < 5){
                         
                         statement = statement + "(" + "NULL, " +
                         to_string(_CurrentTime) + ", " +
@@ -263,7 +263,7 @@ void Architect::Simulate(){
                 }
                 Update(_sqlDataPtr);
                 
-                for (int i = 0; i<=_BirthRate; i++){
+                for (int i = 0; i<_BirthRate; i++){
                     AddPerson("NewBirth");
                 }
                 double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -284,7 +284,7 @@ void Architect::Simulate(){
             
             Update();
             
-            for (int i = 0; i<=_BirthRate; i++){
+            for (int i = 0; i<_BirthRate; i++){
                 AddPerson("NewBirth");
             }
             

@@ -75,6 +75,9 @@ void Person::setID(int id){
 void Person::setAge(double age){
     _Age = age;
 }
+void Person::setAgeIncrement(double ai){
+    _AgeIncrement = ai;
+}
 void Person::setHasBeenSick(int hbs){
     _HasBeenSick = hbs;
 }
@@ -243,7 +246,7 @@ void Person::Update(){
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
-    _Age += 0.0027/0.05;
+    _Age += _AgeIncrement;
     if ((_Age >= 10) & (_Age - 0.1 < 15)){
         if (getState() == 'N'){
             setState('S');
