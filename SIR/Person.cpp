@@ -239,9 +239,9 @@ bool Person::getTraverlerQ(){
 
 void Person::Update(){
     if (_State == 'P' | _State == 'I'){
-        Move((rand() % 360),0.026, "IslandHopper");
+        Move((rand() % 360),0.26, "IslandHopper");
     }else{
-        Move((rand() % 360),0.05, "IslandHopper");
+        Move((rand() % 360),0.5, "IslandHopper");
     }
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
@@ -321,7 +321,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = .38;
+    double criticalDistance = 38;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){

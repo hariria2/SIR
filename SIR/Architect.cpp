@@ -7,6 +7,7 @@
 
 
 #include "Architect.h"
+#include "unistd.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -40,7 +41,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -59,7 +60,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -138,7 +139,7 @@ void Architect::Simulate(){
     if (_N>0){
         _BirthRate = 0;
     } else {
-        _BirthRate = 0;
+        _BirthRate = 1;
     }
 
     if (_Store == "MYSQL"){

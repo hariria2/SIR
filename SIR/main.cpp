@@ -49,6 +49,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 double dt = .1;
 double tend = 36502;
 const double ageIncrement = dt/365;
+string version = "1";
 int main(){
     
     
@@ -60,7 +61,7 @@ int main(){
     //t2.join();
     //t3.join();
     //t4.join();
-    FaroeIslands(tend, dt, "1", true, true);
+    FaroeIslands(tend, dt, version, true, true);
     /*
     thread t[num_threads];
     
@@ -167,7 +168,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         double ict = (randic < 0.5)? 0.5:randic;
         double randsu  = suDist(generator);
         double sus = (randsu < 0.5)? 0.5:randsu;
-        InHostDynamics ihd = InHostDynamics(ii,0.01,sus,0.0,VirLev,ict,44, 40, 100);
+        InHostDynamics ihd = InHostDynamics(ii,0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
         double randil = ILDist(generator);
         double il = (randil < 0.0005)? 0.0005:randil;
         ihd.setILRate(il);
@@ -436,7 +437,9 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
             
             
             double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-            
+            int x;
+            File >> x;
+
             Place *h = new Place(ID, name, type, boundary, *city);
             islands.push_back(h);
             

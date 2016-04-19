@@ -43,7 +43,7 @@ class SQLVisualization:
         sqlquery = 'SELECT * FROM HistoryData';
         self._Cursor.execute(sqlquery);
         data = self._Cursor.fetchall();
-        
+
         self.T = [row[1] for row in data]
         self.S = [row[2] for row in data]
         self.I = [row[3] for row in data]
@@ -247,10 +247,7 @@ class SQLVisualization:
             ps = plt.plot(self.T, self.S, label="Susceptible")
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered")
-            pn = plt.plot(self.T, self.N,label="Newly Infected")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-            #pd = plt.plot(self.T, self.D, label="Dead")
-            #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
 
         if self._AllInfected:
             pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)],label="Infected")
@@ -259,16 +256,17 @@ class SQLVisualization:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
         else:
             pi = plt.plot(self.T, self.P, label="Infected")
+            plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
             pn = plt.plot(self.T, self.N,label="Newly Infected")
+            plt.setp(pn, 'Color', self.bk, 'LineWidth', 4)
+
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
 
-        #plt.setp(pi, 'Color', self.bk, 'LineWidth', 4)
-        plt.setp(pn, 'Color', self.re, 'LineWidth', 4)
         #plt.xticks(np.linspace(0,36000,5),np.linspace(0,100,5))
 
         plt.grid(True)
-        #plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
+        plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
 
         plt.xlabel(r'Time (years)', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
