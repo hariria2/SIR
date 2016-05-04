@@ -27,7 +27,7 @@ void generateSourceData();
 void updatePop(vector<Person*> p1, char s);
 
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=false, bool ShowVis=true);
-
+void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=true, bool ShowVis=true);
 
 //=================
 
@@ -47,40 +47,148 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=fal
 // ========================= Main ======================
 
 double dt = .1;
-double tend = 36502;
+double tend = 8;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "2";
 int main(){
     
-    
-    //thread t1(call_from_thread,"1");
-    //thread t2(call_from_thread,"2");
-    //thread t3(call_from_thread,"3");
-    //thread t4(call_from_thread,"4");
-    //t1.join();
-    //t2.join();
-    //t3.join();
-    //t4.join();
-    FaroeIslands(tend, dt, version, true, true);
-    /*
-    thread t[num_threads];
-    
-    for (int i = 0; i < num_threads; ++i) {
-        t[i] = thread(call_from_thread);
-    }
+
+    //FaroeIslands(tend, dt, version, true, true);
+    SingleLocation(tend, dt, version, true, false);
     
     
-    for (int i = 0; i < num_threads; i++){
-        t[i].join();
-    }
-    */
-     
     return 0;
  }
 // ========================= End main =================
 
 
 // ========================= Example Simulations ==============================
+
+void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
+    int maxdim = 115;
+    int Boundary[2][2]   = {{0, 115},{0, 115}};
+
+    Domain Main("Room", Boundary);
+    double LBoundary[2][2]= {{0, 20},{0, 20}};
+    Place *MainPlace = new Place(1,"MainRoom","Home",LBoundary,Main);
+    vector<Place*> locations;
+    locations.push_back(MainPlace);
+    
+    int population = 1000;
+    char state = 'S';
+    double VirLev = 0.0;
+    unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+    
+    normal_distribution<double> ageDist(25,0);
+    normal_distribution<double> suDist(3.,0);
+    normal_distribution<double> icDist(.7,0);
+    normal_distribution<double> betaDist(3.,.5);
+    normal_distribution<double> deltaDist(0.3,0);
+    normal_distribution<double> PDist(0.2,0);
+    normal_distribution<double> CDist(0.2,0);
+    normal_distribution<double> ILDist(0.0001,0.0);
+    
+    vector<Person*> people;
+    list<Person*> vpeople;
+    
+    for (int ii=1; ii <= population; ii++){
+        string name = "randomName"+to_string(ii);
+        double randage  = ageDist(generator);
+        double age = (randage < 1)? 1:floor(randage);
+        if (ii == 1){
+            VirLev = 0.1;
+        } else {
+            VirLev = 0;
+            state = 'S';
+        }
+        double randic  = icDist(generator);
+        double ict = (randic < 0.5)? 0.5:randic;
+        double randsu  = suDist(generator);
+        double sus = (randsu < 0.5)? 0.5:randsu;
+        InHostDynamics ihd = InHostDynamics(ii, 0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
+        double randil = ILDist(generator);
+        double il = (randil < 0.0005)? 0.0005:randil;
+        ihd.setILRate(il);
+        double randbeta  = betaDist(generator);
+        double beta = (randbeta < 0.01)? 0.01:randbeta;
+        ihd.setBeta(beta);
+        double randdelta  = deltaDist(generator);
+        double delta = (randdelta < 0.01)? 0.01:randdelta;
+        ihd.setDelta(delta);
+        double randP  = PDist(generator);
+        double P = (randP < 0.01)? 0.01:randP;
+        ihd.setP(P);
+        double randC  = CDist(generator);
+        double C = (randC < 0.01)? 0.01:randC;
+        ihd.setC(C);
+        
+        Person *ip = new Person(ii, name, age, state, ihd,
+                                &Main, locations,10,10,10, true);
+        ip->setAgeIncrement(ageIncrement);
+        ip->setMotionStepSize(3.6);
+        people.push_back(ip);
+        vpeople.push_back(ip);
+        
+    }
+    
+    
+    double InitialTime = 0;
+    //int l = floor((EndTime-InitialTime)/TimeStep);
+    //cout << "Enter version number for multi location simulation: ";
+    //cin >> ver;
+    
+    
+    if (ShowVis & SaveData){
+        
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(locations);
+        vis->setPeople(vpeople);
+        
+        
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
+        
+        vis->Init();
+        vis->setArchitect(&archie);
+        //vis->RenderSplash();
+        archie.setDomain(&Main);
+        archie.setPlaces(locations);
+        archie.setBatchSize(1);
+        archie.Simulate();
+    }
+    else if (ShowVis){
+        int xdim = maxdim;
+        int ydim = maxdim;
+        Visualization* vis = getVisualization(xdim, ydim, true);
+        vis->setPlaces(locations);
+        vis->setPeople(vpeople);
+        
+        
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);
+        vis->Init();
+        vis->setArchitect(&archie);
+        archie.setDomain(&Main);
+        archie.setPlaces(locations);
+        archie.setBatchSize(1);
+        archie.Simulate();
+    }
+    else {
+        cout << "version: " << ver << endl;
+        SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+        Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
+        archie.setDomain(&Main);
+        archie.setPlaces(locations);
+        archie.setBatchSize(1);
+        archie.Simulate();
+    }
+
+    
+    
+}
+
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
     
     int maxdim = 115;
@@ -192,6 +300,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -201,6 +310,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -210,6 +320,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -219,6 +330,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -228,6 +340,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -237,6 +350,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -246,6 +360,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -255,6 +370,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
+                    ip->setMotionStepSize(0.25);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
@@ -293,6 +409,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         //vis->RenderSplash();
         archie.setDomain(&Island);
         archie.setPlaces(islands);
+        archie.setSaveIntegerTimes(true);
+        archie.setBatchSize(500);
         archie.Simulate();
     }
     else if (ShowVis){
@@ -308,6 +426,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         vis->setArchitect(&archie);
         archie.setDomain(&Island);
         archie.setPlaces(islands);
+        archie.setSaveIntegerTimes(true);
+        archie.setBatchSize(500);
         archie.Simulate();
     }
     else {
@@ -316,11 +436,15 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
         Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
         archie.setDomain(&Island);
         archie.setPlaces(islands);
+        archie.setSaveIntegerTimes(true);
+        archie.setBatchSize(500);
         archie.Simulate();
     }
     
     
 }
+
+
 
 // ========================= End Examples ======================================
 
@@ -399,6 +523,7 @@ void getDefaultCoordinates(Place* location, double co[2]){
     co[0] = x;
     co[1] = y;
 }
+
 void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
     ifstream File;
     File.open(FileName, ios_base::in);

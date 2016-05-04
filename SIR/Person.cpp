@@ -61,8 +61,9 @@ Person::Person(int id, string name, double age,
 	setInfectionPeriod();
     setIncubationPeriod();
     setRecoveryPeriod();
-	setLocation(_Location);
 	IsSingleLocation = isSingleLocation;
+    setLocation(availplaces[0]);
+    setDefaultLocation(_Location);
     setGender('M');
     uniform_real_distribution<double> LE(77,82);
     setLifeExpectancy(LE(*_generator));
@@ -96,7 +97,9 @@ void Person::setState(char state){
 	_State = state;
 }
 void Person::setLocation(Place* location){
-	_Location->removePerson(this);
+    if (IsSingleLocation==false){
+        _Location->removePerson(this);
+    }
 	_Location = location;
 	_Location->addPerson(this);
     
@@ -121,6 +124,9 @@ void Person::setDefaultLocation(Place* location){
 }
 void Person::setTime(double t){
 	_Time = t;
+}
+void Person::setMotionStepSize(double ss){
+    _MotionStepSize = ss;
 }
 void Person::setInfectionPeriod(){
     normal_distribution<double> distribution(_ihdynamics.getAverageInfectionPeriod(),_InfectionVar);
@@ -169,6 +175,9 @@ int Person::getID(){
 }
 double Person::getAge(){
     return _Age;
+}
+double Person::getMotionStepSize(){
+    return _MotionStepSize;
 }
 int Person::getHastBeenSick(){
     return _HasBeenSick;
@@ -239,9 +248,9 @@ bool Person::getTraverlerQ(){
 
 void Person::Update(){
     if (_State == 'P' | _State == 'I'){
-        Move((rand() % 360),0.26, "IslandHopper");
+        Move((rand() % 360),_MotionStepSize/3., "IslandHopper");
     }else{
-        Move((rand() % 360),0.5, "IslandHopper");
+        Move((rand() % 360),4*_MotionStepSize, "IslandHopper");
     }
     if (_State != 'D'){
         UpdateDiseaseWithInHost();

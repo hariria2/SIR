@@ -45,6 +45,7 @@ public:
 	void setName(string name);
 	void setCoordinates(double coordinates[2]);
     void setState(char state);
+    void setMotionStepSize(double ss);
 	void setLocation(Place* location);
     void setDefaultLocation(Place* location);
     void setAvailPlaces(vector<Place*> availplaces);
@@ -59,11 +60,12 @@ public:
     void setRecVar(int var);
     void setTravelerQ(bool tq);
     void setNeighbors(list<Person*>* n);
+    
 
 	// Getters
 	int getID();
     double getAge();
-
+    double getMotionStepSize();
     char getGender();
     int getHastBeenSick();
 	string getName() const;
@@ -131,6 +133,7 @@ private:
     double _RecoveryTime;
     double _TimeOfDeath;
 	double _Coordinates[2];
+    double _MotionStepSize;
     bool _TravelerQ = false;
     
 

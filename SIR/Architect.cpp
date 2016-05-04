@@ -27,6 +27,8 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
+    _SQLBatchSize = 0;
+    _SaveIntegerTimes = false;
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
@@ -45,6 +47,8 @@ _sqlDataPtr(d)
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
+    _SQLBatchSize = 0;
+    _SaveIntegerTimes = false;
 }
 
 Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
@@ -64,6 +68,8 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
+    _SQLBatchSize = 0;
+    _SaveIntegerTimes = false;
 }
 
 
@@ -83,6 +89,12 @@ void Architect::setPlaces(vector<Place *> places){
 void Architect::setVisualization(Visualization *vis){
     _Visualization = vis;
 }
+void Architect::setBatchSize(int btchsz){
+    _SQLBatchSize=btchsz;
+};
+void Architect::setSaveIntegerTimes(bool siono){
+    _SaveIntegerTimes = siono;
+}
 
 // Getters
 double Architect::getCurrentTime(){
@@ -100,12 +112,14 @@ vector<Place*> Architect::getPlaces(){
 Visualization* Architect::getVisualization(){
     return _Visualization;
 }
-
 double Architect::getMonthlyTime(){
 	int hour    = floor(_CurrentTime);
 	double min  = _CurrentTime - hour;
 
 	return ((hour % 30) + min);
+}
+int Architect::getBatchSize(){
+    return _SQLBatchSize;
 }
 int Architect::getS(){
     return _S;
@@ -125,6 +139,9 @@ int Architect::getD(){
 int Architect::getN(){
     return _N;
 }
+bool Architect::getSaveIntegerTimes(){
+    return _SaveIntegerTimes;
+}
 Domain* Architect::getDomain(){
     return _City;
 }
@@ -135,13 +152,16 @@ void Architect::IncrementTime(){
 	_TimeIndex++;
 }
 void Architect::Simulate(){
-    
+    /*
     if (_N>0){
         _BirthRate = 0;
     } else {
-        _BirthRate = 1;
-    }
-
+        _BirthRate = 0;
+    }*/
+    
+    _BirthRate = (_N>0)? 0:0;
+    bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
+    cout << timeIntegerQ << endl;
     if (_Store == "MYSQL"){
         
         PrepDB();
@@ -170,10 +190,10 @@ void Architect::Simulate(){
                     cout << "=====================>>>>>Person Added<<<<<==============" << endl;
                 }
                 
-                if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
+                if (timeIntegerQ){//(abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
                     cout << "time " << _CurrentTime << "!" << endl;
                     
-                    if (batchctr < 500){
+                    if (batchctr < _SQLBatchSize){
                         
                         statement = statement + "(" + "NULL, " +
                         to_string(_CurrentTime) + ", " +
@@ -200,7 +220,7 @@ void Architect::Simulate(){
                     }
                     
                 }
-                Update();
+                Update(_sqlDataPtr);
                 
                 for (int i = 0; i<_BirthRate; i++){
                     AddPerson("NewBirth");
@@ -217,7 +237,7 @@ void Architect::Simulate(){
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
-                if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
+                if (timeIntegerQ){ //(_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
                     
                     double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
                     double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
@@ -544,9 +564,13 @@ void Architect::AddPerson(double x, double y){
 }
 void Architect::AddPerson(string NewBirth){
     
-    
-    
-    int indx  = rand() % (_AllPlaces.size()-2); // -1 is here to exclude cemetery from the possible location of birth
+    int indx;
+    if ((_AllPlaces.size()-1)>1){
+        indx  = rand() % (_AllPlaces.size()-1); // -1 is here to exclude cemetery from the possible location of birth
+    }
+    else{
+        indx = 0;
+    }
     double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
     double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
     double ymin = (_AllPlaces[indx]->Perimeter)[1][0];

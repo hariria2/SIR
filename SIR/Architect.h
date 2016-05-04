@@ -37,17 +37,21 @@ public:
     void setDomain(Domain *city);
     void setPlaces(vector<Place*> places);
     void setVisualization(Visualization* vis);
+    void setBatchSize(int btchsz);
+    void setSaveIntegerTimes(bool siono);
     
 	// Getters
 	double getCurrentTime();
 	double getTimeStep();
 	double getMonthlyTime();
+    int getBatchSize();
     int getS();
     int getI();
     int getP();
     int getR();
     int getD();
     int getN();
+    bool getSaveIntegerTimes();
     Domain* getDomain();
 	list<Person*> getPeople();
     vector<Place*> getPlaces();
@@ -85,6 +89,8 @@ private:
     unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine *_generator;
     uniform_int_distribution<int> *_introtimeDist;
+    bool _SaveIntegerTimes;
+    int _SQLBatchSize;
     int _BirthRate;
 	int _S;
 	int _I;

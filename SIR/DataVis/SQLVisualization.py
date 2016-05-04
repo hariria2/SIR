@@ -256,9 +256,9 @@ class SQLVisualization:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
         else:
             pi = plt.plot(self.T, self.P, label="Infected")
-            plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
-            pn = plt.plot(self.T, self.N,label="Newly Infected")
-            plt.setp(pn, 'Color', self.bk, 'LineWidth', 4)
+            plt.setp(pi, 'Color', self.re,'LineWidth', 4)
+            #pn = plt.plot(self.T, self.N, label="Newly Infected")
+            #plt.setp(pn, 'Color', self.bk,'LineWidth', 4)
 
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
@@ -268,7 +268,7 @@ class SQLVisualization:
         plt.grid(True)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
 
-        plt.xlabel(r'Time (years)', fontsize=18)
+        plt.xlabel(r'Time', fontsize=18)
         plt.ylabel(r'Population', fontsize=18)
     def PlotHistogram(self, fignum):
         h = plt.figure(fignum);
@@ -370,9 +370,6 @@ class SQLVisualization:
         for ii in range(len(sp)):
             sspi = sum([n for s, n in zip(sp[ii:len(sp)],ns[ii:len(sp)])])
             self._Prob.append((float(sspi)/float(ssp)))
-
-
-
 
 
     def PlotIndividual(self,fignum, ppl):
