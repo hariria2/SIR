@@ -39,3 +39,4 @@ class Person:
     def setVC(self, vc):
         self._VC = vc
     def setVL(self, vl):
+        self._VL = vl

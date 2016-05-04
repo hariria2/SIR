@@ -166,7 +166,7 @@ void Visualization::RenderSplash(){
     DrawText(text.data(), (int) text.size(), _X/2+100-100, _Y/2-20, 10);
     glfwSwapBuffers(_window);
     glfwPollEvents();
-    sleep(4);
+    //sleep(4);
 }
 
 void Visualization::DrawPlace(){

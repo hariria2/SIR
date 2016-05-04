@@ -7,8 +7,10 @@
 
 
 #include "Architect.h"
+#include "unistd.h"
 
 using namespace std;
+
 
 Architect::Architect(double t0, double te, double ts,vector<Person *> pp,Visualization* vis)
 {
@@ -153,10 +155,10 @@ void Architect::Simulate(){
             
             Update();
         
-            //double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
-            //if ((time*1000000) < (_TimeStep*1000000)){
-            //    usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
-            //}
+            double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
+            if ((time*1000000) < (_TimeStep*1000000)){
+                usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
+            }
             
         }
 	}
