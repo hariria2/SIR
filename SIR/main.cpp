@@ -157,7 +157,7 @@ void CityPlan(bool SaveData){
     string dataFolder = "data_multi_v"+ver+"_";
     string movieFolder = "movie_multi_v"+ver+"_";
     Storage data(l, &myCity, homes, works, schools, cemeteries, dataFolder,movieFolder);
-    //SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+    SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
     int xdim = maxdim;
     int ydim = maxdim;
     Visualization* vis = getVisualization(xdim, ydim, true);
@@ -166,8 +166,8 @@ void CityPlan(bool SaveData){
     vis->setPlaces(works);
     vis->setPlaces(cemeteries);
     vis->setPeople(people);
-    //Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
-    Architect archie(InitialTime,EndTime,TimeStep, people, vis);
+    Architect archie(InitialTime,EndTime,TimeStep, people, vis,"MYSQL", &sqldata);
+    //Architect archie(InitialTime,EndTime,TimeStep, people, vis);
     vector<Place*> AllPlaces;
     AllPlaces += homes;
     AllPlaces += schools;

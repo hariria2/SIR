@@ -88,7 +88,7 @@ class SQLVisualization:
             data1 = self._Cursor.fetchall();
             self._Cursor.execute(sqlquery2);
             data2 = self._Cursor.fetchall();
-
+            print sqlquery2
         # data1 - id, name, age, gender, homeID, locatioinID
         # data2 - index, PersID, time, x, y, LocID, State, HBS, S, I, V, MaxI
         for idx in range(l):
@@ -169,8 +169,8 @@ class SQLVisualization:
         plt.setp(pi, 'Color', self.re, 'LineWidth', 4)
         pr = plt.plot(self.T, self.R, label="Recovered")
         plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-        pd = plt.plot(self.T, self.D, label="Dead")
-        plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
+        #pd = plt.plot(self.T, self.D, label="Dead")
+        #plt.setp(pd, 'Color', 'k', 'LineWidth', 4)
         plt.grid(True)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=4, mode="expand", borderaxespad=0.)
         #set(l, 'FontSize', 16)
