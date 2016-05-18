@@ -88,6 +88,9 @@ public:
     int getRecVar();
     int getLifeExpectancy();
     bool getTraverlerQ();
+    string getConnections();
+    
+    void clearConnections();
     
     void Update();
     
@@ -137,7 +140,7 @@ private:
     bool _TravelerQ = false;
     
 
-	char _State;
+    char _State;
     bool _NewInf=false;
     char _Gender;
     int _HasBeenSick = 0;
@@ -150,6 +153,7 @@ private:
     int _IncubationVar;
     int _RecoveryVar;
     int _LifeExpectancy;
+    string _Connections = "";
 };
 
 #endif /* PERSON_H_ */

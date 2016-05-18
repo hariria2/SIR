@@ -245,16 +245,25 @@ InHostDynamics Person::getInHostDynamics() const{
 bool Person::getTraverlerQ(){
     return _TravelerQ;
 }
+string Person::getConnections(){
+    return _Connections;
+}
+
+void Person::clearConnections(){
+    _Connections = "";
+}
 
 void Person::Update(){
     if (_State == 'P' | _State == 'I'){
-        Move((rand() % 360),_MotionStepSize/3., "IslandHopper");
+        Move((rand() % 360),_MotionStepSize, "IslandHopper");
     }else{
         Move((rand() % 360),4*_MotionStepSize, "IslandHopper");
     }
+    
     if (_State != 'D'){
         UpdateDiseaseWithInHost();
     }
+    
     _Age += _AgeIncrement;
     if ((_Age >= 10) & (_Age - 0.1 < 15)){
         if (getState() == 'N'){
@@ -352,6 +361,7 @@ void Person::UpdateDiseaseWithInHost(){
         dist = Distance(*ip);
         if (dist != 0 & dist < criticalDistance){
             totalVirion += ((*ip)->_ihdynamics.getV())/dist;
+            //_Connections.append("," + to_string((*ip)->getID()));
         }
     }
     

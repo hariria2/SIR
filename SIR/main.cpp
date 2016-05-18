@@ -46,15 +46,15 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = .1;
-double tend = 8;
+double dt = 1;
+double tend = 2*36500;
 const double ageIncrement = dt/365;
-string version = "2";
+string version = "4";
 int main(){
     
 
-    //FaroeIslands(tend, dt, version, true, true);
-    SingleLocation(tend, dt, version, true, false);
+    FaroeIslands(tend, dt, version, true, false);
+    //SingleLocation(tend, dt, version, true, false);
     
     
     return 0;
@@ -370,15 +370,12 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
+                    ip->setMotionStepSize(0.1);
                     people.push_back(ip);
                     vpeople.push_back(ip);
                 }
-    
             }
-            
         }
-        
     };
     srand((int) time(NULL));
     for (int ii=0; ii < 50; ii++){

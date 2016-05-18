@@ -331,6 +331,7 @@ void Architect::Update(SQLStorage* data){
         peeps = *(*pl)->getOccupants();
         
         for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+
             SQLStatement = SQLStatement + "(NULL, " +
             to_string((*ip)->getID()) + ", " +
             to_string((*ip)->getTime()) + ", " +
@@ -338,14 +339,15 @@ void Architect::Update(SQLStorage* data){
             to_string((*ip)->getCoordinates()[0]) + ", " +
             to_string((*ip)->getCoordinates()[1]) + ", " +
             to_string(((*ip)->getLocation())->getID()) + ", '" +
-            (*ip)->getState() + "', " +
+            (*ip)->getState() + "', '" +
+            (*ip)->getConnections() + "', " +
             to_string((*ip)->getHastBeenSick()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
             "),";
-
+            (*ip)->clearConnections();
             if ((*pl)->getType()=="Cemetery"){
                 if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
                     Funeral(*ip);
@@ -545,7 +547,7 @@ void Architect::AddPerson(double x, double y){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    
+    p->setMotionStepSize(0.1);
     if (_Store == "MYSQL"){
         _sqlDataPtr->InsertValue("People",
                                  "NULL, '" +

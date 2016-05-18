@@ -117,6 +117,7 @@ void SQLStorage::CreateTable(string table){
         "y DOUBLE NOT NULL, " +
         "LocationID INT UNSIGNED NOT NULL REFERENCES Location(ID), " +
         "State CHAR(1) NOT NULL, " +
+        "Connections VARCHAR(2000) NOT NULL, " +
         "HasBeenSick INT NOT NULL, " +
         "SusCells  DOUBLE NOT NULL DEFAULT 0, " +
         "InfCells  DOUBLE NOT NULL DEFAULT 0, " +

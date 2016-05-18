@@ -33,6 +33,8 @@ class Person:
         self._LocID = lid
     def setState(self, state):
         self._State = state
+    def setConnections(self, connections):
+        self._Connections = connections;
     def setHBS(self, hbs):
         self._HBS = hbs
     def setSC(self, sc):
