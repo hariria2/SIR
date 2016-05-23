@@ -10,8 +10,8 @@
 using namespace std;
 
 
-Place::Place(int id, string name, string type, double perimeter[2][2], Domain location):
-    _Location(location)
+Place::Place(int id, string name, string type, double perimeter[2][2], Domain location, int pop):
+    _Location(location), _TotalPopulation(pop)
 {
 	setID(id);
 	setName(name);
@@ -40,7 +40,9 @@ void Place::setPerimeter(double perimeter[2][2]){
 void Place::setInfectionRadius(int r){
     _InfectionRadius = r;
 }
-
+void Place::setTotalPopulation(int pop){
+    _TotalPopulation = pop;
+}
 
 void Place::setDistanceMatrix(){
     double x1, x2, y1, y2;
@@ -76,6 +78,9 @@ void Place::removePerson(Person* p){
 // getters
 int Place::getID(){
 	return _ID;
+}
+int Place::getTotalPopulation(){
+    return _TotalPopulation;
 }
 string Place::getName(){
 	return _Name;

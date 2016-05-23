@@ -49,7 +49,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 double dt = 1;
 double tend = 36500;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "5";
 int main(){
     
 
@@ -68,15 +68,17 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
     int maxdim = 115;
     int Boundary[2][2]   = {{0, 115},{0, 115}};
 
-    Domain Main("Room", Boundary);
-    double LBoundary[2][2]= {{0, 20},{0, 20}};
-    Place *MainPlace = new Place(1,"MainRoom","Home",LBoundary,Main);
-    vector<Place*> locations;
-    locations.push_back(MainPlace);
-    
     int population = 1000;
     char state = 'S';
     double VirLev = 0.0;
+    
+    Domain Main("Room", Boundary);
+    double LBoundary[2][2]= {{0, 20},{0, 20}};
+    Place *MainPlace = new Place(1,"MainRoom","Home",LBoundary,Main,population);
+    vector<Place*> locations;
+    locations.push_back(MainPlace);
+    
+
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     
@@ -199,61 +201,27 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
-//    
-//    int Pop_Str = 224;
-//    int Pop_Eys = 107;
-//    int Pop_Vag = 40;
-//    int Pop_Suo = 56;
-//    int Pop_San = 22;
-//    int Pop_Bor = 59;
-//    int Pop_Vio = 15;
-//    int Pop_Kun = 12;
 
 
+    /*
+   
+    */
+     
+    /*
     
-    int Pop_Str = 1024;
-    int Pop_Eys = 507;
-    int Pop_Vag = 200;
-    int Pop_Suo = 256;
-    int Pop_San = 102;
-    int Pop_Bor = 259;
-    int Pop_Vio = 55;
-    int Pop_Kun = 52;
-     
-
-    /*
-    int Pop_Str = 4024;
-    int Pop_Eys = 2007;
-    int Pop_Vag = 800;
-    int Pop_Suo = 856;
-    int Pop_San = 202;
-    int Pop_Bor = 859;
-    int Pop_Vio = 205;
-    int Pop_Kun = 202;
     */
-     
-    /*
-    int Pop_Str = 8024;
-    int Pop_Eys = 4007;
-    int Pop_Vag = 1600;
-    int Pop_Suo = 1656;
-    int Pop_San = 402;
-    int Pop_Bor = 1659;
-    int Pop_Vio = 405;
-    int Pop_Kun = 402;
-    */
-    int population = Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun;
+    
     char state = 'S';
     double VirLev = 0.0;
-    cout << "Total starting pop is: " << population << endl;
+    
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     
     normal_distribution<double> ageDist(70,0);
     
-    normal_distribution<double> suDist(3.2,1);
-    normal_distribution<double> icDist(2,0.01);
-    normal_distribution<double> betaDist(3,0.01);
+    normal_distribution<double> suDist(3.2,0);
+    normal_distribution<double> icDist(2,0.00);
+    normal_distribution<double> betaDist(3,0.0);
     normal_distribution<double> deltaDist(0.7,0);
     normal_distribution<double> PDist(.4,0);
     normal_distribution<double> CDist(1.0,0);
@@ -262,122 +230,70 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     vector<Person*> people;
     list<Person*> vpeople;
     
-    for (int ii=1; ii <= population; ii++){
-        string name = "randomName"+to_string(ii);
-        double randage  = ageDist(generator);
-        double age = (randage < 1)? 1:floor(randage);
-        if (ii == 1){
-            VirLev = 0.1;
-        } else {
-            VirLev = 0;
-            state = 'S';
-        }
-        double randic  = icDist(generator);
-        double ict = (randic < 0.5)? 0.5:randic;
-        double randsu  = suDist(generator);
-        double sus = (randsu < 0.5)? 0.5:randsu;
-        InHostDynamics ihd = InHostDynamics(ii,0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
-        double randil = ILDist(generator);
-        double il = (randil < 0.0005)? 0.0005:randil;
-        ihd.setILRate(il);
-        double randbeta  = betaDist(generator);
-        double beta = (randbeta < 0.01)? 0.01:randbeta;
-        ihd.setBeta(beta);
-        double randdelta  = deltaDist(generator);
-        double delta = (randdelta < 0.01)? 0.01:randdelta;
-        ihd.setDelta(delta);
-        double randP  = PDist(generator);
-        double P = (randP < 0.01)? 0.01:randP;
-        ihd.setP(P);
-        double randC  = CDist(generator);
-        double C = (randC < 0.01)? 0.01:randC;
-        ihd.setC(C);
-        
-        for (auto p = islands.cbegin(); p != islands.cend(); ++p){
-            if (ii <= Pop_Str){
-                if ((*p)->getName()=="Streymoy"){
-                    
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if (ii <= Pop_Str+Pop_Eys){
-                if ((*p)->getName()=="Eysturoy"){
+    double randic;
+    double ict;
+    double randsu;
+    double sus;
+    double randil;
+    double il;
+    double randbeta;
+    double beta;
+    double randdelta;
+    double delta;
+    double randP;
+    double P;
+    double randC;
+    double C;
+    
+    for(auto p=islands.begin(); p!=islands.end();++p){
 
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
+        for (int ii = 0; ii < (*p)->getTotalPopulation(); ii++){
+            string name = "randomName"+to_string(ii);
+            double randage  = ageDist(generator);
+            double age = (randage < 1)? 1:floor(randage);
+            if (ii == 1){
+                VirLev = 0.1;
+            } else {
+                VirLev = 0;
+                state = 'S';
             }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag){
-                if ((*p)->getName()=="Vagar"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo){
-                if ((*p)->getName()=="Suouroy"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San){
-                if ((*p)->getName()=="Sandoy"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor){
-                if ((*p)->getName()=="Borooy"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio){
-                if ((*p)->getName()=="Viooy"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.25);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
-            else if(ii <= Pop_Str+Pop_Eys+Pop_Vag+Pop_Suo+Pop_San+Pop_Bor+Pop_Vio+Pop_Kun){
-                if ((*p)->getName()=="Kunoy"){
-                    Person *ip = new Person(ii, name, age, state, ihd,
-                                            &Island, (*p),islands,10,10,10);
-                    ip->setAgeIncrement(ageIncrement);
-                    ip->setMotionStepSize(0.1);
-                    people.push_back(ip);
-                    vpeople.push_back(ip);
-                }
-            }
+            randic  = icDist(generator);
+            ict     = (randic < 0.5)? 0.5:randic;
+            randsu  = suDist(generator);
+            sus     = (randsu < 0.5)? 0.5:randsu;
+            
+            InHostDynamics ihd = InHostDynamics(ii,0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
+            randil = ILDist(generator);
+            il     = (randil < 0.0005)? 0.0005:randil;
+            ihd.setILRate(il);
+            
+            randbeta  = betaDist(generator);
+            beta      = (randbeta < 0.01)? 0.01:randbeta;
+            ihd.setBeta(beta);
+            
+            randdelta  = deltaDist(generator);
+            delta      = (randdelta < 0.01)? 0.01:randdelta;
+            ihd.setDelta(delta);
+            
+            randP  = PDist(generator);
+            P      = (randP < 0.01)? 0.01:randP;
+            ihd.setP(P);
+            
+            randC  = CDist(generator);
+            C      = (randC < 0.01)? 0.01:randC;
+            ihd.setC(C);
+            
+            Person *ip = new Person(ii, name, age, state, ihd,
+                                    &Island, (*p),islands,10,10,10);
+            ip->setAgeIncrement(ageIncrement);
+            ip->setMotionStepSize(1.25);
+            people.push_back(ip);
+            vpeople.push_back(ip);
         }
-    };
+        
+    }
+    
+  
     srand((int) time(NULL));
     for (int ii=0; ii < 50; ii++){
         people[rand()%(people.size())]->setTravelerQ(true);
@@ -385,10 +301,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     
     double InitialTime = 0;
-    //int l = floor((EndTime-InitialTime)/TimeStep);
-    //cout << "Enter version number for multi location simulation: ";
-    //cin >> ver;
-    
+
     
     if (ShowVis & SaveData){
     
@@ -510,7 +423,7 @@ void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], 
             perim[0][n] = homedimx[i][n];
             perim[1][n] = homedimy[i][n];
         }
- Place* p = new Place(i, "home", "Home", perim, domain);
+ Place* p = new Place(i, "home", "Home", perim, domain,1);
  homes.push_back(p);
 	}
  }
@@ -537,6 +450,7 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
         string sxmax;
         string symin;
         string symax;
+        string spop;
         
         while (File.good()){
             getline(File, sID, ',');
@@ -555,14 +469,17 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
             getline(File, symin, ',');
             double ymin = atof(symin.c_str());
             
-            getline(File, symax, '\r');
+            getline(File, symax, ',');
             double ymax = atof(symax.c_str());
+            
+            getline(File, spop, '\r');
+            int pop = atof(spop.c_str());
            
             if (File.eof()) break;
             
             double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
            
-            Place *h = new Place(ID, name, type, boundary, *city);
+            Place *h = new Place(ID, name, type, boundary, *city, pop);
             islands.push_back(h);
             
         }

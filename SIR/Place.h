@@ -26,7 +26,7 @@ public:
     //unordered_map<string, double> _DistanceMatrix;
     double _DistanceMatrix[30000][30000];
     
-	Place(int id, string name, string type, double perimeter[2][2], Domain location);
+	Place(int id, string name, string type, double perimeter[2][2], Domain location, int pop);
 	~Place();
 	void setID(int x);
 	void setName(string x);
@@ -34,12 +34,14 @@ public:
 	void setPerimeter(double Perimeter[2][2]);
     void setInfectionRadius(int r);
     void setDistanceMatrix();
+    void setTotalPopulation(int pop);
     
 	void addPerson(Person* p);
 	void removePerson(Person* p);
     
 
 	int getID();
+    int getTotalPopulation();
 	string getName();
 	string getType();
 	string getLocation();
@@ -50,6 +52,7 @@ public:
     double Distance(double x1, double y1, double x2, double y2);
     
 private:
+    int _TotalPopulation;
 	list<Person*> _Occupants;
     int _ID;
     int _InfectionRadius;

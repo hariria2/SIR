@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -64,7 +64,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(850, 950);
+    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -228,12 +228,12 @@ void Architect::Simulate(){
                 if (_BirthRate >= 1){
                     for (int i = 0; i<_BirthRate; i++){
                         AddPerson("NewBirth");
-                        cout << "============>>>>>New birth<<<<============";
+                        cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 } else if (_BirthRate>0){
                     if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
                         AddPerson("NewBirth");
-                        cout << "============>>>>>New birth<<<<============";
+                        cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 }
             }
@@ -299,12 +299,12 @@ void Architect::Simulate(){
                 if (_BirthRate >= 1){
                     for (int i = 0; i<_BirthRate; i++){
                         AddPerson("NewBirth");
-                        cout << "============>>>>>New birth<<<<============";
+                        cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 } else if (_BirthRate>0){
                     if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
                         AddPerson("NewBirth");
-                        cout << "============>>>>>New birth<<<<============";
+                        cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 }
                 
@@ -329,12 +329,12 @@ void Architect::Simulate(){
             if (_BirthRate >= 1){
                 for (int i = 0; i<_BirthRate; i++){
                     AddPerson("NewBirth");
-                    cout << "============>>>>>New birth<<<<============";
+                    cout << "============>>>>>New birth<<<<============" << endl;
                 }
             } else {
                 if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
                     AddPerson("NewBirth");
-                    cout << "============>>>>>New birth<<<<============";
+                    cout << "============>>>>>New birth<<<<============" << endl;
                 }
             }
             
@@ -601,7 +601,7 @@ void Architect::AddPerson(double x, double y){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    p->setMotionStepSize(0.1);
+    p->setMotionStepSize(1.1);
     if (_Store == "MYSQL"){
         _sqlDataPtr->InsertValue("People",
                                  "NULL, '" +
@@ -612,6 +612,7 @@ void Architect::AddPerson(double x, double y){
                                  to_string((p->getLocation())->getID()));
     }
 
+    p->setTravelerQ(true);
     AddPerson(p);
     if (_Visualization != NULL) {
         _Visualization->AddPerson(p);

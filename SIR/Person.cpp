@@ -301,13 +301,12 @@ void Person::Move(double theta, double r, string motionType){
     
     
     if (_TravelerQ){
-       /* int lid = rand() % (_AvailablePlaces.size()-2) + 1;
+        int lid = rand() % (_AvailablePlaces.size()-2) + 1;
         for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
             if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
                 setLocation(*L);
             }
-        }*/
-        
+        }
     }
     
 	double x = _Coordinates[0] + r*cos(theta);
@@ -341,7 +340,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = 38;
+    double criticalDistance = 50;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
@@ -388,7 +387,7 @@ void Person::UpdateDiseaseWithInHost(){
             setState('P');
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 2.6){
+        }else if (_ihdynamics.getI() > 2.9){
             Die();
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
