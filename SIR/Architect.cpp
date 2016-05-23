@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -64,7 +64,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -152,14 +152,9 @@ void Architect::IncrementTime(){
 	_TimeIndex++;
 }
 void Architect::Simulate(){
-    /*
-    if (_N>0){
-        _BirthRate = 0;
-    } else {
-        _BirthRate = 0;
-    }*/
     
-    _BirthRate = (_N>0)? 0:0;
+    
+    _BirthRate = (_N>0.0)? 0.02:0.04;
     bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
     cout << timeIntegerQ << endl;
     if (_Store == "MYSQL"){
@@ -168,9 +163,16 @@ void Architect::Simulate(){
         int batchctr = 0;
         string statement="";
         int introtime;
+        
         if (_Visualization == NULL){
             
-            for (double t = 0; t < _EndTime; t += _TimeStep){
+            for (double t = 0; t < _EndTime; t += _TimeStep){  //Main Loop
+                
+                if (_PeoplePtr.empty()){
+                    cout << "You have run out of people. Enjoy playing god without puppets." << endl;
+                    return;
+                }
+                
                 int indx  = rand() % (_AllPlaces.size()-2);
                 
                 introtime = (*_introtimeDist)(*_generator);
@@ -187,7 +189,7 @@ void Architect::Simulate(){
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
                     AddPerson(x,y);
-                    cout << "=====================>>>>>Person Added<<<<<==============" << endl;
+                    cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
                 if (timeIntegerQ){//(abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
@@ -220,14 +222,24 @@ void Architect::Simulate(){
                     }
                     
                 }
+                
                 Update(_sqlDataPtr);
                 
-                for (int i = 0; i<_BirthRate; i++){
-                    AddPerson("NewBirth");
+                if (_BirthRate >= 1){
+                    for (int i = 0; i<_BirthRate; i++){
+                        AddPerson("NewBirth");
+                        cout << "============>>>>>New birth<<<<============";
+                    }
+                } else if (_BirthRate>0){
+                    if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
+                        AddPerson("NewBirth");
+                        cout << "============>>>>>New birth<<<<============";
+                    }
                 }
             }
 
-        }else {
+        }
+        else {
             while (!glfwWindowShouldClose(_Visualization->getWindow())){
                 unsigned long start_s=clock();
         
@@ -249,7 +261,7 @@ void Architect::Simulate(){
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
                     AddPerson(x,y);
-                    cout << "=====================>>>>>Person Added<<<<<==============" << endl;
+                    cout << "=====================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
                 if (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
@@ -284,9 +296,18 @@ void Architect::Simulate(){
                 }
                 Update(_sqlDataPtr);
                 
-                for (int i = 0; i<_BirthRate; i++){
-                    AddPerson("NewBirth");
+                if (_BirthRate >= 1){
+                    for (int i = 0; i<_BirthRate; i++){
+                        AddPerson("NewBirth");
+                        cout << "============>>>>>New birth<<<<============";
+                    }
+                } else if (_BirthRate>0){
+                    if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
+                        AddPerson("NewBirth");
+                        cout << "============>>>>>New birth<<<<============";
+                    }
                 }
+                
                 double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
                 if ((time*1000000) < (_TimeStep*1000000)){
                     usleep(static_cast<int>((_TimeStep*1000000) - time*1000000));
@@ -305,8 +326,16 @@ void Architect::Simulate(){
             
             Update();
             
-            for (int i = 0; i<_BirthRate; i++){
-                AddPerson("NewBirth");
+            if (_BirthRate >= 1){
+                for (int i = 0; i<_BirthRate; i++){
+                    AddPerson("NewBirth");
+                    cout << "============>>>>>New birth<<<<============";
+                }
+            } else {
+                if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
+                    AddPerson("NewBirth");
+                    cout << "============>>>>>New birth<<<<============";
+                }
             }
             
             double time = (double)(clock()-start_s)/((double)CLOCKS_PER_SEC);
@@ -319,19 +348,18 @@ void Architect::Simulate(){
     cout << "Simulation Complete. Thank you...!" << endl;
 }
 void Architect::Update(SQLStorage* data){
-    vector<Person*> econList;
+    
     string SQLStatement;
     IncrementTime();
-    
     list<Person*> peeps;
     
-    
-    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); ++pl){
-        
+    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); pl++){
         peeps = *(*pl)->getOccupants();
-        
-        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
-
+    
+        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ip++){
+            
+            
+            
             SQLStatement = SQLStatement + "(NULL, " +
             to_string((*ip)->getID()) + ", " +
             to_string((*ip)->getTime()) + ", " +
@@ -341,21 +369,32 @@ void Architect::Update(SQLStorage* data){
             to_string(((*ip)->getLocation())->getID()) + ", '" +
             (*ip)->getState() + "', '" +
             (*ip)->getConnections() + "', " +
-            to_string((*ip)->getHastBeenSick()) + ", " +
+            to_string((*ip)->getHasBeenSick()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
             "),";
             (*ip)->clearConnections();
+            
             if ((*pl)->getType()=="Cemetery"){
-                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
-                    Funeral(*ip);
-                    delete (*ip);
-                    ip=_PeoplePtr.erase(ip);
-                }
+//                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
+//                    Funeral(*ip);
+//                    delete (*ip);
+//                    ip=_PeoplePtr.erase(ip);
+//                }
                 
-            }else{
+            }
+            
+            if ((*ip)->getState() == 'D'){
+                Funeral(*ip);
+                //delete (*ip);
+                //TODO Figure out this delete thing.
+                ip=_PeoplePtr.erase(ip);
+                //cout << "_PeoplePtr size: " <<_PeoplePtr.size() << endl;
+                //++ip;
+            }
+            else{
                 (*ip)->setNeighbors(&peeps);
                 (*ip)->setTime(_CurrentTime);
                 ((*ip)->getInHostDynamics()).setMaxInfLev(0);
@@ -379,13 +418,18 @@ void Architect::Update(){
     list<Person*> peeps;
     
     
-    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); ++pl){
+    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); pl++){
 
         peeps = *(*pl)->getOccupants();
         
-        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ++ip){
+        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ip++){
+//            if ((*ip)->getState() == 'D'){
+//                Funeral(*ip);
+//                delete (*ip);
+//                ip=_PeoplePtr.erase(ip);
+//            }
             if ((*pl)->getType()=="Cemetery"){
-                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
+                if (true) { //(*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
                     Funeral(*ip);
                     delete (*ip);
                     ip=_PeoplePtr.erase(ip);
@@ -427,6 +471,7 @@ void Architect::PopulationData(){
     _N = 0;
     
     for(auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip) {
+        
         if (((*ip)->getState()) == 'I'){
             _I += 1;
             if ((*ip)->getNewInf()){
@@ -442,15 +487,12 @@ void Architect::PopulationData(){
         else if(((*ip)->getState()) == 'R'){
             _R += 1;
         }
-        else{
+        else if(((*ip)->getState()) == 'D'){
             _D += 1;
         }
         
     }
-}
-void Architect::AddPerson(Person *p){
-    _PeoplePtr.push_back(p);
-    PopulationData();
+
 }
 void Architect::RemovePerson(Person *p){
     _PeoplePtr.remove(p);
@@ -458,8 +500,10 @@ void Architect::RemovePerson(Person *p){
 void Architect::PrepDB(){
     // ====================>>>>LocationData<<<========================== //
     // Domain
+    
+    
     _sqlDataPtr->InsertValue("Location",
-                   "NULL, '" +
+                   "NULL, '1', '" +
                    _City->getName() + "', " +
                    "'Domain'"     + ", " +
                    to_string((_City->Boundary)[0][0]) + ", " +
@@ -469,6 +513,7 @@ void Architect::PrepDB(){
     for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p) {
         _sqlDataPtr->InsertValue("Location",
                                  "NULL, '"        +
+                                 to_string((*p)->getID()) + "', '" +
                                  (*p)->getName() + "', '" +
                                  (*p)->getType() + "', "  +
                                  to_string(((*p)->Perimeter)[0][0]) + ", " +
@@ -517,10 +562,16 @@ Place* Architect::LocFromCoo(double x, double y){
     cout << "No Homeless people allowed in DiseaseVille!" << endl;
     return _AllPlaces.front();
 }
+void Architect::AddPerson(Person *p){
+    _PeoplePtr.push_back(p);
+    PopulationData();
+}
 void Architect::AddPerson(double x, double y){
     
     unsigned long s = _PeoplePtr.size();
     int id = (int) s + 1;
+    cout << "Size of ppl ptr " << _PeoplePtr.size() <<endl;
+    cout << "Is empty? " << _PeoplePtr.empty() << endl;
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
@@ -532,6 +583,7 @@ void Architect::AddPerson(double x, double y){
     ihd.setILRate(0.001);
     
     Place* loc = LocFromCoo(x,y);
+
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
@@ -543,6 +595,8 @@ void Architect::AddPerson(double x, double y){
             p->setDefaultLocation(*l);
         }
     }
+    p->setNeighbors(&_PeoplePtr);
+    
     double coo[2] = {x,y};
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
@@ -589,17 +643,17 @@ void Architect::AddPerson(string NewBirth){
     double dt = (p1->getInHostDynamics()).getdt();
     
     InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2,44, 40, 100);
-    ihd.setBeta(0.2);
-    ihd.setDelta(0.03);
+    ihd.setBeta(3.0);
+    ihd.setDelta(0.7);
     ihd.setP(0.4);
-    ihd.setC(0.5);
+    ihd.setC(1.0);
     ihd.setILRate(0.001);
     
     Place* loc = LocFromCoo(x,y);
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
-    Person* p = new Person(id, "Alplego", 0, 'N', ihd, _City, loc, availPlaces, 1,1,1);
+    Person* p = new Person(id, "Alplego", 0, 'S', ihd, _City, loc, availPlaces, 1,1,1);
     
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){

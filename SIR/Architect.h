@@ -91,7 +91,7 @@ private:
     uniform_int_distribution<int> *_introtimeDist;
     bool _SaveIntegerTimes;
     int _SQLBatchSize;
-    int _BirthRate;
+    double _BirthRate;
 	int _S;
 	int _I;
     int _P;

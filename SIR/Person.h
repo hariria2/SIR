@@ -67,7 +67,7 @@ public:
     double getAge();
     double getMotionStepSize();
     char getGender();
-    int getHastBeenSick();
+    int getHasBeenSick();
 	string getName() const;
 	double* getCoordinates();
     char getState() const;

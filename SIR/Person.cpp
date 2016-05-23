@@ -179,7 +179,7 @@ double Person::getAge(){
 double Person::getMotionStepSize(){
     return _MotionStepSize;
 }
-int Person::getHastBeenSick(){
+int Person::getHasBeenSick(){
     return _HasBeenSick;
 }
 char Person::getGender(){
@@ -265,6 +265,7 @@ void Person::Update(){
     }
     
     _Age += _AgeIncrement;
+    
     if ((_Age >= 10) & (_Age - 0.1 < 15)){
         if (getState() == 'N'){
             setState('S');
@@ -273,6 +274,7 @@ void Person::Update(){
     }
     if (_State != 'D') {
         if (_Age >= _LifeExpectancy){
+            Move((rand() % 360),4*0, "IslandHopper");
             Die();
         }
     }
@@ -369,7 +371,7 @@ void Person::UpdateDiseaseWithInHost(){
     _ihdynamics.setNE(0.01*totalVirion);
     _ihdynamics.Simulate();
     
-    if ((getState()=='R') & !(getHastBeenSick())) {
+    if ((getState()=='R') & !(getHasBeenSick())) {
         if (_ihdynamics.getT() > 1.8){
             setState('S');
         }
@@ -401,7 +403,7 @@ void Person::UpdateDiseaseWithInHost(){
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
         }
-        if (_ihdynamics.getI() > 2.6){
+        if (_ihdynamics.getI() > 2.9){
             Die();
         }
         else if (_ihdynamics.getI() < 0.2){
@@ -438,4 +440,5 @@ bool Person::operator == (const Person& p) const {
 }
 Person::~Person(){
     delete _generator;
+    delete this;
 }

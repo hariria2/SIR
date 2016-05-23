@@ -74,6 +74,7 @@ void SQLStorage::CreateTable(string table){
     if (table == "Location"){
         statement = "CREATE TABLE " +table+ "(" +
         "ID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, "+
+        "LocationID INT UNSIGNED NOT NULL, "+
         "name VARCHAR(30) NOT NULL, " +
         "type VARCHAR(30) NOT NULL, " +
         "xmin INT NOT NULL, " +
@@ -143,6 +144,7 @@ void SQLStorage::CreateTable(string table){
 }
 void SQLStorage::InsertValue(string table, string vals, bool paren){
     string statement;
+
     int query_states;
     if (paren){
         statement = "INSERT INTO "+table+" VALUES " + vals +";";

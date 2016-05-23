@@ -40,16 +40,16 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
  Introduction of disease: 1 every 600 days. 
  Total population: 25000
  Epidemic time T: Number of months there are cases. Integer > 1
- Epidemic size: Sum(C(M),{M,1,T})
+ Epidemic size: Sum(C(M),{M,1,T}
 
 ****************************/
 
 // ========================= Main ======================
 
 double dt = 1;
-double tend = 2*36500;
+double tend = 36500;
 const double ageIncrement = dt/365;
-string version = "4";
+string version = "1";
 int main(){
     
 
@@ -199,18 +199,18 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     readIslandData("../Source/Faroe2.csv", &Island, islands);
     
+//    
+//    int Pop_Str = 224;
+//    int Pop_Eys = 107;
+//    int Pop_Vag = 40;
+//    int Pop_Suo = 56;
+//    int Pop_San = 22;
+//    int Pop_Bor = 59;
+//    int Pop_Vio = 15;
+//    int Pop_Kun = 12;
 
-    int Pop_Str = 224;
-    int Pop_Eys = 107;
-    int Pop_Vag = 40;
-    int Pop_Suo = 56;
-    int Pop_San = 22;
-    int Pop_Bor = 59;
-    int Pop_Vio = 15;
-    int Pop_Kun = 12;
 
-
-    /*
+    
     int Pop_Str = 1024;
     int Pop_Eys = 507;
     int Pop_Vag = 200;
@@ -219,7 +219,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     int Pop_Bor = 259;
     int Pop_Vio = 55;
     int Pop_Kun = 52;
-     */
+     
 
     /*
     int Pop_Str = 4024;
@@ -249,7 +249,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     
-    normal_distribution<double> ageDist(25,20);
+    normal_distribution<double> ageDist(70,0);
     
     normal_distribution<double> suDist(3.2,1);
     normal_distribution<double> icDist(2,0.01);
@@ -307,6 +307,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             }
             else if (ii <= Pop_Str+Pop_Eys){
                 if ((*p)->getName()=="Eysturoy"){
+
                     Person *ip = new Person(ii, name, age, state, ihd,
                                             &Island, (*p),islands,10,10,10);
                     ip->setAgeIncrement(ageIncrement);
@@ -528,6 +529,7 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
     if (File.is_open()){
         cout << "Island File opened correctly." << endl;
         
+       
         string sID;
         string name;
         string type;
@@ -535,9 +537,8 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
         string sxmax;
         string symin;
         string symax;
-    
+        
         while (File.good()){
-            
             getline(File, sID, ',');
             int ID = atoi(sID.c_str());
             
@@ -556,12 +557,11 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
             
             getline(File, symax, '\r');
             double ymax = atof(symax.c_str());
-            
+           
+            if (File.eof()) break;
             
             double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-            int x;
-            File >> x;
-
+           
             Place *h = new Place(ID, name, type, boundary, *city);
             islands.push_back(h);
             

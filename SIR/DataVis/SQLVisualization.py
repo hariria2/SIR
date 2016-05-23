@@ -1,5 +1,6 @@
 import mysql.connector
 import matplotlib.pyplot as plt
+import networkx as nx
 from math import floor, log10
 from matplotlib import rc
 from ProjectClasses import Location, Person
@@ -249,7 +250,6 @@ class SQLVisualization:
             plt.setp(ps, 'Color', self.bl, 'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered")
             plt.setp(pr, 'Color', self.gr, 'LineWidth', 4)
-
         if self._AllInfected:
             pi = plt.plot(self.T, [a+b for a,b in zip(self.P, self.I)],label="Infected")
             pn = plt.plot(self.T, self.N,label="Newly Infected")
@@ -258,9 +258,11 @@ class SQLVisualization:
         else:
             pi = plt.plot(self.T, self.P, label="Infected")
             plt.setp(pi, 'Color', self.re,'LineWidth', 4)
-            #pn = plt.plot(self.T, self.N, label="Newly Infected")
-            #plt.setp(pn, 'Color', self.bk,'LineWidth', 4)
+            pn = plt.plot(self.T, self.D, label="Dead People")
+            plt.setp(pn, 'Color', self.bk,'LineWidth', 4)
 
+            pa = plt.plot(self.T, [i+s+r+p for i,s,r,p in zip(self.I,self.S,self.R,self.P)], label="Whole population")
+            plt.setp(pa, 'Color', 'c','LineWidth', 4)
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
 
@@ -372,7 +374,6 @@ class SQLVisualization:
             sspi = sum([n for s, n in zip(sp[ii:len(sp)],ns[ii:len(sp)])])
             self._Prob.append((float(sspi)/float(ssp)))
 
-
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)
         ymax = 0
@@ -427,3 +428,23 @@ class SQLVisualization:
                 lines1, labels1 = ax1.get_legend_handles_labels()
                 lines2, labels2 = ax2.get_legend_handles_labels()
                 ax2.legend(lines1 + lines2, labels1 + labels2, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=3, mode="expand", borderaxespad=0.)
+
+    def draw_graph(self,graph,fignum):
+        h = plt.figure(fignum);
+        # extract nodes from graph
+        nodes = set([n1 for n1, n2 in graph] + [n2 for n1, n2 in graph])
+        print nodes
+        # create networkx graph
+        G=nx.Graph()
+
+        # add nodes
+        for node in nodes:
+            G.add_node(node)
+
+        # add edges
+        for edge in graph:
+            G.add_edge(edge[0], edge[1])
+
+        # draw graph
+        pos = nx.shell_layout(G)
+        nx.draw(G, pos)

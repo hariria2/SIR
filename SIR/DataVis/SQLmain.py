@@ -9,7 +9,7 @@ from SIR import SIR
 #vis = SQLVisualization('root','','localhost','sim_v4_3_23_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_3_26_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_5_17_2016')
-vis = SQLVisualization('root','','localhost','sim_v3_5_18_2016')
+vis = SQLVisualization('root','','localhost','sim_v1_5_23_2016')
 
 #sir = SIR(0,10,.1,.2,0.3,100);
 #sir.Initialize(999,1,0);
@@ -32,9 +32,10 @@ if popOnly:
     #pi = plt.plot(vis.MT,vis.MN)
     #plt.ylabel('Number of infection incidences')
 
-    #vis.PlotIndividual(3, [1,11,476])
+    #vis.PlotIndividual(3, [1])
 
 else:
+    vis.PlotHistory(3)
     vis.getMonthlyData()
     vis.getMonthlyPeaks()
 
@@ -63,4 +64,5 @@ else:
 #pi = plt.plot(vis.MT,vis.MN,'k')
 #plt.xlabel("Time (Days)",fontsize=18)
 #plt.ylabel('Number of infection incidences',fontsize=18)
+
 vis.Render()
