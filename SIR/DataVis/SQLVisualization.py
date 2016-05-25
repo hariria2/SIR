@@ -261,7 +261,7 @@ class SQLVisualization:
             pn = plt.plot(self.T, self.D, label="Dead People")
             plt.setp(pn, 'Color', self.bk,'LineWidth', 4)
 
-            pa = plt.plot(self.T, [i+s+r+p for i,s,r,p in zip(self.I,self.S,self.R,self.P)], label="Whole population")
+            pa = plt.plot(self.T, [d+i+s+r+p for d,i,s,r,p in zip(self.D,self.I,self.S,self.R,self.P)], label="Whole population")
             plt.setp(pa, 'Color', 'c','LineWidth', 4)
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")

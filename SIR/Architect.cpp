@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -64,7 +64,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(1149, 1150);
+    _introtimeDist = new uniform_int_distribution<int>(650, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -154,7 +154,8 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
     
     
-    _BirthRate = (_N>0.0)? 0.02:0.04;
+    _BirthRate = (_N>0.0)? 0.0:0.0;
+    
     bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
     cout << timeIntegerQ << endl;
     if (_Store == "MYSQL"){
@@ -173,7 +174,7 @@ void Architect::Simulate(){
                     return;
                 }
                 
-                int indx  = rand() % (_AllPlaces.size()-2);
+                int indx  = rand() % (_AllPlaces.size()-1);
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
@@ -188,7 +189,7 @@ void Architect::Simulate(){
                     uniform_real_distribution<double> ydist(ymin, ymax);
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
-                    AddPerson(x,y);
+                    //AddPerson(x,y);
                     cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
@@ -244,12 +245,12 @@ void Architect::Simulate(){
                 unsigned long start_s=clock();
         
             _Visualization->Render();
-        
-                int indx  = rand() % (_AllPlaces.size()-2);
+                
+                int indx  = rand() % (_AllPlaces.size()-1);
                 
                 introtime = (*_introtimeDist)(*_generator);
                 
-                if (timeIntegerQ){ //(_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){
+                if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6){ //(timeIntegerQ){ //
                     
                     double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
                     double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
@@ -260,7 +261,7 @@ void Architect::Simulate(){
                     uniform_real_distribution<double> ydist(ymin, ymax);
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
-                    AddPerson(x,y);
+                    //AddPerson(x,y);
                     cout << "=====================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
@@ -353,10 +354,10 @@ void Architect::Update(SQLStorage* data){
     IncrementTime();
     list<Person*> peeps;
     
-    for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); pl++){
+    for (auto pl = _AllPlaces.begin(); pl != _AllPlaces.end(); pl++){
         peeps = *(*pl)->getOccupants();
     
-        for (auto ip = peeps.cbegin(); ip != peeps.cend(); ip++){
+        for (auto ip = peeps.begin(); ip != peeps.end(); ip++){
             
             
             
@@ -375,30 +376,26 @@ void Architect::Update(SQLStorage* data){
             to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
             to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
             "),";
+            
+
             (*ip)->clearConnections();
             
-            if ((*pl)->getType()=="Cemetery"){
-//                if ((*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
-//                    Funeral(*ip);
-//                    delete (*ip);
-//                    ip=_PeoplePtr.erase(ip);
-//                }
-                
-            }
             
-            if ((*ip)->getState() == 'D'){
-                Funeral(*ip);
-                //delete (*ip);
-                //TODO Figure out this delete thing.
-                ip=_PeoplePtr.erase(ip);
-                //cout << "_PeoplePtr size: " <<_PeoplePtr.size() << endl;
-                //++ip;
+            (*ip)->setTime(_CurrentTime);
+            (*ip)->Update();
+            //if ((*ip)->getState() == 'D'){
+            
+            if ((*pl)->getType()=="Cemetery"){
+                if (_CurrentTime >= (*ip)->getTimeOfDeath()+5){
+                    Funeral(*ip);
+                    RemovePerson(*ip);
+                    delete(*ip);
+                    ip = ip++;
+                }
             }
             else{
                 (*ip)->setNeighbors(&peeps);
-                (*ip)->setTime(_CurrentTime);
                 ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-                (*ip)->Update();
             }
         }
     }
@@ -406,7 +403,7 @@ void Architect::Update(SQLStorage* data){
     
     SQLStatement.pop_back();
     data -> InsertValue("PersonValues",SQLStatement, true);
-    
+
     PopulationData();
     
 }
@@ -423,23 +420,21 @@ void Architect::Update(){
         peeps = *(*pl)->getOccupants();
         
         for (auto ip = peeps.cbegin(); ip != peeps.cend(); ip++){
-//            if ((*ip)->getState() == 'D'){
-//                Funeral(*ip);
-//                delete (*ip);
-//                ip=_PeoplePtr.erase(ip);
-//            }
+            
+            
+            (*ip)->setTime(_CurrentTime);
+            (*ip)->Update();
             if ((*pl)->getType()=="Cemetery"){
-                if (true) { //(*ip)->getAge() >= (*ip)->getLifeExpectancy()+1){
+                if (_CurrentTime > (*ip)->getTimeOfDeath()+5){
                     Funeral(*ip);
-                    delete (*ip);
-                    ip=_PeoplePtr.erase(ip);
+                    RemovePerson(*ip);
+                    delete(*ip);
+                    ip = ip++;
                 }
                 
             }else{
                 (*ip)->setNeighbors(&peeps);
-                (*ip)->setTime(_CurrentTime);
                 ((*ip)->getInHostDynamics()).setMaxInfLev(0);
-                (*ip)->Update();
             }
         }
     }
@@ -470,7 +465,9 @@ void Architect::PopulationData(){
     _D = 0;
     _N = 0;
     
-    for(auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ++ip) {
+    
+    for(auto ip = _PeoplePtr.begin(); ip != _PeoplePtr.end(); ++ip) {
+
         
         if (((*ip)->getState()) == 'I'){
             _I += 1;
@@ -492,7 +489,6 @@ void Architect::PopulationData(){
         }
         
     }
-
 }
 void Architect::RemovePerson(Person *p){
     _PeoplePtr.remove(p);
@@ -589,19 +585,20 @@ void Architect::AddPerson(double x, double y){
     
     Person* p = new Person(id, "Alplego", 20, 'S', ihd, _City, loc, availPlaces, 1,1,1);
     
-    p->setTravelerQ(true);
+    p->setTravelerQ(false);
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){
             p->setDefaultLocation(*l);
         }
     }
+    p->setTime(_CurrentTime);
     p->setNeighbors(&_PeoplePtr);
     
     double coo[2] = {x,y};
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    p->setMotionStepSize(1.1);
+    p->setMotionStepSize(0.05);
     if (_Store == "MYSQL"){
         _sqlDataPtr->InsertValue("People",
                                  "NULL, '" +
@@ -612,7 +609,7 @@ void Architect::AddPerson(double x, double y){
                                  to_string((p->getLocation())->getID()));
     }
 
-    p->setTravelerQ(true);
+    p->setTravelerQ(false);
     AddPerson(p);
     if (_Visualization != NULL) {
         _Visualization->AddPerson(p);
@@ -644,7 +641,7 @@ void Architect::AddPerson(string NewBirth){
     double dt = (p1->getInHostDynamics()).getdt();
     
     InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2,44, 40, 100);
-    ihd.setBeta(3.0);
+    ihd.setBeta(1.5);
     ihd.setDelta(0.7);
     ihd.setP(0.4);
     ihd.setC(1.0);
@@ -654,7 +651,7 @@ void Architect::AddPerson(string NewBirth){
     vector<Place*> availPlaces = p1->getAvailablePlaces();
     //vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
     
-    Person* p = new Person(id, "Alplego", 0, 'S', ihd, _City, loc, availPlaces, 1,1,1);
+    Person* p = new Person(id, "Alplego", 0, 'N', ihd, _City, loc, availPlaces, 1,1,1);
     
     for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
         if ((*l)->getType()=="Home"){

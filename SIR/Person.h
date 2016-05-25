@@ -102,14 +102,15 @@ public:
     void Die();
     
     
-	bool operator == (const Person& p) const;
+	
     
     void addSIConnection(int id);
     void addSIConnectionHist(int id);
     void addAllConnection(int id);
     void addAllConnectionHist(int id);
     
-
+    bool operator==(const Person& p) const;
+    bool operator=(Person &A) const;
 
 private:
 	

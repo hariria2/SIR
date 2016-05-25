@@ -22,9 +22,6 @@ vector<T> &operator+=(vector<T> &A, const vector<T> &B);
 void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], Domain domain);
 void getDefaultCoordinates(Place* location, double co[2]);
 void readIslandData(string FileName, Domain *city, vector<Place*> &islands);
-void readPeopleData();
-void generateSourceData();
-void updatePop(vector<Person*> p1, char s);
 
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=false, bool ShowVis=true);
 void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=true, bool ShowVis=true);
@@ -33,23 +30,13 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 
 
-/******** Data Measles *************
- 
- Sizes of distributions: 1 to 4450
- Birth rate: 1 birth per day.
- Introduction of disease: 1 every 600 days. 
- Total population: 25000
- Epidemic time T: Number of months there are cases. Integer > 1
- Epidemic size: Sum(C(M),{M,1,T}
-
-****************************/
 
 // ========================= Main ======================
 
-double dt = 1;
-double tend = 36500;
+double dt = .1;
+double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "5";
+string version = "1";
 int main(){
     
 
@@ -68,7 +55,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
     int maxdim = 115;
     int Boundary[2][2]   = {{0, 115},{0, 115}};
 
-    int population = 1000;
+    int population = 500;
     char state = 'S';
     double VirLev = 0.0;
     
@@ -159,6 +146,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
         archie.setDomain(&Main);
         archie.setPlaces(locations);
         archie.setBatchSize(1);
+        archie.setSaveIntegerTimes(true);
         archie.Simulate();
     }
     else if (ShowVis){
@@ -184,6 +172,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
         archie.setDomain(&Main);
         archie.setPlaces(locations);
         archie.setBatchSize(1);
+        archie.setSaveIntegerTimes(true);
         archie.Simulate();
     }
 
@@ -199,17 +188,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     vector<Place*> islands;
     
-    readIslandData("../Source/Faroe2.csv", &Island, islands);
-    
-
-
-    /*
-   
-    */
-     
-    /*
-    
-    */
+    readIslandData("../Source/SingleLocation1.csv", &Island, islands);
     
     char state = 'S';
     double VirLev = 0.0;
@@ -217,45 +196,34 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     
-    normal_distribution<double> ageDist(70,0);
-    
-    normal_distribution<double> suDist(3.2,0);
-    normal_distribution<double> icDist(2,0.00);
-    normal_distribution<double> betaDist(3,0.0);
-    normal_distribution<double> deltaDist(0.7,0);
-    normal_distribution<double> PDist(.4,0);
-    normal_distribution<double> CDist(1.0,0);
-    normal_distribution<double> ILDist(0.0001,0.00001);
+    normal_distribution<double> ageDist(75,10);
+    normal_distribution<double> suDist(3.2,0.1);            // Susceptibility (S)
+    normal_distribution<double> icDist(2,0.1);              // Initial Condition
+    normal_distribution<double> betaDist(1.5,0.1);          // Beta (rate of decay of T cells)
+    normal_distribution<double> deltaDist(0.7,0.05);        // Delta (rate of decay of I cells)
+    normal_distribution<double> PDist(.4,0.05);             // P (rate of growth of Virions)
+    normal_distribution<double> CDist(1.0,0.01);            // C (rate of decay of Virions)
+    normal_distribution<double> ILDist(0.0001,0.00001);     // No idea what this does
     
     vector<Person*> people;
     list<Person*> vpeople;
     
-    double randic;
-    double ict;
-    double randsu;
-    double sus;
-    double randil;
-    double il;
-    double randbeta;
-    double beta;
-    double randdelta;
-    double delta;
-    double randP;
-    double P;
-    double randC;
-    double C;
+    double randic, ict;
+    double randsu, sus;
+    double randil, il;
+    double randbeta, beta;
+    double randdelta, delta;
+    double randP, P;
+    double randC, C;
     
     for(auto p=islands.begin(); p!=islands.end();++p){
 
-        for (int ii = 0; ii < (*p)->getTotalPopulation(); ii++){
+        for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
             string name = "randomName"+to_string(ii);
             double randage  = ageDist(generator);
             double age = (randage < 1)? 1:floor(randage);
             if (ii == 1){
                 VirLev = 0.1;
-            } else {
-                VirLev = 0;
-                state = 'S';
             }
             randic  = icDist(generator);
             ict     = (randic < 0.5)? 0.5:randic;
@@ -263,6 +231,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             sus     = (randsu < 0.5)? 0.5:randsu;
             
             InHostDynamics ihd = InHostDynamics(ii,0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
+            
             randil = ILDist(generator);
             il     = (randil < 0.0005)? 0.0005:randil;
             ihd.setILRate(il);
@@ -286,7 +255,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             Person *ip = new Person(ii, name, age, state, ihd,
                                     &Island, (*p),islands,10,10,10);
             ip->setAgeIncrement(ageIncrement);
-            ip->setMotionStepSize(1.25);
+            ip->setMotionStepSize(0.05);
             people.push_back(ip);
             vpeople.push_back(ip);
         }
@@ -294,10 +263,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     }
     
   
-    srand((int) time(NULL));
-    for (int ii=0; ii < 50; ii++){
-        people[rand()%(people.size())]->setTravelerQ(true);
-    }
+//    srand((int) time(NULL));
+//    for (int ii=0; ii < 50; ii++){
+//        people[rand()%(people.size())]->setTravelerQ(true);
+//    }
     
     
     double InitialTime = 0;
@@ -434,7 +403,6 @@ void getDefaultCoordinates(Place* location, double co[2]){
     co[0] = x;
     co[1] = y;
 }
-
 void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
     ifstream File;
     File.open(FileName, ios_base::in);
@@ -489,19 +457,4 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
         cout << "File did not open correctly." << endl;
     }
 };
-
-void readPeopleData(){
-    
-}
-void generateSourceData(){
-    
-}
-void updatePop(vector<Person*> p1, char s){
-    for (auto ip = p1.cbegin(); ip != p1.cend(); ++ip){
-        if ((*ip)->getState() != s){
-            (*ip)->setState(s);
-            break;
-        }
-    }
-}
 // ========================= End utilities ======================================

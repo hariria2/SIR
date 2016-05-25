@@ -9,7 +9,8 @@ from SIR import SIR
 #vis = SQLVisualization('root','','localhost','sim_v4_3_23_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_3_26_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_5_17_2016')
-vis = SQLVisualization('root','','localhost','sim_v4_5_23_2016')
+#vis = SQLVisualization('root','','localhost','sim_v6_5_23_2016')
+vis = SQLVisualization('root','','localhost','sim_v1_5_25_2016')
 
 #sir = SIR(0,10,.1,.2,0.3,100);
 #sir.Initialize(999,1,0);
@@ -22,7 +23,7 @@ vis._AllPopulations = True;
 vis._PeaksOnly = False;
 vis.getHistoryData()
 
-popOnly = False;
+popOnly = True;
 
 
 if popOnly:

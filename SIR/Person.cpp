@@ -340,7 +340,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = 50;
+    double criticalDistance = 15;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
@@ -434,10 +434,15 @@ void Person::Die(){
     _TimeOfDeath = _Time;
 }
 
+
+bool Person::operator=(Person &A) const{
+    return (this->getState() == A.getState());
+}
+
 bool Person::operator == (const Person& p) const {
 	return (p._ID == this->_ID);
 }
 Person::~Person(){
     delete _generator;
-    delete this;
+    //delete this;
 }
