@@ -274,6 +274,9 @@ void Person::Update(){
     }
     if (_State != 'D') {
         if (_Age >= _LifeExpectancy){
+            if (_State == 'D') {
+             cout << "This guy is problematic" << _ID << endl;
+            }
             Move((rand() % 360),4*0, "IslandHopper");
             Die();
         }

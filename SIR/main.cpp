@@ -33,7 +33,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = .1;
+double dt = 1;
 double tend = 36000;
 const double ageIncrement = dt/365;
 string version = "1";
@@ -188,7 +188,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     vector<Place*> islands;
     
-    readIslandData("../Source/SingleLocation1.csv", &Island, islands);
+    readIslandData("../Source/Faroe1.csv", &Island, islands);
     
     char state = 'S';
     double VirLev = 0.0;
@@ -404,6 +404,7 @@ void getDefaultCoordinates(Place* location, double co[2]){
     co[1] = y;
 }
 void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
+    
     ifstream File;
     File.open(FileName, ios_base::in);
     
@@ -443,10 +444,11 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
             getline(File, spop, '\r');
             int pop = atof(spop.c_str());
            
+            
             if (File.eof()) break;
             
             double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-           
+            cout << "Population " << xmin << endl;
             Place *h = new Place(ID, name, type, boundary, *city, pop);
             islands.push_back(h);
             

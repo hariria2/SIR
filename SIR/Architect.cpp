@@ -154,7 +154,7 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
     
     
-    _BirthRate = (_N>0.0)? 0.0:0.0;
+    _BirthRate = (_N>0.0)? 0.1:0.3;
     
     bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
     cout << timeIntegerQ << endl;
@@ -189,7 +189,7 @@ void Architect::Simulate(){
                     uniform_real_distribution<double> ydist(ymin, ymax);
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
-                    //AddPerson(x,y);
+                    AddPerson(x,y);
                     cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
@@ -232,7 +232,7 @@ void Architect::Simulate(){
                         cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 } else if (_BirthRate>0){
-                    if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
+                    if (fmod(_CurrentTime/_TimeStep, floor(1/_BirthRate)) == 0 ){
                         AddPerson("NewBirth");
                         cout << "============>>>>>New birth<<<<============" << endl;
                     }
@@ -261,7 +261,7 @@ void Architect::Simulate(){
                     uniform_real_distribution<double> ydist(ymin, ymax);
                     double x = xdist(*_generator);
                     double y = ydist(*_generator);
-                    //AddPerson(x,y);
+                    AddPerson(x,y);
                     cout << "=====================>>>>>Traveler arrived<<<<<==============" << endl;
                 }
                 
@@ -297,13 +297,15 @@ void Architect::Simulate(){
                 }
                 Update(_sqlDataPtr);
                 
+                
+                
                 if (_BirthRate >= 1){
                     for (int i = 0; i<_BirthRate; i++){
                         AddPerson("NewBirth");
                         cout << "============>>>>>New birth<<<<============" << endl;
                     }
                 } else if (_BirthRate>0){
-                    if (fmod(_CurrentTime, floor(1/_BirthRate)) == 0 ){
+                    if (fmod(_CurrentTime/_TimeStep, floor(1/_BirthRate)) == 0 ){
                         AddPerson("NewBirth");
                         cout << "============>>>>>New birth<<<<============" << endl;
                     }
@@ -317,6 +319,7 @@ void Architect::Simulate(){
         }
     }
 	else{
+        
         while (!glfwWindowShouldClose(_Visualization->getWindow())){
             unsigned long start_s=clock();
             if (_CurrentTime - floor(_CurrentTime) < _TimeStep){
@@ -377,20 +380,29 @@ void Architect::Update(SQLStorage* data){
             to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
             "),";
             
+            if ((*ip)->getAge() > 1000 | (*ip)->getAge() < 0){
+                cout << (*ip)->getAge()  << endl;
+                cout << "this is the id: " << (*ip)->getAge()  << endl;
+                int a;
+                cin >> a;
+            }
 
             (*ip)->clearConnections();
             
             
             (*ip)->setTime(_CurrentTime);
             (*ip)->Update();
-            //if ((*ip)->getState() == 'D'){
             
             if ((*pl)->getType()=="Cemetery"){
-                if (_CurrentTime >= (*ip)->getTimeOfDeath()+5){
+                if (_CurrentTime >= (*ip)->getTimeOfDeath()+15){
                     Funeral(*ip);
                     RemovePerson(*ip);
                     delete(*ip);
-                    ip = ip++;
+                    if (ip == _PeoplePtr.end()){
+                        break;
+                    } else {
+                        ip = ip++;
+                    }
                 }
             }
             else{
@@ -425,11 +437,15 @@ void Architect::Update(){
             (*ip)->setTime(_CurrentTime);
             (*ip)->Update();
             if ((*pl)->getType()=="Cemetery"){
-                if (_CurrentTime > (*ip)->getTimeOfDeath()+5){
+                if (_CurrentTime > (*ip)->getTimeOfDeath()+15){
                     Funeral(*ip);
                     RemovePerson(*ip);
                     delete(*ip);
-                    ip = ip++;
+                    if (ip == _PeoplePtr.end()){
+                        break;
+                    } else {
+                        ip = ip++;
+                    }
                 }
                 
             }else{
@@ -566,8 +582,6 @@ void Architect::AddPerson(double x, double y){
     
     unsigned long s = _PeoplePtr.size();
     int id = (int) s + 1;
-    cout << "Size of ppl ptr " << _PeoplePtr.size() <<endl;
-    cout << "Is empty? " << _PeoplePtr.empty() << endl;
     Person* p1 = _PeoplePtr.front();
     double dt = (p1->getInHostDynamics()).getdt();
     
@@ -592,6 +606,7 @@ void Architect::AddPerson(double x, double y){
         }
     }
     p->setTime(_CurrentTime);
+    p->setAgeIncrement(_TimeStep/365);
     p->setNeighbors(&_PeoplePtr);
     
     double coo[2] = {x,y};
@@ -661,6 +676,8 @@ void Architect::AddPerson(string NewBirth){
     double coo[2] = {x,y};
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
+    p->setAgeIncrement(_TimeStep/365);
+    p->setNeighbors(&_PeoplePtr);
     //p->setTravelerQ(true);
     //p->setHasBeenSick(1);
     if (_Store == "MYSQL"){
