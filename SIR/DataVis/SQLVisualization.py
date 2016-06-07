@@ -70,8 +70,6 @@ class SQLVisualization:
         peaktimes = []
         peak = self.MN[0];
         for idx,pq in enumerate(self.MN):
-
-
             if pq > 0:
                 peak += pq
             else:

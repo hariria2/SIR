@@ -10,7 +10,7 @@ from SIR import SIR
 #vis = SQLVisualization('root','','localhost','sim_v1_3_26_2016')
 #vis = SQLVisualization('root','','localhost','sim_v1_5_17_2016')
 #vis = SQLVisualization('root','','localhost','sim_v6_5_23_2016')
-vis = SQLVisualization('root','','localhost','sim_v1_5_27_2016')
+vis = SQLVisualization('root','','localhost','sim_v5_5_27_2016')
 
 #sir = SIR(0,10,.1,.2,0.3,100);
 #sir.Initialize(999,1,0);

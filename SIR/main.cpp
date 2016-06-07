@@ -33,14 +33,14 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = 1;
+double dt = .1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "5";
 int main(){
     
 
-    FaroeIslands(tend, dt, version, true, false);
+    FaroeIslands(tend, dt, version, true, true);
     //SingleLocation(tend, dt, version, true, false);
     
     
@@ -188,7 +188,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     
     vector<Place*> islands;
     
-    readIslandData("../Source/Faroe1.csv", &Island, islands);
+    readIslandData("../Source/Faroe2.csv", &Island, islands);
     
     char state = 'S';
     double VirLev = 0.0;
@@ -196,13 +196,13 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
     unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     
-    normal_distribution<double> ageDist(75,10);
-    normal_distribution<double> suDist(3.2,0.1);            // Susceptibility (S)
+    normal_distribution<double> ageDist(40,10);
+    normal_distribution<double> suDist(3.0,0.1);            // Susceptibility (S)
     normal_distribution<double> icDist(2,0.1);              // Initial Condition
-    normal_distribution<double> betaDist(1.5,0.1);          // Beta (rate of decay of T cells)
-    normal_distribution<double> deltaDist(0.7,0.05);        // Delta (rate of decay of I cells)
-    normal_distribution<double> PDist(.4,0.05);             // P (rate of growth of Virions)
-    normal_distribution<double> CDist(1.0,0.01);            // C (rate of decay of Virions)
+    normal_distribution<double> betaDist(0.5,0.05);          // Beta (rate of decay of T cells)
+    normal_distribution<double> deltaDist(0.5,0.05);        // Delta (rate of decay of I cells)
+    normal_distribution<double> PDist(.2,0.05);             // P (rate of growth of Virions)
+    normal_distribution<double> CDist(.7,0.01);            // C (rate of decay of Virions)
     normal_distribution<double> ILDist(0.0001,0.00001);     // No idea what this does
     
     vector<Person*> people;
@@ -225,6 +225,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             if (ii == 1){
                 VirLev = 0.1;
             }
+
             randic  = icDist(generator);
             ict     = (randic < 0.5)? 0.5:randic;
             randsu  = suDist(generator);
@@ -255,16 +256,17 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
             Person *ip = new Person(ii, name, age, state, ihd,
                                     &Island, (*p),islands,10,10,10);
             ip->setAgeIncrement(ageIncrement);
-            ip->setMotionStepSize(0.05);
+            ip->setMotionStepSize(0.1);
             people.push_back(ip);
             vpeople.push_back(ip);
+
         }
         
     }
     
   
 //    srand((int) time(NULL));
-//    for (int ii=0; ii < 50; ii++){
+//    for (int ii=0; ii < 3; ii++){
 //        people[rand()%(people.size())]->setTravelerQ(true);
 //    }
     

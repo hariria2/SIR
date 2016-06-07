@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
     _Store        = store;
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -64,7 +64,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
     setVisualization(vis);
     PopulationData();
     _generator = new default_random_engine(_RandSeed);
-    _introtimeDist = new uniform_int_distribution<int>(650, 950);
+    _introtimeDist = new uniform_int_distribution<int>(850, 950);
     for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
         (*ip)->setNeighbors(&_PeoplePtr);
     }
@@ -154,7 +154,7 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
     
     
-    _BirthRate = (_N>0.0)? 0.1:0.3;
+    _BirthRate = (_N>0.0)? 0.0:0.04;
     
     bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
     cout << timeIntegerQ << endl;
@@ -613,7 +613,7 @@ void Architect::AddPerson(double x, double y){
     p->setCoordinates(coo);
     p->setTime(_CurrentTime);
     //p->setHasBeenSick(1);
-    p->setMotionStepSize(0.05);
+    p->setMotionStepSize(0.1);
     if (_Store == "MYSQL"){
         _sqlDataPtr->InsertValue("People",
                                  "NULL, '" +
@@ -678,6 +678,7 @@ void Architect::AddPerson(string NewBirth){
     p->setTime(_CurrentTime);
     p->setAgeIncrement(_TimeStep/365);
     p->setNeighbors(&_PeoplePtr);
+    p->setMotionStepSize(0.01);
     //p->setTravelerQ(true);
     //p->setHasBeenSick(1);
     if (_Store == "MYSQL"){

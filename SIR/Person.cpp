@@ -257,7 +257,7 @@ void Person::Update(){
     if (_State == 'P' | _State == 'I'){
         Move((rand() % 360),_MotionStepSize, "IslandHopper");
     }else{
-        Move((rand() % 360),4*_MotionStepSize, "IslandHopper");
+        Move((rand() % 360),2*_MotionStepSize, "IslandHopper");
     }
     
     if (_State != 'D'){
@@ -274,10 +274,7 @@ void Person::Update(){
     }
     if (_State != 'D') {
         if (_Age >= _LifeExpectancy){
-            if (_State == 'D') {
-             cout << "This guy is problematic" << _ID << endl;
-            }
-            Move((rand() % 360),4*0, "IslandHopper");
+            Move((rand() % 360),0, "IslandHopper");
             Die();
         }
     }
@@ -343,7 +340,7 @@ void Person::UpdateDiseaseWithInHost(){
     
     //list<Person*>* peeps = _Location->getOccupants();
     
-    double criticalDistance = 15;
+    double criticalDistance = 30;
     
     /*
     for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
@@ -370,12 +367,12 @@ void Person::UpdateDiseaseWithInHost(){
     }
     
     _ihdynamics.setT0(_Time);
-    _ihdynamics.setNE(0.01*totalVirion);
+    _ihdynamics.setNE(totalVirion);
     _ihdynamics.Simulate();
     
     if ((getState()=='R') & !(getHasBeenSick())) {
         if (_ihdynamics.getT() > 1.8){
-            setState('S');
+            //setState('S');
         }
     }
     else if (getState() == 'S'){
