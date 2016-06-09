@@ -465,7 +465,7 @@ void Person::UpdateDiseaseWithInHost(){
             setState('P');
             setHasBeenSick(1);
             _ihdynamics.HasBeenSick = 1;
-        }else if (_ihdynamics.getI() > 2.8){
+        }else if (_ihdynamics.getI() > 2.4 ){
             setState('D');
         }
         else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){

@@ -93,7 +93,7 @@ void CityPlan(bool SaveData){
         int age = (randage < 1)? 1:floor(randage);
         
         if (i == 1){
-            VirLev = 0.1;
+            VirLev = 0.0;
         } else {
             VirLev = 0;
             state = 'S';
