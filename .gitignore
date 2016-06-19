@@ -7,3 +7,4 @@ Literature/
 Results/res*
 WeeklyReport/
 Paper/
+*.pyc
