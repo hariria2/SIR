@@ -208,12 +208,22 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib/,
+					/usr/local/Cellar/mysql/5.7.13/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lz",
+					"-lm",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -246,11 +256,21 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib/,
+					/usr/local/Cellar/mysql/5.7.13/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lz",
+					"-lm",
+				);
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -260,13 +280,13 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glfw3/3.1.1/include,
+					/usr/local/Cellar/glfw3/3.1.2/include,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/mysql/5.6.26/lib,
-					/usr/local/Cellar/glfw3/3.1.1/lib,
+					/usr/local/Cellar/glfw3/3.1.2/lib,
+					/usr/local/Cellar/mysql/5.7.13/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lmysqlclient",
@@ -283,13 +303,13 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glfw3/3.1.1/include,
+					/usr/local/Cellar/glfw3/3.1.2/include,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/mysql/5.6.26/lib,
-					/usr/local/Cellar/glfw3/3.1.1/lib,
+					/usr/local/Cellar/glfw3/3.1.2/lib,
+					/usr/local/Cellar/mysql/5.7.13/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lmysqlclient",
