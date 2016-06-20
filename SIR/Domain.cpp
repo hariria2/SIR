@@ -16,7 +16,7 @@ using namespace std;
 Domain::Domain(){
 }
 Domain::Domain(string name, int boundary[2][2]){
-    
+	
 	setName(name);
 	setBoundary(boundary);
 }// end constructor
@@ -41,5 +41,5 @@ string Domain::getName(){
 }
 
 Domain::~Domain(){
-
+	
 } // end destructor
