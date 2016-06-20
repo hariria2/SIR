@@ -502,11 +502,7 @@ void Architect::PopulationData(){
 		}
 		else if(((*ip)->getState()) == 'D'){
 			_D += 1;
-		}
-		else {
-			cout << "mystery man: " << (*ip)->getState() << endl;
-		}
-		
+		}	
 	}
 	cout << "Total pop by tallying categories " << _I + _P + _S + _R + _D << endl;
 	cout << "Total pop by the length of the zectore: " << _PeoplePtr.size() << endl;

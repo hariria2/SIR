@@ -22,16 +22,9 @@ class Person {
 public:
 	bool IsSingleLocation;
 	
-	Person(int id, string name, double age,
-				 char state,  InHostDynamics ihd,
-				 Domain* city, Place* Location, vector<Place*> availplaces,
-				 int inf_var, int inc_var, int rec_var);
+	Person(int id, string name, double age,char state, InHostDynamics ihd, Domain* city, Place* Location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var);
 	
-	Person(int id, string name, double age,
-				 char state, InHostDynamics ihd,
-				 Domain* city,vector<Place*> availplaces,
-				 int inf_var, int inc_var, int rec_var,
-				 bool IsSingleLocation);
+	Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city,vector<Place*> availplaces, int inf_var, int inc_var, int rec_var, bool IsSingleLocation);
 	
 	~Person();
 	// Setters

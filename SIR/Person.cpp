@@ -8,10 +8,7 @@
 
 #include "Person.h"
 
-Person::Person(int id, string name, double age,
-							 char state, InHostDynamics ihd,
-							 Domain* city, Place* location, vector<Place*> availplaces,
-							 int inf_var, int inc_var, int rec_var):
+Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city, Place* location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var):
 _ihdynamics(ihd),
 _City(city),
 _Location(location),
@@ -40,11 +37,7 @@ _AvailablePlaces(availplaces)
 }// end constructor
 
 
-Person::Person(int id, string name, double age,
-							 char state, InHostDynamics ihd,
-							 Domain* city,vector<Place*> availplaces,
-							 int inf_var, int inc_var, int rec_var,
-							 bool isSingleLocation):
+Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city,vector<Place*> availplaces, int inf_var, int inc_var, int rec_var, bool isSingleLocation):
 _ihdynamics(ihd),
 _AvailablePlaces(availplaces)
 {
