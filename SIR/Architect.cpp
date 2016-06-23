@@ -1,4 +1,4 @@
-/*
+/** 
  * Architect.cpp
  *
  *  Created on: Jan 9, 2015
@@ -352,7 +352,9 @@ void Architect::Simulate(){
 	cout << "Simulation Complete. Thank you...!" << endl;
 }
 void Architect::Update(SQLStorage* data){
-	
+	/**
+	 * \callergraph
+	 */
 	string SQLStatement;
 	IncrementTime();
 	list<Person*> peeps;

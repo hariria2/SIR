@@ -1,10 +1,3 @@
-/*
- * Person.h
- *
- *  Created on: Jan 6, 2015
- *      Author: Sahand
- */
-
 #ifndef PERSON_H_
 #define PERSON_H_
 
@@ -19,6 +12,15 @@ using namespace std;
 class Place;
 
 class Person {
+
+/*
+ * Person.cpp
+ *
+ * \date   Jan 6, 2015
+ * \author Sahand
+ *
+ */
+
 public:
 	bool IsSingleLocation;
 	

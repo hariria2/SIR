@@ -10,7 +10,6 @@
 #include "SQLStorage.h"
 #include <thread>
 
-
 using namespace std;
 
 // Function prototyping
@@ -33,14 +32,19 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = 1;
+double dt = .1;
 double tend = 36000;
 const double ageIncrement = dt/365;
 string version = "1";
 int main(){
+	/** 
+	 * \brief Brief description.
+	 *         Brief description continued.
+	 *
+	 *  Detailed description starts here.
+	 */
 	
-	
-	FaroeIslands(tend, dt, version, true, false);
+	FaroeIslands(tend, dt, version, true, true);
 	//SingleLocation(tend, dt, version, true, false);
 	
 	
@@ -188,7 +192,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	
 	vector<Place*> islands;
 	
-	readIslandData("../Source/Faroe1.csv", &Island, islands);
+	readIslandData("/Users/sahand/Research/SIR/Source/Faroe1.csv", &Island, islands);
 	
 	char state = 'S';
 	double VirLev = 0.0;

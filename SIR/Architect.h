@@ -1,10 +1,3 @@
-/*
- * Architect.h
- *
- *  Created on: Jan 9, 2015
- *      Author: Sahand
- */
-
 #ifndef ARCHITECT_H_
 #define ARCHITECT_H_
 
@@ -24,6 +17,13 @@ using namespace std;
 class Visualization;
 
 class Architect {
+	/**
+	 * Architect.h
+	 *
+	 *  \date Jan 9, 2015
+	 *
+	 *  \author Sahand
+	 */
 public:
 	
 	Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis);
@@ -34,8 +34,11 @@ public:
 	
 	
 	// Setters
+	/// setDomain Docs
 	void setDomain(Domain *city);
+	/// setPlaces Docs
 	void setPlaces(vector<Place*> places);
+	///setVisualization Docs
 	void setVisualization(Visualization* vis);
 	void setBatchSize(int btchsz);
 	void setSaveIntegerTimes(bool siono);

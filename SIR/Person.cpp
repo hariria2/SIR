@@ -1,11 +1,3 @@
-/*
- * Person.cpp
- *
- *  Created on: Jan 6, 2015
- *      Author: Sahand
- */
-
-
 #include "Person.h"
 
 Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city, Place* location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var):
@@ -71,6 +63,7 @@ void Person::setAge(double age){
 }
 void Person::setAgeIncrement(double ai){
 	_AgeIncrement = ai;
+	cout << "Age Increment: " << _AgeIncrement << endl;
 }
 void Person::setHasBeenSick(int hbs){
 	_HasBeenSick = hbs;
@@ -247,10 +240,14 @@ void Person::clearConnections(){
 }
 
 void Person::Update(){
+	/**
+	 * \callergraph
+	 * \todo
+	 */
 	if (_State == 'P' | _State == 'I'){
-		Move((rand() % 360),_MotionStepSize, "IslandHopper");
+		Move((rand() % 360)+20,_MotionStepSize, "IslandHopper");
 	}else{
-		Move((rand() % 360),2*_MotionStepSize, "IslandHopper");
+		Move((rand() % 360)+2,2*_MotionStepSize, "IslandHopper");
 	}
 	
 	if (_State != 'D'){
@@ -275,6 +272,10 @@ void Person::Update(){
 
 // Utilities
 void Person::Move(double theta, double r, string motionType){
+	/**
+	 * \callgraph
+	 */
+
 	//int hour    = floor(_Time);
 	//double min  = _Time - hour;
 	//double DailyTime = ((hour % 24) + min);

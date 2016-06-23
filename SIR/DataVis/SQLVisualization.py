@@ -261,7 +261,7 @@ class SQLVisualization:
             ps = plt.plot(self.T, self.S, label="Susceptible People")
             plt.setp(ps, 'Color', self.bl,'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered People")
-            plt.setp(pn, 'Color', self.gr,'LineWidth', 4)
+            plt.setp(pr, 'Color', self.gr,'LineWidth', 4)
 
             pa = plt.plot(self.T, [d+i+s+r+p for d,i,s,r,p,n in zip(self.D,self.I,self.S,self.R,self.P,self.N)], label="Whole population")
             plt.setp(pa, 'Color', 'c','LineWidth', 4)
