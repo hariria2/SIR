@@ -154,7 +154,7 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
 	
 	
-	_BirthRate = (_N>0.0)? 0.05: .1;
+	_BirthRate = (_N>0.0)? 0.01: .03;
 	
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
@@ -487,7 +487,7 @@ void Architect::PopulationData(){
 		else if(((*ip)->getState()) == 'P'){
 			_P += 1;
 		}
-		else if(((*ip)->getState()) == 'S'){
+		else if(((*ip)->getState()) == 'S' | ((*ip)->getState()) == 'N'){
 			_S += 1;
 		}
 		else if(((*ip)->getState()) == 'R'){
@@ -578,8 +578,8 @@ void Architect::AddPerson(double x, double y){
 	double dt = (p1->getInHostDynamics()).getdt();
 	
 	InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.3, 2,44, 40, 100);
-	ihd.setBeta(0.2);
-	ihd.setDelta(0.03);
+	ihd.setBeta(0.1);
+	ihd.setDelta(0.1);
 	ihd.setP(0.4);
 	ihd.setC(0.5);
 	ihd.setILRate(0.001);
@@ -593,12 +593,13 @@ void Architect::AddPerson(double x, double y){
 	
 	p->setTravelerQ(false);
 	p->setTime(_CurrentTime);
+	p->setTimeStep(_TimeStep);
 	p->setAgeIncrement(_TimeStep/365);
 	p->setNeighbors(&_PeoplePtr);
 	
 	double coo[2] = {x,y};
 	p->setCoordinates(coo);
-	p->setHasBeenSick(1);
+	p->setHasBeenSick(0);
 	p->setMotionStepSize(0.1);
 
 	if (_Store == "MYSQL"){
@@ -642,8 +643,8 @@ void Architect::AddPerson(string NewBirth){
 	double dt = (p1->getInHostDynamics()).getdt();
 	
 	InHostDynamics ihd = InHostDynamics(id,dt, 0, 0, 0, 2,44, 40, 100);
-	ihd.setBeta(1.5);
-	ihd.setDelta(0.7);
+	ihd.setBeta(0.1);
+	ihd.setDelta(0.1);
 	ihd.setP(0.4);
 	ihd.setC(1.0);
 	ihd.setILRate(0.001);
@@ -662,11 +663,12 @@ void Architect::AddPerson(string NewBirth){
 	double coo[2] = {x,y};
 	p->setCoordinates(coo);
 	p->setTime(_CurrentTime);
+	p->setTimeStep(_TimeStep);
 	p->setAgeIncrement(_TimeStep/365);
 	p->setNeighbors(&_PeoplePtr);
 	p->setMotionStepSize(0.01);
 	//p->setTravelerQ(true);
-	//p->setHasBeenSick(1);
+	p->setHasBeenSick(0);
 	if (_Store == "MYSQL"){
 		_sqlDataPtr->InsertValue("People",
 														 "NULL, '" +

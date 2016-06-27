@@ -171,10 +171,13 @@ void Person::setNeighbors(list<Person *> *n){
 }
 void Person::setAgeInteraction(){
 	_AgeInteraction["CC"]=0.01;
-	_AgeInteraction["TT"]=0.8;
+	_AgeInteraction["TT"]=1;
 	_AgeInteraction["YY"]=0.6;
-	_AgeInteraction["AA"]=0.6;
+	_AgeInteraction["AA"]=1;
 	_AgeInteraction["SS"]=.4;
+	_AgeInteraction["CY"]=1;
+	_AgeInteraction["AC"]=.0;
+	_AgeInteraction["SC"]=0.;
 }
 void Person::setAgeGroup(){
 	if (_Age < 10)
@@ -324,7 +327,7 @@ void Person::Update(){
 // Utilities
 void Person::InteractWithOthers(){
 	double criticalDistance  = 20;
-	double criticalDistanceD = 10;
+	double criticalDistanceD = 2;
 	
 	double motionBias[2];
 	double* r;

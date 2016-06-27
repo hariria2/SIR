@@ -263,7 +263,7 @@ class SQLVisualization:
             pr = plt.plot(self.T, self.R, label="Recovered People")
             plt.setp(pr, 'Color', self.gr,'LineWidth', 4)
 
-            pa = plt.plot(self.T, [d+i+s+r+p for d,i,s,r,p,n in zip(self.D,self.I,self.S,self.R,self.P,self.N)], label="Whole population")
+            pa = plt.plot(self.T, [d+i+s+r+p+n for d,i,s,r,p,n in zip(self.D,self.I,self.S,self.R,self.P,self.N)], label="Whole population")
             plt.setp(pa, 'Color', 'c','LineWidth', 4)
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")
