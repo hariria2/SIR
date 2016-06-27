@@ -32,7 +32,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = .1;
+double dt = 0.1;
 double tend = 36000;
 const double ageIncrement = dt/365;
 string version = "1";
@@ -120,6 +120,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
 														&Main, locations,10,10,10, true);
 		ip->setAgeIncrement(ageIncrement);
 		ip->setMotionStepSize(3.6);
+		ip->setTimeStep(dt);
 		people.push_back(ip);
 		vpeople.push_back(ip);
 		
@@ -200,7 +201,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 	
-	normal_distribution<double> ageDist(40,10);
+	normal_distribution<double> ageDist(40,30);
 	normal_distribution<double> suDist(3.0,0.1);            // Susceptibility (S)
 	normal_distribution<double> icDist(2,0.1);              // Initial Condition
 	normal_distribution<double> betaDist(0.5,0.05);          // Beta (rate of decay of T cells)
@@ -261,6 +262,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 															&Island, (*p),islands,10,10,10);
 			ip->setAgeIncrement(ageIncrement);
 			ip->setMotionStepSize(0.1);
+			ip->setTimeStep(dt);
 			people.push_back(ip);
 			vpeople.push_back(ip);
 			

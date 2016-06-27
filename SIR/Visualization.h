@@ -79,7 +79,8 @@ public:
     
     
 private:
-    
+
+
     list<Person*> _People;
     vector<Place*>  _Places;
     vector<double> _TT;
@@ -108,6 +109,7 @@ private:
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
     static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
 
 };
 

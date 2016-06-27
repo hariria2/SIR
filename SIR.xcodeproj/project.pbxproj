@@ -13,7 +13,7 @@
 		D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D71AB36B3A00726652 /* Domain.cpp */; };
 		D8B403E51AB36B3A00726652 /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D91AB36B3A00726652 /* Person.cpp */; };
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
-		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; };
+		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A21BCF173200FE27FA /* OpenGL.framework */; };
 		D8E077A51BCF173A00FE27FA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A41BCF173A00FE27FA /* GLUT.framework */; };
 		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
@@ -45,7 +45,7 @@
 		D8B403DB1AB36B3A00726652 /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Place.cpp; sourceTree = "<group>"; };
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
-		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualization.h; sourceTree = "<group>"; };
+		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; lineEnding = 0; path = Visualization.h; sourceTree = "<group>"; };
 		D8E077A21BCF173200FE27FA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		D8E077A41BCF173A00FE27FA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };

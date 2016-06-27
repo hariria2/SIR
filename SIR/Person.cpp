@@ -12,6 +12,7 @@ _AvailablePlaces(availplaces)
 	setName(name);
 	setState(state);
 	_Time = 0;
+	_TimeStep = 1;
 	_TimeInfected = 0;
 	setInfVar(inf_var);
 	setIncVar(inc_var);
@@ -25,6 +26,8 @@ _AvailablePlaces(availplaces)
 	setDefaultLocation(location);
 	uniform_real_distribution<double> LE(77,82);
 	setLifeExpectancy(LE(*_generator));
+	setAgeInteraction();
+	setAgeGroup();
 	
 }// end constructor
 
@@ -39,6 +42,7 @@ _AvailablePlaces(availplaces)
 	setName(name);
 	setState(state);
 	_Time = 0;
+	_TimeStep = 1;
 	_TimeInfected = 0;
 	setInfVar(inf_var);
 	setIncVar(inc_var);
@@ -52,18 +56,28 @@ _AvailablePlaces(availplaces)
 	setGender('M');
 	uniform_real_distribution<double> LE(77,82);
 	setLifeExpectancy(LE(*_generator));
+	setAgeInteraction();
+	setAgeGroup();
 }
 
 // Setters
 void Person::setID(int id){
 	_ID = id;
 }
+void Person::setX(double x){
+	_X = x;
+}
+void Person::setY(double y){
+	_Y = y;
+}
+void Person::setTimeStep(double ts){
+	_TimeStep = ts;
+}
 void Person::setAge(double age){
 	_Age = age;
 }
 void Person::setAgeIncrement(double ai){
 	_AgeIncrement = ai;
-	cout << "Age Increment: " << _AgeIncrement << endl;
 }
 void Person::setHasBeenSick(int hbs){
 	_HasBeenSick = hbs;
@@ -78,6 +92,8 @@ void Person::setCoordinates(double coordinates[2]){
 	for (int ii=0; ii<2; ii++){
 		_Coordinates[ii] = coordinates[ii];
 	}
+	setX(_Coordinates[0]);
+	setY(_Coordinates[1]);
 }
 void Person::setState(char state){
 	_State = state;
@@ -102,7 +118,6 @@ void Person::setLocation(Place* location){
 	double Co[2] = {x,y};
 	
 	setCoordinates(Co);
-	
 }
 
 void Person::setDefaultLocation(Place* location){
@@ -154,10 +169,48 @@ void Person::setTravelerQ(bool tq){
 void Person::setNeighbors(list<Person *> *n){
 	_Neighbors = n;
 }
+void Person::setAgeInteraction(){
+	_AgeInteraction["CC"]=0.01;
+	_AgeInteraction["TT"]=0.8;
+	_AgeInteraction["YY"]=0.6;
+	_AgeInteraction["AA"]=0.6;
+	_AgeInteraction["SS"]=.4;
+}
+void Person::setAgeGroup(){
+	if (_Age < 10)
+	{
+		_AgeGroup = 'C';
+	}
+	else if (_Age < 20)
+	{
+		_AgeGroup = 'T';
+	}
+	else if (_Age < 40)
+	{
+		_AgeGroup = 'Y';
+	}
+	else if (_Age < 65)
+	{
+		_AgeGroup = 'A';
+	}
+	else
+	{
+		_AgeGroup = 'S';
+	}
+}
 
 // Getters
 int Person::getID(){
 	return _ID;
+}
+double Person::getX(){
+	return _X;
+}
+double Person::getY(){
+	return _Y;
+}
+double Person::getTimeStep(){
+	return _TimeStep;
 }
 double Person::getAge(){
 	return _Age;
@@ -231,6 +284,9 @@ InHostDynamics Person::getInHostDynamics() const{
 bool Person::getTraverlerQ(){
 	return _TravelerQ;
 }
+char Person::getAgeGroup(){
+	return _AgeGroup;
+}
 string Person::getConnections(){
 	return _Connections;
 }
@@ -244,42 +300,92 @@ void Person::Update(){
 	 * \callergraph
 	 * \todo
 	 */
-	if (_State == 'P' | _State == 'I'){
-		Move((rand() % 360)+20,_MotionStepSize, "IslandHopper");
-	}else{
-		Move((rand() % 360)+2,2*_MotionStepSize, "IslandHopper");
-	}
-	
-	if (_State != 'D'){
-		UpdateDiseaseWithInHost();
-	}
-	
+
 	_Age += _AgeIncrement;
-	
-	if ((_Age >= 10) & (_Age - 0.1 < 15)){
-		if (getState() == 'N'){
-			setState('S');
-			_ihdynamics.setT(3);
+
+	if (_State != 'D'){
+		InteractWithOthers();
+		Move();
+		UpdateDiseaseWithInHost();
+
+		if ((_Age >= 10) & (_Age - 0.1 < 15)){
+			if (getState() == 'N'){
+				setState('S');
+				_ihdynamics.setT(3);
+			}
 		}
-	}
-	if (_State != 'D') {
+
 		if (_Age >= _LifeExpectancy){
-			Move((rand() % 360),0, "IslandHopper");
 			Die();
 		}
 	}
 }
 
 // Utilities
-void Person::Move(double theta, double r, string motionType){
+void Person::InteractWithOthers(){
+	double criticalDistance  = 20;
+	double criticalDistanceD = 10;
+	
+	double motionBias[2];
+	double* r;
+	double dist;
+	double theta;
+
+	_TotalVirion = 0;
+	_MotionBiasX = 0;
+	_MotionBiasY = 0;
+
+	for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
+		r     = CartesianDistance(*ip);
+		dist  = sqrt(r[0]*r[0]+r[1]*r[1]);//r[0];
+		theta = atan2(r[1],r[0]);//r[1];
+
+		if (dist != 0 & dist < criticalDistance){
+			computeMotionEffect(r,(*ip)->getAgeGroup(),motionBias);
+			_MotionBiasX += motionBias[0];
+			_MotionBiasY += motionBias[1];
+
+			//_Connections.append("," + to_string((*ip)->getID()));
+		}
+		if (dist != 0 & dist < criticalDistanceD){
+			_TotalVirion += ((*ip)->_ihdynamics.getV())/(dist*dist);
+		}
+	}
+
+}
+void Person::computeMotionEffect(double* distVector, char ag, double * r){
+
+	string interType = string()+_AgeGroup+ag;
+	sort(interType.begin(),interType.end());
+
+	double G = _AgeInteraction[interType];
+	double critDist = 1;
+
+	r[0] = (abs(distVector[0])<critDist)? 0:distVector[2]*pow(_TimeStep,2)*(G/pow(abs(distVector[0]),2));//*cos(distVector[1]);
+	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
+}
+void Person::Move(){
+
+	normal_distribution<double> xdist(_MotionBiasX,_MotionStepSize);
+	normal_distribution<double> ydist(_MotionBiasY,_MotionStepSize);
+	double rx = xdist(*_generator);
+	double ry = ydist(*_generator);
+
+	double x = rx; //+ _MotionBiasX;
+	double y = ry; //+ _MotionBiasY;
+
+
+	if (_State == 'P' | _State == 'I'){
+		Move(x,y, "IslandHopper");
+	}else{
+		Move(x/2,y/2, "IslandHopper");
+	}
+}
+void Person::Move(double xr, double yr, string motionType){
 	/**
 	 * \callgraph
 	 */
 
-	//int hour    = floor(_Time);
-	//double min  = _Time - hour;
-	//double DailyTime = ((hour % 24) + min);
-	
 	if (_State == 'D') {
 		if (_Location->getType()=="Cemetery"){
 			return;
@@ -294,24 +400,25 @@ void Person::Move(double theta, double r, string motionType){
 	
 	
 	
-	if (_TravelerQ){
-		int lid = rand() % (_AvailablePlaces.size()-2) + 1;
-		for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
-			if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
-				setLocation(*L);
-			}
-		}
-	}
+//	if (_TravelerQ){
+//		int lid = rand() % (_AvailablePlaces.size()-2) + 1;
+//		for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
+//			if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
+//				setLocation(*L);
+//			}
+//		}
+//	}
+
 	
-	double x = _Coordinates[0] + r*cos(theta);
-	double y = _Coordinates[1] + r*sin(theta);
+	double x = _X + xr; // r*cos(theta);
+	double y = _Y + yr; //*sin(theta);
 	
 	double xmin = _Location->Perimeter[0][0];
 	double xmax = _Location->Perimeter[0][1];
 	double ymin = _Location->Perimeter[1][0];
 	double ymax = _Location->Perimeter[1][1];
 	
-	
+
 	if (x < xmin){
 		x = xmin;// + abs(x);
 	}
@@ -328,40 +435,16 @@ void Person::Move(double theta, double r, string motionType){
 	
 	_Coordinates[0] = x;
 	_Coordinates[1] = y;
+	_X = x;
+	_Y = y;
 	
 }
 void Person::UpdateDiseaseWithInHost(){
 	
-	//list<Person*>* peeps = _Location->getOccupants();
-	
-	double criticalDistance = 50;
-	
-	/*
-	 for(auto ip = peeps->cbegin(); ip != peeps->cend(); ++ip){
-	 
-	 if (Distance(*ip) < criticalDistance){
-	 if (getID() != ((*ip)->getID())){
-	 _Neighbors->push_back(*ip);
-	 }
-	 }
-	 }
-	 */
-	
-	double totalVirion = 0;
-	
-	double dist;
-	
-	
-	for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
-		dist = Distance(*ip);
-		if (dist != 0 & dist < criticalDistance){
-			totalVirion += ((*ip)->_ihdynamics.getV())/dist;
-			//_Connections.append("," + to_string((*ip)->getID()));
-		}
-	}
+
 	
 	_ihdynamics.setT0(_Time);
-	_ihdynamics.setNE(totalVirion);
+	_ihdynamics.setNE(_TotalVirion);
 	_ihdynamics.Simulate();
 	
 	if ((getState()=='R') & !(getHasBeenSick())) {
@@ -413,6 +496,18 @@ void Person::UpdateDiseaseWithInHost(){
 	
 	//_neigbors.clear();
 }
+double* Person::CartesianDistance(Person* p){
+	double* r = new double[4];
+	// order matters here.
+	double xdiff = p->getX() - _X;
+	double ydiff = p->getY() - _Y;
+
+	r[0] = xdiff; //sqrt(pow(xdiff,2) + pow(ydiff,2));
+	r[1] = ydiff; //atan2(ydiff, xdiff);
+	r[2] = (xdiff > 0)? 1:-1;
+	r[3] = (ydiff > 0)? 1:-1;
+	return r;
+};
 double Person::Distance(Person* p){
 	
 	double p1x = _Coordinates[0];
@@ -426,6 +521,7 @@ double Person::Distance(Person* p){
 void Person::Die(){
 	setState('D');
 	_TimeOfDeath = _Time;
+	Move(0, 0, "IslandHopper");
 }
 
 

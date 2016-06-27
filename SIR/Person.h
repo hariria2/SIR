@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <random>
+#include <map>
 
 #include "Place.h"
 #include "InHostDynamics.h"
@@ -31,8 +32,11 @@ public:
 	~Person();
 	// Setters
 	void setID(int id);
+	void setX(double x);
+	void setY(double y);
 	void setAge(double a);
 	void setAgeIncrement(double ai);
+	void setTimeStep(double ts);
 	void setX(int x);
 	void setY(int y);
 	void setHasBeenSick(int hbs);
@@ -55,10 +59,15 @@ public:
 	void setRecVar(int var);
 	void setTravelerQ(bool tq);
 	void setNeighbors(list<Person*>* n);
+	void setAgeInteraction();
+	void setAgeGroup();
 	
 	
 	// Getters
 	int getID();
+	double getX();
+	double getY();
+	double getTimeStep();
 	double getAge();
 	double getMotionStepSize();
 	char getGender();
@@ -84,6 +93,7 @@ public:
 	int getLifeExpectancy();
 	bool getTraverlerQ();
 	string getConnections();
+	char getAgeGroup();
 	
 	void clearConnections();
 	
@@ -91,10 +101,15 @@ public:
 	
 	// Utilities
 	double Distance(Person* p);
+	double* CartesianDistance(Person* p);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
-	void Move(double theta, double r, string type = "IslandHopper");
+	void computeMotionEffect(double* distVector, char ag, double* r);
+	void InteractWithOthers();
+	void Move();
+	void Move(double x, double y, string type = "IslandHopper");
 	void UpdateDiseaseWithInHost();
 	void Die();
+
 	
 	
 	
@@ -119,14 +134,21 @@ private:
 	
 	unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine *_generator;
-	
+
 	int _ID;
 	double _Age;
 	double _AgeIncrement;
+	char _AgeGroup;
 	string _Name;
 	double _Time;
+	double _TimeStep;
 	double _X;
 	double _Y;
+	double _MotionBiasX;
+	double _MotionBiasY;
+	double _AttractionForceX;
+	double _AttractionForceY;
+	double _TotalVirion;
 	double _TimeInfected;
 	double _IncubationTime;
 	double _RecoveryTime;
@@ -150,6 +172,9 @@ private:
 	int _RecoveryVar;
 	int _LifeExpectancy;
 	string _Connections = "";
+
+	map<string,double> _AgeInteraction;
+
 };
 
 #endif /* PERSON_H_ */
