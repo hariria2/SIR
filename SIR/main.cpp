@@ -252,6 +252,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 		co.push_back(xy4);
 
 		(*p)->setCoordinates(co);
+		(*p)->setSides();
 		for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
 			string name = "randomName"+to_string(ii);
 			double randage  = ageDist(generator);

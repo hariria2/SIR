@@ -410,36 +410,25 @@ void Person::Move(double xr, double yr, string motionType){
 //			}
 //		}
 //	}
-
 	
 	double x = _X + xr; // r*cos(theta);
 	double y = _Y + yr; //*sin(theta);
-	
-	double xmin = _Location->Perimeter[0][0];
-	double xmax = _Location->Perimeter[0][1];
-	double ymin = _Location->Perimeter[1][0];
-	double ymax = _Location->Perimeter[1][1];
-	
 
-	if (x < xmin){
-		x = xmin;// + abs(x);
+
+	if(_Location->containsQ(x, y)){
+		_X = x;
+		_Y = y;
+		_Coordinates[0] = _X;
+		_Coordinates[1] = _Y;
+
 	}
-	else if (x > xmax){
-		x = xmax;// - abs(x-xmax);
+	else{
+		_X = _X - xr;
+		_Y = _Y - xr;
+		_Coordinates[0] = _X;
+		_Coordinates[1] = _Y;
 	}
-	
-	if (y <  ymin){
-		y = ymin;// + abs(y);
-	}
-	else if (y > ymax){
-		y = ymax;// - abs(y-ymax);
-	}
-	
-	_Coordinates[0] = x;
-	_Coordinates[1] = y;
-	_X = x;
-	_Y = y;
-	
+
 }
 void Person::UpdateDiseaseWithInHost(){
 	
