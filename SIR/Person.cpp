@@ -399,34 +399,21 @@ void Person::Move(double xr, double yr, string motionType){
 			}
 		}
 	}
-	
-	
-	
-//	if (_TravelerQ){
-//		int lid = rand() % (_AvailablePlaces.size()-2) + 1;
-//		for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend(); L++){
-//			if (((*L)->getID()==lid) & (*L)->getName() != "Cemetery"){
-//				setLocation(*L);
-//			}
-//		}
-//	}
+
 	
 	double x = _X + xr; // r*cos(theta);
 	double y = _Y + yr; //*sin(theta);
-
+	double co[2] = {x,y};
 
 	if(_Location->containsQ(x, y)){
-		_X = x;
-		_Y = y;
-		_Coordinates[0] = _X;
-		_Coordinates[1] = _Y;
-
+		setCoordinates(co);
 	}
 	else{
-		_X = _X - xr;
-		_Y = _Y - xr;
-		_Coordinates[0] = _X;
-		_Coordinates[1] = _Y;
+		x = _X - xr;
+		y = _Y - yr;
+		co[0] = x;
+		co[1] = y;
+		setCoordinates(co);
 	}
 
 }
