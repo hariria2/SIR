@@ -49,6 +49,10 @@ public:
 	string getLocation();
 	int getInfectionRadius();
 	list<Person*>* getOccupants();
+	vector<vector<double>> getCoordinates();
+	vector<vector<double>> getSides();
+
+
 	bool operator == (const Place& p) const;
 
 	double Distance(double x1, double y1, double x2, double y2);
@@ -57,7 +61,7 @@ public:
 											float v1x1, float v1y1, float v1x2, float v1y2,
 											float v2x1, float v2y1, float v2x2, float v2y2
 											) ;
-	int containsQ(double x, doubl y);
+	int containsQ(double x, double y);
 
 private:
 	int _TotalPopulation;

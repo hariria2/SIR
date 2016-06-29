@@ -220,9 +220,38 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	double randdelta, delta;
 	double randP, P;
 	double randC, C;
-	
+	vector<vector<double>> co;
+	vector<double> xy1;
+	vector<double> xy2;
+	vector<double> xy3;
+	vector<double> xy4;
+
 	for(auto p=islands.begin(); p!=islands.end();++p){
-		
+		co.clear();
+		xy1.clear();
+		xy2.clear();
+		xy3.clear();
+		xy4.clear();
+
+		xy1.push_back((*p)->Perimeter[0][0]);
+		xy1.push_back((*p)->Perimeter[1][0]);
+
+		xy2.push_back((*p)->Perimeter[0][1]);
+		xy2.push_back((*p)->Perimeter[1][0]);
+
+		xy3.push_back((*p)->Perimeter[0][1]);
+		xy3.push_back((*p)->Perimeter[1][1]);
+
+		xy4.push_back((*p)->Perimeter[0][0]);
+		xy4.push_back((*p)->Perimeter[1][1]);
+
+
+		co.push_back(xy1);
+		co.push_back(xy2);
+		co.push_back(xy3);
+		co.push_back(xy4);
+
+		(*p)->setCoordinates(co);
 		for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
 			string name = "randomName"+to_string(ii);
 			double randage  = ageDist(generator);

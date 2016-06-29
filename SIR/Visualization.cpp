@@ -180,18 +180,21 @@ void Visualization::DrawPlace(){
 	float x1, x2;
 	float y1, y2;
 	float RR, GG, BB;
+	vector<vector<double>> co;
+	float x, y;
 	for(auto p = _Places.cbegin(); p != _Places.cend(); ++p){
 		
 		x1 = XTransform((*p)->Perimeter[0][0]);
 		y1 = YTransform((*p)->Perimeter[1][0]);
 		x2 = XTransform((*p)->Perimeter[0][1]);
 		y2 = YTransform((*p)->Perimeter[1][1]);
-		
-		
+
+		co = (*p)->getCoordinates();
+
 		if ((*p)->getType()=="Island"){
-			RR = 0.6;
-			GG = 0.2;
-			BB = 0.;
+			RR = 0.5;
+			GG = 0.4;
+			BB = 0.2;
 		} else if ((*p)->getType()=="Cemetery"){
 			RR = 0.7;
 			GG = 0.5;
@@ -203,11 +206,22 @@ void Visualization::DrawPlace(){
 		}
 		
 		glBegin(GL_POLYGON);
-		glColor3f(RR, GG, BB); glVertex3f(x1, y1, 0.0);
-		glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y1, 0.0);
-		glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y2, 0.0);
-		glColor3f(RR, GG, BB); glVertex3f(x1, y2, 0.0);
+
+		for (int i=0; i < co.size(); i++){
+			x = XTransform((float)co[i][0]);
+			y = YTransform((float)co[i][1]);
+			glColor3f(RR, GG, BB); glVertex3f(x, y, 0.0);
+		}
+
+		//glColor3f(RR, GG, BB); glVertex3f(x1, y1, 0.0);
+		//glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y1, 0.0);
+		//glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y2, 0.0);
+		//glColor3f(RR, GG, BB); glVertex3f(x1, y2, 0.0);
 		glEnd();
+
+		co.clear();
+
+
 	}
 }
 void Visualization::DrawPeople(){

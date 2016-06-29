@@ -132,6 +132,13 @@ int Place::getInfectionRadius(){
 list<Person*>* Place::getOccupants(){
     return &_Occupants;
 }
+vector<vector<double>> Place::getCoordinates(){
+	return _Coordinates;
+}
+
+vector<vector<double>> Place::getSides(){
+	return _Sides;
+}
 
 double Place::Distance(double x1, double y1, double x2, double y2){
     return sqrt(pow((x2-x1),2) + pow((y2 - y1),2));
