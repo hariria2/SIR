@@ -330,7 +330,7 @@ void Person::InteractWithOthers(){
 	double criticalDistanceD = 2;
 	
 	double motionBias[2];
-	double* r;
+	double r[4];
 	double dist;
 	double theta;
 
@@ -339,7 +339,7 @@ void Person::InteractWithOthers(){
 	_MotionBiasY = 0;
 
 	for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
-		r     = CartesianDistance(*ip);
+		CartesianDistance(*ip,r);
 		dist  = sqrt(r[0]*r[0]+r[1]*r[1]);//r[0];
 		theta = atan2(r[1],r[0]);//r[1];
 
@@ -354,7 +354,6 @@ void Person::InteractWithOthers(){
 			_TotalVirion += ((*ip)->_ihdynamics.getV())/(dist*dist);
 		}
 	}
-
 }
 void Person::computeMotionEffect(double* distVector, char ag, double * r){
 
@@ -499,8 +498,7 @@ void Person::UpdateDiseaseWithInHost(){
 	
 	//_neigbors.clear();
 }
-double* Person::CartesianDistance(Person* p){
-	double* r = new double[4];
+void Person::CartesianDistance(Person* p, double *r){
 	// order matters here.
 	double xdiff = p->getX() - _X;
 	double ydiff = p->getY() - _Y;
@@ -509,7 +507,6 @@ double* Person::CartesianDistance(Person* p){
 	r[1] = ydiff; //atan2(ydiff, xdiff);
 	r[2] = (xdiff > 0)? 1:-1;
 	r[3] = (ydiff > 0)? 1:-1;
-	return r;
 };
 double Person::Distance(Person* p){
 	

@@ -101,7 +101,7 @@ public:
 	
 	// Utilities
 	double Distance(Person* p);
-	double* CartesianDistance(Person* p);
+	void CartesianDistance(Person* p, double* r);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
 	void computeMotionEffect(double* distVector, char ag, double* r);
 	void InteractWithOthers();

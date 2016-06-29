@@ -32,10 +32,10 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = 1;
+double dt = 0.1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "3";
 int main(){
 	/** 
 	 * \brief Brief description.
@@ -44,7 +44,7 @@ int main(){
 	 *  Detailed description starts here.
 	 */
 	
-	FaroeIslands(tend, dt, version, true, false);
+	FaroeIslands(tend, dt, version, true, true);
 	//SingleLocation(tend, dt, version, true, false);
 	
 	
