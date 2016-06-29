@@ -202,7 +202,7 @@ int Place::areIntersecting(
 	return 1;
 }
 
-int Place::containsQ(double x, double y){
+int Place::ContainsQ(double x, double y){
 	int intersections = 0;
 	int intQ;
 

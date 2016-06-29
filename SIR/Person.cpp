@@ -405,7 +405,7 @@ void Person::Move(double xr, double yr, string motionType){
 	double y = _Y + yr; //*sin(theta);
 	double co[2] = {x,y};
 
-	if(_Location->containsQ(x, y)){
+	if(_Location->ContainsQ(x, y)){
 		setCoordinates(co);
 	}
 	else{
