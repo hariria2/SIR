@@ -74,7 +74,7 @@ void Source::readGeneralData(string FileName, Domain *domain){
 			int pop = atof(spop.c_str());
 
 
-			if (File.eof()) break;
+			//if (File.eof()) break;
 
 			double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
 			cout << "Population " << pop << endl;
@@ -130,7 +130,7 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 			getline(File, sy, '\n');
 			y = atof(sy.c_str());
 
-			if (File.eof()) break;
+			//if (File.eof()) break;
 
 			co.push_back(x);
 			co.push_back(y);

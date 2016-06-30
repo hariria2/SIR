@@ -188,7 +188,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
 	
 	int maxdim = 110;
-	int Boundary[2][2]   = {{0, 100},{0, 80}};
+	int Boundary[2][2]   = {{0, 105},{0, 80}};
 	//int Boundary[2][2]   = {{-8, -6},{61, 63}};
 	Domain Island("Faroe", Boundary);
 

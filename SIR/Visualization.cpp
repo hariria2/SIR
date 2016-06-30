@@ -176,12 +176,22 @@ void Visualization::RenderSplash(){
 	//sleep(4);
 }
 
+
+
 void Visualization::DrawPlace(){
 	float x1, x2;
 	float y1, y2;
 	float RR, GG, BB;
 	vector<vector<double>> co;
 	float x, y;
+
+	GLUtesselator *tess = gluNewTess();
+	gluTessCallback(tess, GLU_TESS_BEGIN, (void (__stdcall *)(void)) glBegin);
+	gluTessCallback(tess, GLU_TESS_VERTEX, (void (__stdcall *) (void)) glVertex3f);
+	gluTessCallback(tess, GLU_TESS_END, (void (__stdcall *) (void)) glEnd);
+	//gluTessCallback(tess, GLU_TESS_COMBINE, myCombine);
+
+
 	for(auto p = _Places.cbegin(); p != _Places.cend(); ++p){
 		
 		x1 = XTransform((*p)->Perimeter[0][0]);
@@ -190,6 +200,8 @@ void Visualization::DrawPlace(){
 		y2 = YTransform((*p)->Perimeter[1][1]);
 
 		co = (*p)->getCoordinates();
+
+
 
 		if ((*p)->getType()=="Island"){
 			RR = 0.1;
@@ -204,19 +216,30 @@ void Visualization::DrawPlace(){
 			GG = 1.;
 			BB = 1.;
 		}
-		
-		glBegin(GL_POLYGON);
 
+//
+//		double vertex[3];
+//
+//		gluTessBeginPolygon(tess, vertex);
+//		gluTessBeginContour(tess);
+//			for (int i=0; i < co.size(); i++){
+//				vertex[0] = XTransform(co[i][0]);
+//				vertex[1]	= YTransform(co[i][1]);
+//				vertex[2] = 0;
+//				gluTessVertex(tess, vertex, vertex);
+//			}
+//		gluTessEndContour(tess);
+//		gluTessEndPolygon(tess);
+
+
+
+		int t = co.size();
+		glBegin(GL_LINE_LOOP);
 		for (int i=0; i < co.size(); i++){
-			x = XTransform((float)co[i][0]);
-			y = YTransform((float)co[i][1]);
+			x = XTransform(co[i][0]);
+			y = YTransform(co[i][1]);
 			glColor3f(RR, GG, BB); glVertex3f(x, y, 0.0);
 		}
-
-		//glColor3f(RR, GG, BB); glVertex3f(x1, y1, 0.0);
-		//glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y1, 0.0);
-		//glColor3f(1-RR, 0.8-GG, BB); glVertex3f(x2, y2, 0.0);
-		//glColor3f(RR, GG, BB); glVertex3f(x1, y2, 0.0);
 		glEnd();
 
 		co.clear();

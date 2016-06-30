@@ -112,11 +112,19 @@ void Person::setLocation(Place* location){
 	
 	uniform_real_distribution<double> xdist(xmin, xmax);
 	uniform_real_distribution<double> ydist(ymin, ymax);
-	
+
+
 	double x = xdist(*_generator);
 	double y = ydist(*_generator);
 	double Co[2] = {x,y};
-	
+
+
+	while(!_Location->ContainsQ(x, y)){
+		x = xdist(*_generator);
+		y = ydist(*_generator);
+		Co[0] = x; Co[1] = y;
+	};
+
 	setCoordinates(Co);
 }
 
