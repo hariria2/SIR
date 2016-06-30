@@ -89,11 +89,19 @@ void Person::setName(string name){
 	_Name = name;
 }
 void Person::setCoordinates(double coordinates[2]){
-	for (int ii=0; ii<2; ii++){
-		_Coordinates[ii] = coordinates[ii];
+	double x = coordinates[0];
+	double y = coordinates[1];
+
+	if (!_Location->ContainsQ(x, y)){
+		setLocation(_Location);
 	}
-	setX(_Coordinates[0]);
-	setY(_Coordinates[1]);
+	else{
+		_Coordinates[0] = x;
+		_Coordinates[1] = y;
+		setX(x);
+		setY(y);
+	}
+
 }
 void Person::setState(char state){
 	_State = state;

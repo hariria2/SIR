@@ -523,9 +523,6 @@ void Visualization::cursor_pos_callback(GLFWwindow* window, double xpos, double 
 void Visualization::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		//_visualization->DrawTestPoint(_visualization->getMouseX(),_visualization->getMouseY());
-		//_visualization->testPrint();
-		//cout << _visualization->getMouseX() << endl;
 		(_visualization->_Architect)->AddPerson(_visualization->getMouseX(),_visualization->getMouseY());
 		
 	}

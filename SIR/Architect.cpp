@@ -154,7 +154,7 @@ void Architect::IncrementTime(){
 void Architect::Simulate(){
 	
 	
-	_BirthRate = (_N>0.0)? 0.01: .03;
+	_BirthRate = (_N>0.0)? 0.01: 0.03;
 	
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
@@ -549,16 +549,9 @@ void Architect::PrepDB(){
 	
 }
 Place* Architect::LocFromCoo(double x, double y){
-	
-	double xmin, xmax, ymin, ymax;
-	
+
 	for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p){
-		xmin = (*p)->Perimeter[0][0];
-		xmax = (*p)->Perimeter[0][1];
-		ymin = (*p)->Perimeter[1][0];
-		ymax = (*p)->Perimeter[1][1];
-		
-		if (x >= xmin & x <= xmax & y >= ymin & y <= ymax) {
+		if ((*p)->ContainsQ(x, y)){
 			return *p;
 		}
 	}
@@ -622,21 +615,12 @@ void Architect::AddPerson(string NewBirth){
 	
 	int indx;
 	if ((_AllPlaces.size()-1)>1){
-		indx  = rand() % (_AllPlaces.size()-1); // -1 is here to exclude cemetery from the possible location of birth
+		indx  = rand() % (_AllPlaces.size());
 	}
 	else{
 		indx = 0;
 	}
-	double xmin = (_AllPlaces[indx]->Perimeter)[0][0];
-	double xmax = (_AllPlaces[indx]->Perimeter)[0][1];
-	double ymin = (_AllPlaces[indx]->Perimeter)[1][0];
-	double ymax = (_AllPlaces[indx]->Perimeter)[1][1];
-	
-	uniform_real_distribution<double> xdist(xmin, xmax);
-	uniform_real_distribution<double> ydist(ymin, ymax);
-	double x = xdist(*_generator);
-	double y = ydist(*_generator);
-	
+
 	unsigned long s = _PeoplePtr.size();
 	int id = (int) s + 1;
 	Person* p1 = _PeoplePtr.front();
@@ -649,19 +633,17 @@ void Architect::AddPerson(string NewBirth){
 	ihd.setC(1.0);
 	ihd.setILRate(0.001);
 	
-	Place* loc = LocFromCoo(x,y);
+
 	vector<Place*> availPlaces = p1->getAvailablePlaces();
-	//vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
+
 	
-	Person* p = new Person(id, "Alplego", 0, 'N', ihd, _City, loc, availPlaces, 1,1,1);
+	Person* p = new Person(id, "Alplego", 0, 'N', ihd, _City, _AllPlaces[indx], availPlaces, 1,1,1);
 	
 	for (auto l= availPlaces.cbegin(); l != availPlaces.cend(); l++){
 		if ((*l)->getType()=="Home"){
 			p->setDefaultLocation(*l);
 		}
 	}
-	double coo[2] = {x,y};
-	p->setCoordinates(coo);
 	p->setTime(_CurrentTime);
 	p->setTimeStep(_TimeStep);
 	p->setAgeIncrement(_TimeStep/365);
