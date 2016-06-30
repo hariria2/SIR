@@ -35,10 +35,10 @@ void Source::readGeneralData(string FileName, Domain *domain){
 	filename = _DataDirectory+FileName;
 
 	ifstream File;
-	File.open(FileName, ios_base::in);
+	File.open(filename, ios_base::in);
 
 	if (File.is_open()){
-		cout << "Island File opened correctly." << endl;
+		cout << "Data source file opened correctly." << endl;
 
 
 		string sID;
@@ -70,7 +70,7 @@ void Source::readGeneralData(string FileName, Domain *domain){
 			getline(File, symax, ',');
 			double ymax = atof(symax.c_str());
 
-			getline(File, spop, '\r');
+			getline(File, spop, '\n');
 			int pop = atof(spop.c_str());
 
 
@@ -78,6 +78,7 @@ void Source::readGeneralData(string FileName, Domain *domain){
 
 			double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
 			cout << "Population " << pop << endl;
+
 			Place *h = new Place(ID, name, type, boundary, *domain, pop);
 			_Places.push_back(h);
 
@@ -126,7 +127,7 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 			getline(File, sx, ',');
 			x = atof(sx.c_str());
 
-			getline(File, sy, '\r');
+			getline(File, sy, '\n');
 			y = atof(sy.c_str());
 
 			if (File.eof()) break;
@@ -135,8 +136,10 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 			co.push_back(y);
 
 			coordinates.push_back(co);
+
 		}
 
 	}
+
 	return coordinates;
 }

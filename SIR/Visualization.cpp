@@ -210,7 +210,7 @@ void Visualization::DrawPlace(){
 		for (int i=0; i < co.size(); i++){
 			x = XTransform((float)co[i][0]);
 			y = YTransform((float)co[i][1]);
-			glColor3f(RR, GG, BB); glVertex3f(x, y, 0.0);
+			glColor3f(RR, i-GG, BB); glVertex3f(x, y, 0.0);
 		}
 
 		//glColor3f(RR, GG, BB); glVertex3f(x1, y1, 0.0);

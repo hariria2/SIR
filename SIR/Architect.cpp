@@ -383,8 +383,8 @@ void Architect::Update(SQLStorage* data){
 			(*ip)->setTime(_CurrentTime);
 
 			
-			if ((*pl)->getType()=="Cemetery"){
-				if (_CurrentTime >= (*ip)->getTimeOfDeath()+15){
+			if ((*ip)->getState()=='D'){
+				if (_CurrentTime >= (*ip)->getTimeOfDeath()){
 					Funeral(*ip);
 					RemovePerson(*ip);
 					delete(*ip);

@@ -36,7 +36,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 double dt = 0.1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "3";
+string version = "1";
 int main(){
 	/** 
 	 * \brief Brief description.
@@ -58,7 +58,7 @@ int main(){
 
 void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
 	int maxdim = 115;
-	int Boundary[2][2]   = {{0, 115},{0, 115}};
+	int Boundary[2][2]   = {{0, maxdim},{0, maxdim}};
 	
 	int population = 500;
 	char state = 'S';
@@ -172,7 +172,6 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
 		archie.Simulate();
 	}
 	else {
-		cout << "version: " << ver << endl;
 		SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
 		Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
 		archie.setDomain(&Main);
@@ -188,17 +187,22 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
 
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
 	
-	int maxdim = 115;
-	int Boundary[2][2]   = {{0, 90},{0, 100}};
+	int maxdim = 110;
+	int Boundary[2][2]   = {{0, 100},{0, 80}};
 	//int Boundary[2][2]   = {{-8, -6},{61, 63}};
 	Domain Island("Faroe", Boundary);
-	
+
+
 	vector<Place*> islands;
 
-	Source src("~/Research/SIR/Source/");
+
+	Source src("/Users/sahand/Research/SIR/Source/");
 	src.readGeneralData("GeneralData.csv", &Island);
 	src.getCoordinateDataForPlaces();
+	islands = src.getPlaces();
 
+
+	//cout << "Here is the Island: " <<(islands.front())->getName() << endl;
 	//readIslandData("/Users/sahand/Research/SIR/Source/GeneralData.csv", &Island, islands);
 	
 	char state = 'S';
@@ -233,6 +237,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 //	vector<double> xy4;
 
 	for(auto p=islands.begin(); p!=islands.end();++p){
+
 //		co.clear();
 //		xy1.clear();
 //		xy2.clear();

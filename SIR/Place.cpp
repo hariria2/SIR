@@ -58,6 +58,8 @@ void Place::setSides(){
 
 	for (int i=0; i<size-1; i++){
 		side.clear();
+		co1.clear();
+		co2.clear();
 		co1 = _Coordinates[i];
 		co2 = _Coordinates[i+1];
 		for (auto t=co1.begin(); t<co1.end(); t++){
@@ -70,6 +72,7 @@ void Place::setSides(){
 	}
 
 	side.clear();
+
 	side.push_back(_Coordinates.back()[0]);
 	side.push_back(_Coordinates.back()[1]);
 	side.push_back(_Coordinates.front()[0]);
