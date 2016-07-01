@@ -26,8 +26,6 @@ string Source::getDataDirectory(){
 vector<Place*> Source::getPlaces(){
 	return _Places;
 }
-
-
 void Source::readGeneralData(string FileName, Domain *domain){
 
 	string filename;
@@ -104,6 +102,19 @@ void Source::getCoordinateDataForPlaces(){
 	}
 
 }
+void Source::getPolygonDataForPlaces(){
+	string placeName;
+	string filename = _DataDirectory;
+	vector<vector<double>> triangles;
+
+	for (auto p=_Places.begin(); p<_Places.end(); p++){
+		triangles.clear();
+		placeName   = (*p)->getName();
+		filename    = _DataDirectory+placeName+"Polygon"+".csv";
+		triangles   = readPolygonFile(filename);
+		(*p)->setPolygonData(triangles);
+
+	}};
 
 vector<vector<double>> Source::readCoordinateFile(string filename){
 	ifstream File;
@@ -142,4 +153,55 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 	}
 
 	return coordinates;
+}
+vector<vector<double>> Source::readPolygonFile(string filename){
+	ifstream File;
+	File.open(filename,ios_base::in);
+
+	//Polygon data come in triangulated form. Each lines is x1,y1,x2,y2,x3,y3\n
+	double x1,x2,x3;
+	double y1,y2,y3;
+
+	string sx1,sx2,sx3;
+	string sy1,sy2,sy3;
+
+	vector<double> tri;
+	vector<vector<double>> tridata;
+
+	if (File.is_open()){
+		cout << "Coordinate file for " << filename << " opened up correctly." << endl;
+
+		while (File.good()){
+			tri.clear();
+
+			getline(File, sx1, ',');
+			getline(File, sy1, ',');
+
+			getline(File, sx2, ',');
+			getline(File, sy2, ',');
+
+			getline(File, sx3, ',');
+			getline(File, sy3, '\n');
+
+			x1 = atof(sx1.c_str());
+			x2 = atof(sx2.c_str());
+			x3 = atof(sx3.c_str());
+
+			y1 = atof(sy1.c_str());
+			y2 = atof(sy2.c_str());
+			y3 = atof(sy3.c_str());
+
+			tri.push_back(x1);
+			tri.push_back(y1);
+			tri.push_back(x2);
+			tri.push_back(y2);
+			tri.push_back(x3);
+			tri.push_back(y3);
+
+			tridata.push_back(tri);
+
+		}
+
+	}
+	return tridata;
 }

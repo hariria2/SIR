@@ -43,13 +43,11 @@ void Place::setInfectionRadius(int r){
 void Place::setTotalPopulation(int pop){
     _TotalPopulation = pop;
 }
-
 void Place::setCoordinates(vector<vector<double>> coo){
 	for (auto s=coo.begin(); s<coo.end(); s++){
 		_Coordinates.push_back(*s);
 	}
 }
-
 void Place::setSides(){
 	vector<double> side;
 	vector<double> co1;
@@ -80,7 +78,9 @@ void Place::setSides(){
 
 	_Sides.push_back(side);
 }
-
+void Place::setPolygonData(vector<vector<double>> pd){
+	_PolygonData = pd;
+}
 void Place::setDistanceMatrix(){
     double x1, x2, y1, y2;
     int id1, id2;
@@ -103,11 +103,9 @@ void Place::setDistanceMatrix(){
         }
     }
 }
-
 void Place::addPerson(Person* p){
 	(_Occupants).push_back(p);
 }
-
 void Place::removePerson(Person* p){
 	_Occupants.remove(p);
 }
@@ -128,7 +126,6 @@ string Place::getType(){
 string Place::getLocation(){
 	return _Location.getName();
 }
-
 int Place::getInfectionRadius(){
     return _InfectionRadius;
 }
@@ -138,16 +135,15 @@ list<Person*>* Place::getOccupants(){
 vector<vector<double>> Place::getCoordinates(){
 	return _Coordinates;
 }
-
 vector<vector<double>> Place::getSides(){
 	return _Sides;
 }
-
+vector<vector<double>> Place::getPolygonData(){
+	return _PolygonData;
+}
 double Place::Distance(double x1, double y1, double x2, double y2){
     return sqrt(pow((x2-x1),2) + pow((y2 - y1),2));
 }
-
-
 int Place::areIntersecting(
 										float v1x1, float v1y1, float v1x2, float v1y2,
 										float v2x1, float v2y1, float v2x2, float v2y2
@@ -204,7 +200,6 @@ int Place::areIntersecting(
 	// If they are not collinear, they must intersect in exactly one point.
 	return 1;
 }
-
 int Place::ContainsQ(double x, double y){
 	int intersections = 0;
 	int intQ;

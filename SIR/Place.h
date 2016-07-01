@@ -35,8 +35,9 @@ public:
 	void setInfectionRadius(int r);
 	void setDistanceMatrix();
 	void setTotalPopulation(int pop);
-	void setCoordinates(vector<vector<double>>);
+	void setCoordinates(vector<vector<double>> co);
 	void setSides();
+	void setPolygonData(vector<vector<double>> pd);
 
 	void addPerson(Person* p);
 	void removePerson(Person* p);
@@ -51,7 +52,7 @@ public:
 	list<Person*>* getOccupants();
 	vector<vector<double>> getCoordinates();
 	vector<vector<double>> getSides();
-
+	vector<vector<double>> getPolygonData();
 
 	bool operator == (const Place& p) const;
 
@@ -73,9 +74,7 @@ private:
 	Domain _Location;
 	vector<vector<double>> _Coordinates;
 	vector<vector<double>> _Sides;
-
-
-
+	vector<vector<double>> _PolygonData;
 
 };
 

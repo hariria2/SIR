@@ -179,34 +179,25 @@ void Visualization::RenderSplash(){
 
 
 void Visualization::DrawPlace(){
-	float x1, x2;
-	float y1, y2;
-	float RR, GG, BB;
+	float RR, GG, BB, PRR, PGG, PBB;
 	vector<vector<double>> co;
+	vector<vector<double>> pd;
 	float x, y;
 
-	GLUtesselator *tess = gluNewTess();
-	gluTessCallback(tess, GLU_TESS_BEGIN, (void (__stdcall *)(void)) glBegin);
-	gluTessCallback(tess, GLU_TESS_VERTEX, (void (__stdcall *) (void)) glVertex3f);
-	gluTessCallback(tess, GLU_TESS_END, (void (__stdcall *) (void)) glEnd);
-	//gluTessCallback(tess, GLU_TESS_COMBINE, myCombine);
-
-
 	for(auto p = _Places.cbegin(); p != _Places.cend(); ++p){
-		
-		x1 = XTransform((*p)->Perimeter[0][0]);
-		y1 = YTransform((*p)->Perimeter[1][0]);
-		x2 = XTransform((*p)->Perimeter[0][1]);
-		y2 = YTransform((*p)->Perimeter[1][1]);
 
 		co = (*p)->getCoordinates();
-
+		pd = (*p)->getPolygonData();
 
 
 		if ((*p)->getType()=="Island"){
 			RR = 0.1;
 			GG = 0.3;
 			BB = 0.1;
+
+			PRR = 0.4;
+			PGG = 0.4;
+			PBB = 0.2;
 		} else if ((*p)->getType()=="Cemetery"){
 			RR = 0.7;
 			GG = 0.5;
@@ -216,23 +207,7 @@ void Visualization::DrawPlace(){
 			GG = 1.;
 			BB = 1.;
 		}
-
-//
-//		double vertex[3];
-//
-//		gluTessBeginPolygon(tess, vertex);
-//		gluTessBeginContour(tess);
-//			for (int i=0; i < co.size(); i++){
-//				vertex[0] = XTransform(co[i][0]);
-//				vertex[1]	= YTransform(co[i][1]);
-//				vertex[2] = 0;
-//				gluTessVertex(tess, vertex, vertex);
-//			}
-//		gluTessEndContour(tess);
-//		gluTessEndPolygon(tess);
-
-
-
+		//Draw the coastline
 		int t = co.size();
 		glBegin(GL_LINE_LOOP);
 		for (int i=0; i < co.size(); i++){
@@ -242,7 +217,18 @@ void Visualization::DrawPlace(){
 		}
 		glEnd();
 
+		//Draw the polygons
+		for (int i=0; i<pd.size(); i++){
+			glBegin(GL_POLYGON);
+			glColor3f(PRR, PGG, PBB); glVertex3f(XTransform(pd[i][0]), YTransform(pd[i][1]), 0.0);
+			glColor3f(PRR, PGG, PBB); glVertex3f(XTransform(pd[i][2]), YTransform(pd[i][3]), 0.0);
+			glColor3f(PRR, PGG, PBB); glVertex3f(XTransform(pd[i][4]), YTransform(pd[i][5]), 0.0);
+			glEnd();
+
+		}
+
 		co.clear();
+		pd.clear();
 
 
 	}

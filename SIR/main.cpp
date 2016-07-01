@@ -199,11 +199,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	Source src("/Users/sahand/Research/SIR/Source/");
 	src.readGeneralData("GeneralData.csv", &Island);
 	src.getCoordinateDataForPlaces();
+	if (ShowVis){
+		src.getPolygonDataForPlaces();
+	}
 	islands = src.getPlaces();
-
-
-	//cout << "Here is the Island: " <<(islands.front())->getName() << endl;
-	//readIslandData("/Users/sahand/Research/SIR/Source/GeneralData.csv", &Island, islands);
 	
 	char state = 'S';
 	double VirLev = 0.0;

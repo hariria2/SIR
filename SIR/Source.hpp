@@ -35,12 +35,14 @@ public:
 
 	void readGeneralData(string FileName, Domain *domain);
 	void getCoordinateDataForPlaces();
+	void getPolygonDataForPlaces();
 
 private:
 	string _DataDirectory;
 	vector<Place*> _Places;
 
 	vector<vector<double>> readCoordinateFile(string filename);
+	vector<vector<double>> readPolygonFile(string filename);
 
 };
 
