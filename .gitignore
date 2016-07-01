@@ -8,5 +8,6 @@ Results/res*
 WeeklyReport/
 Paper/
 *.pyc
+*.csv
 todo.md
 build
