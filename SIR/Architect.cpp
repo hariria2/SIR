@@ -152,8 +152,7 @@ void Architect::IncrementTime(){
 	_TimeIndex++;
 }
 void Architect::Simulate(){
-	
-	
+
 	_BirthRate = (_N>0.0)? 0.01: 0.03;
 	
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
@@ -384,7 +383,7 @@ void Architect::Update(SQLStorage* data){
 
 			
 			if ((*ip)->getState()=='D'){
-				if (_CurrentTime >= (*ip)->getTimeOfDeath()){
+				if (_CurrentTime >= (*ip)->getTimeOfDeath()+1){
 					Funeral(*ip);
 					RemovePerson(*ip);
 					delete(*ip);
@@ -594,6 +593,7 @@ void Architect::AddPerson(double x, double y){
 	p->setCoordinates(coo);
 	p->setHasBeenSick(0);
 	p->setMotionStepSize(0.1);
+	p->setSociability(1);
 
 	if (_Store == "MYSQL"){
 		_sqlDataPtr->InsertValue("People",
@@ -649,6 +649,7 @@ void Architect::AddPerson(string NewBirth){
 	p->setAgeIncrement(_TimeStep/365);
 	p->setNeighbors(&_PeoplePtr);
 	p->setMotionStepSize(0.01);
+	p->setSociability(0.5);
 	//p->setTravelerQ(true);
 	p->setHasBeenSick(0);
 	if (_Store == "MYSQL"){

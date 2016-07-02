@@ -188,12 +188,16 @@ void Person::setNeighbors(list<Person *> *n){
 void Person::setAgeInteraction(){
 	_AgeInteraction["CC"]=0.01;
 	_AgeInteraction["TT"]=1;
-	_AgeInteraction["YY"]=0.6;
+	_AgeInteraction["YY"]=0.9;
 	_AgeInteraction["AA"]=1;
 	_AgeInteraction["SS"]=.4;
 	_AgeInteraction["CY"]=1;
 	_AgeInteraction["AC"]=.0;
-	_AgeInteraction["SC"]=0.;
+	_AgeInteraction["SC"]=0.8;
+	_AgeInteraction["ST"]=-0.5;
+	_AgeInteraction["SY"]=-0.2;
+	_AgeInteraction["AS"]=0.2;
+	_AgeInteraction["AY"]=0.7;
 }
 void Person::setAgeGroup(){
 	if (_Age < 10)
@@ -216,6 +220,9 @@ void Person::setAgeGroup(){
 	{
 		_AgeGroup = 'S';
 	}
+}
+void Person::setSociability(double s){
+	_Sociability = s;
 }
 
 // Getters
@@ -306,6 +313,9 @@ bool Person::getTraverlerQ(){
 char Person::getAgeGroup(){
 	return _AgeGroup;
 }
+double Person::getSociability(){
+	return _Sociability;
+}
 string Person::getConnections(){
 	return _Connections;
 }
@@ -379,8 +389,8 @@ void Person::computeMotionEffect(double* distVector, char ag, double * r){
 	double G = _AgeInteraction[interType];
 	double critDist = 1;
 
-	r[0] = (abs(distVector[0])<critDist)? 0:distVector[2]*pow(_TimeStep,2)*(G/pow(abs(distVector[0]),2));//*cos(distVector[1]);
-	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
+	r[0] = (abs(distVector[0])<critDist)? 0:distVector[2]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[0]),2));//*cos(distVector[1]);
+	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
 }
 void Person::Move(){
 

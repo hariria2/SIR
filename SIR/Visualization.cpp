@@ -182,22 +182,19 @@ void Visualization::DrawPlace(){
 	float RR, GG, BB, PRR, PGG, PBB;
 	vector<vector<double>> co;
 	vector<vector<double>> pd;
-	float x, y;
-
 	for(auto p = _Places.cbegin(); p != _Places.cend(); ++p){
 
 		co = (*p)->getCoordinates();
 		pd = (*p)->getPolygonData();
-
 
 		if ((*p)->getType()=="Island"){
 			RR = 0.1;
 			GG = 0.3;
 			BB = 0.1;
 
-			PRR = 0.4;
-			PGG = 0.4;
-			PBB = 0.2;
+			PRR = 0.6;
+			PGG = 0.7;
+			PBB = 0.7;
 		} else if ((*p)->getType()=="Cemetery"){
 			RR = 0.7;
 			GG = 0.5;
@@ -208,12 +205,9 @@ void Visualization::DrawPlace(){
 			BB = 1.;
 		}
 		//Draw the coastline
-		int t = co.size();
 		glBegin(GL_LINE_LOOP);
 		for (int i=0; i < co.size(); i++){
-			x = XTransform(co[i][0]);
-			y = YTransform(co[i][1]);
-			glColor3f(RR, GG, BB); glVertex3f(x, y, 0.0);
+			glColor3f(RR, GG, BB); glVertex3f(XTransform(co[i][0]), YTransform(co[i][1]), 0.0);
 		}
 		glEnd();
 

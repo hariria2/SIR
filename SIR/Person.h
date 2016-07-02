@@ -61,6 +61,7 @@ public:
 	void setNeighbors(list<Person*>* n);
 	void setAgeInteraction();
 	void setAgeGroup();
+	void setSociability(double s);
 	
 	
 	// Getters
@@ -94,6 +95,7 @@ public:
 	bool getTraverlerQ();
 	string getConnections();
 	char getAgeGroup();
+	double getSociability();
 	
 	void clearConnections();
 	
@@ -155,6 +157,7 @@ private:
 	double _TimeOfDeath;
 	double _Coordinates[2];
 	double _MotionStepSize;
+	double _Sociability;
 	bool _TravelerQ = false;
 	
 	
