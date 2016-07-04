@@ -101,5 +101,6 @@ private:
 	int _R;
 	int _D;
 	int _N;
+	int _B;
 };
 #endif /* ARCHITECT_H_ */

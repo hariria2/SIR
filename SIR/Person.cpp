@@ -186,18 +186,25 @@ void Person::setNeighbors(list<Person *> *n){
 	_Neighbors = n;
 }
 void Person::setAgeInteraction(){
-	_AgeInteraction["CC"]=0.01;
-	_AgeInteraction["TT"]=1;
-	_AgeInteraction["YY"]=0.9;
 	_AgeInteraction["AA"]=1;
-	_AgeInteraction["SS"]=.4;
+	_AgeInteraction["AC"]=0.4;
+	_AgeInteraction["AS"]=0.2;
+	_AgeInteraction["AT"]=0.3;
+	_AgeInteraction["AY"]=0.7;
+
+	_AgeInteraction["CC"]=0.01;
+	_AgeInteraction["CS"]=0.8;
+	_AgeInteraction["CT"]=0.1;
 	_AgeInteraction["CY"]=1;
-	_AgeInteraction["AC"]=.0;
-	_AgeInteraction["SC"]=0.8;
+
+	_AgeInteraction["SS"]=.4;
 	_AgeInteraction["ST"]=-0.5;
 	_AgeInteraction["SY"]=-0.2;
-	_AgeInteraction["AS"]=0.2;
-	_AgeInteraction["AY"]=0.7;
+
+	_AgeInteraction["TT"]=1;
+	_AgeInteraction["TY"]=0.6;
+
+	_AgeInteraction["YY"]=0.9;
 }
 void Person::setAgeGroup(){
 	if (_Age < 10)
@@ -338,7 +345,7 @@ void Person::Update(){
 		UpdateDiseaseWithInHost();
 
 		if ((_Age >= 10) & (_Age - 0.1 < 15)){
-			if (getState() == 'N'){
+			if (getState() == 'B'){
 				setState('S');
 				_ihdynamics.setT(3);
 			}
@@ -352,8 +359,8 @@ void Person::Update(){
 
 // Utilities
 void Person::InteractWithOthers(){
-	double criticalDistance  = 20;
-	double criticalDistanceD = 2;
+	double criticalDistance  = 2;
+	double criticalDistanceD = 1;
 	
 	double motionBias[2];
 	double r[4];
@@ -434,31 +441,22 @@ void Person::Move(double xr, double yr, string motionType){
 	if(_Location->ContainsQ(x, y)){
 		setCoordinates(co);
 	}
-	else{
-		x = _X - xr;
-		y = _Y - yr;
-		co[0] = x;
-		co[1] = y;
-		setCoordinates(co);
-	}
-
 }
 void Person::UpdateDiseaseWithInHost(){
-	
 
-	
 	_ihdynamics.setT0(_Time);
 	_ihdynamics.setNE(_TotalVirion);
 	_ihdynamics.Simulate();
 	
 	if ((getState()=='R') & !(getHasBeenSick())) {
 		if (_ihdynamics.getT() > 1.8){
-			//setState('S');
+			setState('S');
 		}
 	}
 	else if (getState() == 'S'){
-		if (_ihdynamics.getV() > 0.2){
+		if (_ihdynamics.getI() > 0.2){
 			setState('I');
+			setMotionStepSize(_MotionStepSize/2);
 			_NewInf = true;
 		}
 	}
@@ -473,8 +471,9 @@ void Person::UpdateDiseaseWithInHost(){
 		}
 		else if (_ihdynamics.getI() < 0.1 & _HasBeenSick == 1){
 			setState('R');
-			setHasBeenSick(0);
-			_ihdynamics.HasBeenSick = 1;
+			setMotionStepSize(_MotionStepSize*2);
+			//setHasBeenSick(0);
+			//_ihdynamics.HasBeenSick = 1;
 		}
 	}
 	else if (getState() == 'P'){
@@ -493,8 +492,8 @@ void Person::UpdateDiseaseWithInHost(){
 	else if (getState() == 'R'){
 		_NewInf = false;
 		if (_ihdynamics.getI() < 0.1){
-			setHasBeenSick(0);
-			_ihdynamics.HasBeenSick = 0;
+			//setHasBeenSick(0);
+			//_ihdynamics.HasBeenSick = 0;
 		}
 	}
 	

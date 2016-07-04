@@ -252,7 +252,7 @@ void Visualization::DrawPeople(){
 			GG=0;
 			BB=0;
 		}
-		else if ((*p)->getState()=='N'){
+		else if ((*p)->getState()=='B'){
 			RR=1;
 			GG=1;
 			BB=0;

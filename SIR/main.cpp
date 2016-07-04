@@ -33,10 +33,10 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = 0.1;
+double dt = 1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "2";
 int main(){
 	/** 
 	 * \brief Brief description.
@@ -45,7 +45,7 @@ int main(){
 	 *  Detailed description starts here.
 	 */
 	
-	FaroeIslands(tend, dt, version, true, true);
+	FaroeIslands(tend, dt, version, true, false);
 	//SingleLocation(tend, dt, version, true, false);
 	
 	
@@ -120,7 +120,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, 
 		Person *ip = new Person(ii, name, age, state, ihd,
 														&Main, locations,10,10,10, true);
 		ip->setAgeIncrement(ageIncrement);
-		ip->setMotionStepSize(3.6);
+		ip->setMotionStepSize(0.1);
 		ip->setTimeStep(dt);
 		people.push_back(ip);
 		vpeople.push_back(ip);
@@ -219,7 +219,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 	
-	normal_distribution<double> ageDist(40,20);
+	normal_distribution<double> ageDist(40,35);
 	normal_distribution<double> suDist(3.5,0.5);            // Susceptibility (S)
 	normal_distribution<double> icDist(2,0.1);              // Initial Condition
 	normal_distribution<double> betaDist(0.1,0.05);          // Beta (rate of decay of T cells)
@@ -228,7 +228,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	normal_distribution<double> CDist(.5,0.05);            // C (rate of decay of Virions)
 	normal_distribution<double> ILDist(0.001,0.0001);     // No idea what this does
 
-	normal_distribution<double> sociability(0,2);
+	normal_distribution<double> sociability(0.2,1);
 
 	vector<Person*> people;
 	list<Person*> vpeople;
@@ -278,6 +278,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			C      = (randC < 0.01)? 0.01:randC;
 			ihd.setC(C);
 
+			if (age<10){
+				state='B';
+				ihd.setT(0);
+			}
 			
 			Person *ip = new Person(ii, name, age, state, ihd,
 															&Island, (*p),islands,10,10,10);
@@ -347,7 +351,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 		archie.setDomain(&Island);
 		archie.setPlaces(islands);
 		archie.setSaveIntegerTimes(true);
-		archie.setBatchSize(50);
+		archie.setBatchSize(5);
 		archie.Simulate();
 	}
 	

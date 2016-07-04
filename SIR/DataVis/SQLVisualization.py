@@ -51,7 +51,8 @@ class SQLVisualization:
         self.P = [row[4] for row in data]
         self.R = [row[5] for row in data]
         self.D = [row[6] for row in data]
-        self.N = [row[7] for row in data]
+        self.B = [row[7] for row in data]
+        self.N = [row[8] for row in data]
 
     def getMonthlyData(self):
         sqlquery = 'SELECT * FROM HistoryData';
@@ -262,8 +263,9 @@ class SQLVisualization:
             plt.setp(ps, 'Color', self.bl,'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered People")
             plt.setp(pr, 'Color', self.gr,'LineWidth', 4)
-
-            pa = plt.plot(self.T, [d+i+s+r+p for d,i,s,r,p in zip(self.D,self.I,self.S,self.R,self.P)], label="Whole population")
+            pb = plt.plot(self.T, self.B, label="Recovered People")
+            plt.setp(pb, 'Color', 'm','LineWidth', 4)
+            pa = plt.plot(self.T, [d+i+s+r+p+b for d,i,s,r,p,b in zip(self.D,self.I,self.S,self.R,self.P,self.B)], label="Whole population")
             plt.setp(pa, 'Color', 'c','LineWidth', 4)
             if self._PeaksOnly:
                 pe = plt.plot(self._PeakTimes, self._Peaks,'ko',label="Peaks")

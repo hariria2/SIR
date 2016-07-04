@@ -15,7 +15,7 @@ from SIR import SIR
 #vis = SQLVisualization('root','','localhost','sim_v1_6_18_2016')
 
 #vis = SQLVisualization('root','','localhost','sim_v1_6_20_2016')
-vis = SQLVisualization('root','','localhost','sim_v1_6_27_2016')
+vis = SQLVisualization('root','','localhost','sim_v2_7_3_2016')
 
 #sir = SIR(0,10,.1,.2,0.3,100);
 #sir.Initialize(999,1,0);
@@ -28,11 +28,14 @@ vis._AllPopulations = False; # These both need fixing in PlotHistory.
 vis._PeaksOnly = False;      # These both need fixing in PlotHistory.
 vis.getHistoryData()
 
-popOnly = False;
+popOnly = True;
 
 
 if popOnly:
     vis.PlotHistory(1)
+    plt.figure(2)
+    pi = plt.plot(vis.T,vis.N)
+    plt.ylabel('Number of infection incidences',fontsize=18)
     #vis.getMonthlyData()
     #plt.figure(2)
     #pi = plt.plot(vis.MT,vis.MN)

@@ -88,11 +88,12 @@ void SQLStorage::CreateTable(string table){
 		statement = "CREATE TABLE " +table+ "(" +
 		"ID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
 		"Time DOUBLE UNSIGNED NOT NULL, " +
-		"Susceptible INT NOT NULL, " +
+		"Susceptible INT UNSIGNED NOT NULL, " +
 		"Exposed     INT UNSIGNED NOT NULL, " +
 		"Infected    INT UNSIGNED NOT NULL, " +
 		"Recovered   INT UNSIGNED NOT NULL, " +
 		"Dead        INT UNSIGNED NOT NULL, " +
+		"BewBorn     INT UNSIGNED NOT NULL, " +
 		"NewInf      INT UNSIGNED NOT NULL" +
 		");";
 		
