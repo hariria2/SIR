@@ -194,7 +194,7 @@ void Visualization::DrawPlace(){
 
 			PRR = 0.6;
 			PGG = 0.7;
-			PBB = 0.7;
+			PBB = 0.6;
 		} else if ((*p)->getType()=="Cemetery"){
 			RR = 0.7;
 			GG = 0.5;

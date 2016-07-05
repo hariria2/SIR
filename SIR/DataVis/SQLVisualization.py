@@ -361,7 +361,7 @@ class SQLVisualization:
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'P(>s)', fontsize=18)
-        plt.title(r'Slope: %2.2f' %(-slope+2), fontsize=18)
+        plt.title('Slope: %2.2f, Error: %2.2f \n R^2: %2.2f, p_val: %2.2f' %(-slope+2,std_err,r_value**2, p_value), fontsize=18)
         plt.grid(True)
 
     def ComputeProb(self):

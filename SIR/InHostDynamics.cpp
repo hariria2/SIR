@@ -144,9 +144,24 @@ void InHostDynamics::Simulate(){
 	
 }
 void InHostDynamics::Update(){
-	
+	/**
+	 *\callergraph
+	 *
+	 * This function simply uses Euler's method (below) to update the disease status.
+	 * The model is described by Flow().
+	 *
+	 * #### Notes:
+	 *	+ If _V reaches below 1e-2, it is set to zero.
+	 *	+ If the person has been sick before, and the infection level has dropped 
+	 *		to belor 0.05, then _V and _I are set to zero.
+	 *
+	 * ### Euler's method:
+	 * \f[
+	 *	y_t = y_{t-1} + dt \frac{df}{dt}
+	 * \f]
+	 */
 	Flow();
-	
+
 	if (isnan(_V)){
 		cout << "V: " << _V << endl;
 		cout << "I: " << _I << endl;

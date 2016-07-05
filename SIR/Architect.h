@@ -16,14 +16,19 @@ using namespace std;
 
 class Visualization;
 
+/**
+ * Architect.h
+ *
+ *  \date Jan 9, 2015
+ *
+ *  \author Sahand
+ *
+ * The distance between \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$ is
+ * \f$\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}\f$.
+ */
+
 class Architect {
-	/**
-	 * Architect.h
-	 *
-	 *  \date Jan 9, 2015
-	 *
-	 *  \author Sahand
-	 */
+
 public:
 	
 	Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis);
@@ -62,6 +67,7 @@ public:
 	
 	// Utilities
 	void IncrementTime();
+	/// Loops through time and calls all the relevant functions.
 	void Simulate();
 	void Update(SQLStorage* dPtr);
 	void Update();

@@ -13,6 +13,28 @@
 
 using namespace std;
 
+/*! \mainpage Agent-based simulation of SIR in the Faroe Islands.
+ * \date   July 4, 2016
+ * \author Sahand
+ *
+ * ## Introduction
+ *
+ * ## Faroe Islands
+ * We are simulating spread of disease on the Faroe Islands.
+ *![Map of the Faroe Islands](/Users/sahand/Research/WebInterface/public_html/images/Faroe_map.png)
+ *
+ * Island   | Population
+ * -------- | -------------
+ * Streymoy | 22450
+ * Esturoy  | 10726
+ * Bordoy   | 5665
+ * Suduroy  | 4680
+ * Vagar    | 3064
+ * Sandoy   | 1283
+ * Kalsoy   | 94
+ * Snivoy   | 32
+ */
+
 // Function prototyping
 template <typename T>
 vector<T> operator+(const vector<T> &A, const vector<T> &B);
@@ -36,7 +58,7 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 double dt = 1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "2";
+string version = "1";
 int main(){
 	/** 
 	 * \brief Brief description.
@@ -219,7 +241,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 	
-	normal_distribution<double> ageDist(40,35);
+	normal_distribution<double> ageDist(40,25);
 	normal_distribution<double> suDist(3.5,0.5);            // Susceptibility (S)
 	normal_distribution<double> icDist(2,0.1);              // Initial Condition
 	normal_distribution<double> betaDist(0.1,0.05);          // Beta (rate of decay of T cells)
@@ -278,10 +300,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			C      = (randC < 0.01)? 0.01:randC;
 			ihd.setC(C);
 
-			if (age<10){
-				state='B';
-				ihd.setT(0);
-			}
+//			if (age<10){
+//				state='B';
+//				ihd.setT(0);
+//			}
 			
 			Person *ip = new Person(ii, name, age, state, ihd,
 															&Island, (*p),islands,10,10,10);

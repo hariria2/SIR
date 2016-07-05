@@ -15,7 +15,7 @@ from SIR import SIR
 #vis = SQLVisualization('root','','localhost','sim_v1_6_18_2016')
 
 #vis = SQLVisualization('root','','localhost','sim_v1_6_20_2016')
-vis = SQLVisualization('root','','localhost','sim_v2_7_3_2016')
+vis = SQLVisualization('root','','localhost','sim_v4_7_4_2016')
 
 #sir = SIR(0,10,.1,.2,0.3,100);
 #sir.Initialize(999,1,0);
@@ -28,7 +28,7 @@ vis._AllPopulations = False; # These both need fixing in PlotHistory.
 vis._PeaksOnly = False;      # These both need fixing in PlotHistory.
 vis.getHistoryData()
 
-popOnly = True;
+popOnly = False;
 
 
 if popOnly:

@@ -12,21 +12,29 @@ using namespace std;
 
 class Place;
 
-class Person {
 
-/*
- * Person.cpp
+/**
+ * Person.h
  *
  * \date   Jan 6, 2015
  * \author Sahand
  *
+ * # Person
+ * + This class descripes all the properties and behaviors of each agent.
+ *
+ * \todo Fix up the constructors. 
+ *	+ No more need for SingleLocation (I think).
+ *	+ No more need for the last three parameters.
  */
 
+class Person {
+
 public:
+
 	bool IsSingleLocation;
-	
+	/// This is one of the constructors for the class.
 	Person(int id, string name, double age,char state, InHostDynamics ihd, Domain* city, Place* Location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var);
-	
+	/// This is the second constructor. It delas with the case of only one location.
 	Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city,vector<Place*> availplaces, int inf_var, int inc_var, int rec_var, bool IsSingleLocation);
 	
 	~Person();
@@ -103,10 +111,12 @@ public:
 	
 	// Utilities
 	double Distance(Person* p);
+	/// This function returns distances in  x and y directions. 
 	void CartesianDistance(Person* p, double* r);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
 	void computeMotionEffect(double* distVector, char ag, double* r);
 	void InteractWithOthers();
+	/// Tell people how to move.
 	void Move();
 	void Move(double x, double y, string type = "IslandHopper");
 	void UpdateDiseaseWithInHost();
@@ -137,6 +147,7 @@ private:
 	unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine *_generator;
 
+	/// Unique ID ascribed to each person when it is created.
 	int _ID;
 	double _Age;
 	double _AgeIncrement;
@@ -146,18 +157,26 @@ private:
 	double _TimeStep;
 	double _X;
 	double _Y;
+	/// The value by which the person moves in x direction becasue of interaction with others
 	double _MotionBiasX;
+	/// The value by which the person moves in y direction becasue of interaction with others
 	double _MotionBiasY;
+	/// The attractive/repulsive force exerted on th eperson from others in x direction.
 	double _AttractionForceX;
+	/// The attractive/repulsive force exerted on th eperson from others in x direction.
 	double _AttractionForceY;
+	/// Amount of virions collected form interacting with all the other people.
 	double _TotalVirion;
 	double _TimeInfected;
 	double _IncubationTime;
 	double _RecoveryTime;
 	double _TimeOfDeath;
 	double _Coordinates[2];
+	/// The magnitude of motion in the random direction before the bias is added.
 	double _MotionStepSize;
+	/// Multiplied the motion bias depicting how social/anti-social a person is.
 	double _Sociability;
+	/// This determines if a person can travel across islands. 
 	bool _TravelerQ = false;
 	
 	
@@ -176,7 +195,8 @@ private:
 	int _LifeExpectancy;
 	string _Connections = "";
 
-	map<string,double> _AgeInteraction;
+	/// The level of interaction of two individuals based on their age groups.
+	map<string,double> _AgeInteraction; /**< Detailed description. */
 
 };
 

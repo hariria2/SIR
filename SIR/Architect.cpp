@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 750);
+	_introtimeDist = new uniform_int_distribution<int>(850, 950);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 750);
+	_introtimeDist = new uniform_int_distribution<int>(850, 950);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -64,7 +64,7 @@ _sqlDataPtr(d)
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 750);
+	_introtimeDist = new uniform_int_distribution<int>(850, 950);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -148,12 +148,18 @@ Domain* Architect::getDomain(){
 
 // Utilities
 void Architect::IncrementTime(){
+	/**
+	 * \callergraph
+	 */
 	_CurrentTime += _TimeStep;
 	_TimeIndex++;
 }
 void Architect::Simulate(){
-
-	_BirthRate = (_N>0.0)? 0.06: 0.12;
+	/**
+	 * \callergraph
+	 *
+	 */
+	_BirthRate = (_N>0.0)? 0.03 : 0.06;
 	
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
@@ -224,7 +230,7 @@ void Architect::Simulate(){
 					}
 					
 				}
-				
+
 				Update(_sqlDataPtr);
 				
 				if (_BirthRate >= 1){ // Keep in mind this condition works correctly only for dt=1
@@ -416,7 +422,9 @@ void Architect::Update(SQLStorage* data){
 	
 }
 void Architect::Update(){
-	
+	/**
+	 * \callergraph
+	 */
 	IncrementTime();
 	
 	
@@ -470,6 +478,9 @@ void Architect::DisplayTime(){
 	
 }
 void Architect::PopulationData(){
+	/**
+	 * \callergraph
+	 */
 	_S = 0;
 	_I = 0;
 	_P = 0;
@@ -506,9 +517,15 @@ void Architect::PopulationData(){
 	}
 }
 void Architect::RemovePerson(Person *p){
+	/**
+	 * \callergraph
+	 */
 	_PeoplePtr.remove(p);
 }
 void Architect::PrepDB(){
+	/**
+	 * \callergraph
+	 */
 	// ====================>>>>LocationData<<<========================== //
 	// Domain
 	
@@ -556,7 +573,9 @@ void Architect::PrepDB(){
 	
 }
 Place* Architect::LocFromCoo(double x, double y){
-
+	/**
+	 * \callergraph
+	 */
 	for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p){
 		if ((*p)->ContainsQ(x, y)){
 			return *p;
@@ -567,11 +586,16 @@ Place* Architect::LocFromCoo(double x, double y){
 	return _AllPlaces.front();
 }
 void Architect::AddPerson(Person *p){
+	/**
+	 * \callergraph
+	 */
 	_PeoplePtr.push_back(p);
 	PopulationData();
 }
 void Architect::AddPerson(double x, double y){
-	
+	/**
+	 * \callergraph
+	 */
 	unsigned long s = _PeoplePtr.size();
 	int id = (int) s + 1;
 	Person* p1 = _PeoplePtr.front();
@@ -620,7 +644,9 @@ void Architect::AddPerson(double x, double y){
 	
 }
 void Architect::AddPerson(string NewBirth){
-	
+	/**
+	 * \callergraph
+	 */
 	int indx;
 	if ((_AllPlaces.size())>1){
 		indx  = rand() % (_AllPlaces.size());
@@ -671,7 +697,9 @@ void Architect::AddPerson(string NewBirth){
 	
 }
 void Architect::Funeral(Person* p){
-	
+	/**
+	 * \callergraph
+	 */
 	if (_Visualization == NULL) {
 		(p->getLocation())->removePerson(p);
 	}

@@ -6,6 +6,21 @@ _City(city),
 _Location(location),
 _AvailablePlaces(availplaces)
 {
+/**
+ * \callergraph
+ * ### Things that are set using member initialization:
+ * + _ihdynamics
+ * + _City
+ * + _Location
+ * + _AvailablePlaces
+ *
+ * ### Things that are set whithin the constructor:
+ * + _generator
+ * + _ID
+ * + _Age
+ * + _Name
+ * + _State
+ */
 	_generator = new default_random_engine(_RandSeed);
 	setID(id);
 	setAge(age);
@@ -36,6 +51,19 @@ Person::Person(int id, string name, double age, char state, InHostDynamics ihd, 
 _ihdynamics(ihd),
 _AvailablePlaces(availplaces)
 {
+	/**
+	 * ### Things that are set using member initialization:
+	 * + _ihdynamics
+	 * + _City
+	 * + _AvailablePlaces
+	 *
+	 * ### Things that are set whithin the constructor:
+	 * + _generator
+	 * + _ID
+	 * + _Age
+	 * + _Name
+	 * + _State
+	 */
 	_generator = new default_random_engine(_RandSeed);
 	setID(id);
 	setAge(age);
@@ -344,14 +372,17 @@ void Person::Update(){
 		Move();
 		UpdateDiseaseWithInHost();
 
-		if ((_Age >= 10) & (_Age - 0.1 < 15)){
+		if (_Age < 10){
+			setState('B');
+			_ihdynamics.setT(0);
+		}
+		else if ((_Age >= 10) & (_Age - 0.1 < 15)){
 			if (getState() == 'B'){
 				setState('S');
 				_ihdynamics.setT(3);
 			}
 		}
-
-		if (_Age >= _LifeExpectancy){
+		else if (_Age >= _LifeExpectancy){
 			Die();
 		}
 	}
@@ -359,6 +390,14 @@ void Person::Update(){
 
 // Utilities
 void Person::InteractWithOthers(){
+	/**
+	 * \callergraph
+	 * 
+	 * This function is responsible for two things:
+	 *	1. Compute the effect of other people in the motion. 
+	 *	2. Compute the effect of others in how much virions the person collects.
+	 *
+	 */
 	double criticalDistance  = 2;
 	double criticalDistanceD = 1;
 	
@@ -389,7 +428,10 @@ void Person::InteractWithOthers(){
 	}
 }
 void Person::computeMotionEffect(double* distVector, char ag, double * r){
-
+	/**
+	 * \callergraph
+	 * \todo
+	 */
 	string interType = string()+_AgeGroup+ag;
 	sort(interType.begin(),interType.end());
 
@@ -400,6 +442,10 @@ void Person::computeMotionEffect(double* distVector, char ag, double * r){
 	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
 }
 void Person::Move(){
+	/**
+	 * \callergraph
+	 * \todo
+	 */
 
 	normal_distribution<double> xdist(_MotionBiasX,_MotionStepSize);
 	normal_distribution<double> ydist(_MotionBiasY,_MotionStepSize);
@@ -443,7 +489,10 @@ void Person::Move(double xr, double yr, string motionType){
 	}
 }
 void Person::UpdateDiseaseWithInHost(){
-
+	/**
+	 * \callergraph
+	 * \todo
+	 */
 	_ihdynamics.setT0(_Time);
 	_ihdynamics.setNE(_TotalVirion);
 	_ihdynamics.Simulate();
@@ -500,6 +549,16 @@ void Person::UpdateDiseaseWithInHost(){
 	//_neigbors.clear();
 }
 void Person::CartesianDistance(Person* p, double *r){
+	/**
+	 * \callergraph
+	 * 
+	 * + This function returns an array where the first two are the
+	 * x and y distances of this person from the other. 
+	 * + The third and fourth positions are the sign of the difference in x,y.
+	 * + If _this_ person is to the right of the _other_, the sign in x is +.
+	 * + If _this_ person is above the _other_, then sign for y is +.
+	 *
+	 */
 	// order matters here.
 	double xdiff = p->getX() - _X;
 	double ydiff = p->getY() - _Y;
@@ -510,7 +569,11 @@ void Person::CartesianDistance(Person* p, double *r){
 	r[3] = (ydiff > 0)? 1:-1;
 };
 double Person::Distance(Person* p){
-	
+	/**
+	 * \callergraph
+	 * This is begin deprecated.
+	 * \todo Go through all functions and make sure there is no longer a need for this.
+	 */
 	double p1x = _Coordinates[0];
 	double p1y = _Coordinates[1];
 	
@@ -520,6 +583,9 @@ double Person::Distance(Person* p){
 	return (pow((p2x-p1x),2) + pow((p2y - p1y),2));
 }
 void Person::Die(){
+	/**
+	 * \callergraph
+	 */
 	setState('D');
 	_TimeOfDeath = _Time;
 	Move(0, 0, "IslandHopper");
