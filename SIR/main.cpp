@@ -58,15 +58,9 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 double dt = 1;
 double tend = 36000;
 const double ageIncrement = dt/365;
-string version = "1";
+string version = "2";
 int main(){
-	/** 
-	 * \brief Brief description.
-	 *         Brief description continued.
-	 *
-	 *  Detailed description starts here.
-	 */
-	
+
 	FaroeIslands(tend, dt, version, true, false);
 	//SingleLocation(tend, dt, version, true, false);
 	
@@ -308,7 +302,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			Person *ip = new Person(ii, name, age, state, ihd,
 															&Island, (*p),islands,10,10,10);
 			ip->setAgeIncrement(ageIncrement);
-			ip->setMotionStepSize(0.1);
+			ip->setMotionStepSize(0.05);
 			ip->setTimeStep(dt);
 			ip->setSociability(sociability(generator));
 			people.push_back(ip);

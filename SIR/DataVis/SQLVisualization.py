@@ -29,6 +29,8 @@ class SQLVisualization:
         self._MPeakTimes = [];
         self._PeakRes = 30.
         self._Prob = [];
+        self._R2 = 0;
+        self._stderr = 0;
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -334,6 +336,19 @@ class SQLVisualization:
         plt.hist(l,20,color=self.bk)
         plt.ylabel(r'Number of Occurences', fontsize=18)
         plt.grid(True)
+    def doLinearRegression(self):
+        l = self._MPeaks
+
+        counter=collections.Counter(l)
+        cc = collections.OrderedDict(sorted(counter.items()))
+        vals = cc.keys()
+
+        ml = int(floor(len(vals)*0.6))
+        xl = [log10(x) for x in vals[0:ml]]
+        yl = [log10(x) for x in self._Prob[0:ml]]
+        slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
+        self._R2 = r_value**2;
+        self._stderr = std_err;
     def MPlotLog(self, fignum):
         h = plt.figure(fignum);
 
@@ -347,7 +362,8 @@ class SQLVisualization:
         xl = [log10(x) for x in vals[0:ml]]
         yl = [log10(x) for x in self._Prob[0:ml]]
         slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
-
+        self._R2 = r_value**2;
+        self._stderr = std_err;
         pi = plt.plot(vals, self._Prob,'k.',markersize=10) #this is a hack. Get rid of it.
         pi = plt.plot(vals, self._Prob)
 
@@ -361,7 +377,7 @@ class SQLVisualization:
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'P(>s)', fontsize=18)
-        plt.title('Slope: %2.2f, Error: %2.2f \n R^2: %2.2f, p_val: %2.2f' %(-slope+2,std_err,r_value**2, p_value), fontsize=18)
+        plt.title('Slope: %2.2f, R^2: %2.2f' %(-slope+2,r_value**2), fontsize=18)
         plt.grid(True)
 
     def ComputeProb(self):
