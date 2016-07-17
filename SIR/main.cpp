@@ -10,7 +10,7 @@
 #include "SQLStorage.h"
 #include "Source.hpp"
 #include <thread>
-
+#include "Parameters.h"
 using namespace std;
 
 /*! \mainpage Agent-based simulation of SIR in the Faroe Islands.
@@ -57,12 +57,12 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-bool store = true;
-bool visualize = false;
-double dt = visualize? 0.1:1;
-double tend = 36000;
+bool store = StoreData;
+bool visualize = VisualizeData;
+double dt = visualize? timeStepVis:timeStep;
+double tend = endTime;
 const double ageIncrement = dt/365;
-string version = "2";
+string version = Version;
 
 int main(){
 
@@ -242,17 +242,17 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 	
-	normal_distribution<double> ageDist(40,25);
-	normal_distribution<double> suDist(3.5,0.5);     // Susceptibility (S)
-	normal_distribution<double> icDist(2,0.1);       // Initial Condition
-	normal_distribution<double> betaDist(0.1,0.05);  // Beta (rate of decay of T cells)
-	normal_distribution<double> deltaDist(0.1,0.005);// Delta (rate of decay of I cells)
-	normal_distribution<double> PDist(.4,0.05);      // P (rate of growth of Virions)
-	normal_distribution<double> CDist(.5,0.05);      // C (rate of decay of Virions)
-	normal_distribution<double> ILDist(0.001,0.0001);// No idea what this does
-	normal_distribution<double> sociability(0.2,1);
-	normal_distribution<double> randStep(0.1,0.05);
-	normal_distribution<double> randLifeExpDist(80,5);
+	normal_distribution<double> ageDist(ageMean,ageVar);
+	normal_distribution<double> suDist(susceptibilityMean,susceptibilityVar);					// Susceptibility (S)
+	normal_distribution<double> icDist(initialConditionMean,initialConditionVar);     // Initial Condition
+	normal_distribution<double> betaDist(betaMean,betaVar);														// Beta (rate of decay of T cells)
+	normal_distribution<double> deltaDist(deltaMean,deltaVar);												// Delta (rate of decay of I cells)
+	normal_distribution<double> PDist(PMean,PVar);																		// P (rate of growth of Virions)
+	normal_distribution<double> CDist(CMean,CVar);																		// C (rate of decay of Virions)
+	normal_distribution<double> ILDist(0.001,0.0001);																	// No idea what this does
+	normal_distribution<double> sociability(sociabilityMean,sociabilityVar);
+	normal_distribution<double> randStep(stepSizeMean,stepSizeVar);
+	normal_distribution<double> randLifeExpDist(lifeExpectencyMean,lifeExpectencyVar);
 
 	vector<Person*> people;
 	list<Person*> vpeople;
