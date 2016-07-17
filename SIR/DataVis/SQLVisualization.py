@@ -259,7 +259,7 @@ class SQLVisualization:
             plt.setp(ps, 'Color', self.bl,'LineWidth', 4)
             pr = plt.plot(self.T, self.R, label="Recovered People")
             plt.setp(pr, 'Color', self.gr,'LineWidth', 4)
-            pb = plt.plot(self.T, self.B, label="Recovered People")
+            pb = plt.plot(self.T, self.B, label="Newborn People")
             plt.setp(pb, 'Color', 'm','LineWidth', 4)
             pa = plt.plot(self.T, [d+i+s+r+p+b for d,i,s,r,p,b in zip(self.D,self.I,self.S,self.R,self.P,self.B)], label="Whole population")
             plt.setp(pa, 'Color', 'c','LineWidth', 4)

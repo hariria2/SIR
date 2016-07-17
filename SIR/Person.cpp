@@ -39,8 +39,6 @@ _AvailablePlaces(availplaces)
 	setGender('M');
 	setLocation(location);
 	setDefaultLocation(location);
-	uniform_real_distribution<double> LE(77,82);
-	setLifeExpectancy(LE(*_generator));
 	setAgeInteraction();
 	setAgeGroup();
 	
@@ -82,8 +80,6 @@ _AvailablePlaces(availplaces)
 	setLocation(availplaces[0]);
 	setDefaultLocation(_Location);
 	setGender('M');
-	uniform_real_distribution<double> LE(77,82);
-	setLifeExpectancy(LE(*_generator));
 	setAgeInteraction();
 	setAgeGroup();
 }
@@ -192,7 +188,7 @@ void Person::setRecoveryPeriod(){
 	randnum = (randnum < 0)? 0:randnum;
 	_RecoveryPeriod = floor(randnum);
 }
-void Person::setLifeExpectancy(int le){
+void Person::setLifeExpectancy(double le){
 	_LifeExpectancy = le;
 }
 void Person::setInHostDynamics(InHostDynamics ihd){
@@ -303,7 +299,7 @@ int Person::getIncVar(){
 int Person::getRecVar(){
 	return _RecoveryVar;
 }
-int Person::getLifeExpectancy(){
+double Person::getLifeExpectancy(){
 	return _LifeExpectancy;
 }
 Domain* Person::getDomain(){

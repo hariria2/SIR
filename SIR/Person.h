@@ -60,7 +60,7 @@ public:
 	void setInfectionPeriod();
 	void setIncubationPeriod();
 	void setRecoveryPeriod();
-	void setLifeExpectancy(int le);
+	void setLifeExpectancy(double le);
 	void setInHostDynamics(InHostDynamics ihd);
 	void setInfVar(int var);
 	void setIncVar(int var);
@@ -99,7 +99,7 @@ public:
 	int getInfVar();
 	int getIncVar();
 	int getRecVar();
-	int getLifeExpectancy();
+	double getLifeExpectancy();
 	bool getTraverlerQ();
 	string getConnections();
 	char getAgeGroup();
@@ -151,6 +151,7 @@ private:
 	int _ID;
 	double _Age;
 	double _AgeIncrement;
+	double _LifeExpectancy;
 	char _AgeGroup;
 	string _Name;
 	double _Time;
@@ -192,7 +193,7 @@ private:
 	int _InfectionVar;
 	int _IncubationVar;
 	int _RecoveryVar;
-	int _LifeExpectancy;
+
 	string _Connections = "";
 
 	/// The level of interaction of two individuals based on their age groups.

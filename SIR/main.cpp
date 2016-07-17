@@ -252,6 +252,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	normal_distribution<double> ILDist(0.001,0.0001);// No idea what this does
 	normal_distribution<double> sociability(0.2,1);
 	normal_distribution<double> randStep(0.1,0.05);
+	normal_distribution<double> randLifeExpDist(80,5);
+
 	vector<Person*> people;
 	list<Person*> vpeople;
 	
@@ -263,6 +265,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	double randP, P;
 	double randC, C;
 	double randStepSize, stepSize;
+	double randLifeExpec, lifeExpec;
 
 	for(auto p=islands.begin(); p!=islands.end();++p){
 
@@ -305,6 +308,9 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			stepSize      = (randStepSize < 0.001)? 0.001:randStepSize;
 			ihd.setC(C);
 
+			randLifeExpec = randLifeExpDist(generator);
+			lifeExpec     = (randStepSize < 10)? 10:randStepSize;
+
 //			if (age<10){
 //				state='B';
 //				ihd.setT(0);
@@ -316,6 +322,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			ip->setMotionStepSize(stepSize);
 			ip->setTimeStep(dt);
 			ip->setSociability(sociability(generator));
+			ip->setLifeExpectancy(lifeExpec);
 			people.push_back(ip);
 			vpeople.push_back(ip);
 			

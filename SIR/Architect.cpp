@@ -626,6 +626,7 @@ void Architect::AddPerson(double x, double y){
 	p->setHasBeenSick(0);
 	p->setMotionStepSize(0.1);
 	p->setSociability(1);
+	p->setLifeExpectancy(80);
 
 	if (_Store == "MYSQL"){
 		_sqlDataPtr->InsertValue("People",
@@ -679,6 +680,7 @@ void Architect::AddPerson(string NewBirth){
 	p->setNeighbors(&_PeoplePtr);
 	p->setMotionStepSize(0.01);
 	p->setSociability(0.5);
+	p->setLifeExpectancy(80);
 	//p->setTravelerQ(true);
 	p->setHasBeenSick(0);
 	if (_Store == "MYSQL"){
