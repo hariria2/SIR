@@ -188,7 +188,21 @@ void InHostDynamics::Update(){
 	}
 }
 void InHostDynamics::Flow(){
-	
+	/**
+	 *\callergraph
+	 *
+	 * This function describes the flow field for development of the disease within each individual.
+	 *
+	 * #### Notes:
+	 *	+ A term NE is added to the last equation which represents the effect of other people on _this_ individual.
+	 *
+	 * ### The model:
+	 * \f{eqnarray*}{
+	 *	\frac{dT}{dt} &=& -\beta T V \\
+	 *	\frac{dI}{dt} &=&  \beta T V - \delta I \\
+	 *	\frac{dV}{dt} &=& P I - C V
+	 * \f}
+	 */
 	_NE = (_NE > 1)? 1:_NE;
 	_dT = -_Beta*_T*_V;
 	_dI = _Beta*_T*_V - _Delta*_I;

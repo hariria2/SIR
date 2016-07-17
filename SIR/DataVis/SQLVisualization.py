@@ -55,7 +55,6 @@ class SQLVisualization:
         self.D = [row[6] for row in data]
         self.B = [row[7] for row in data]
         self.N = [row[8] for row in data]
-
     def getMonthlyData(self):
         sqlquery = 'SELECT * FROM HistoryData';
         self._Cursor.execute(sqlquery);
@@ -67,7 +66,6 @@ class SQLVisualization:
             self.MT.append(self.T[t])
             self.MN.append(sum(self.N[t:t+30]))
             t += 30
-
     def getMonthlyPeaks(self):
         peaks = []
         peaktimes = []
@@ -82,7 +80,6 @@ class SQLVisualization:
 
         self._MPeaks = [x for x in peaks if x !=0]
         self._MPeakTimes = [x for x,y in zip(peaktimes, peaks) if y !=0]
-
     def getPerson(self, ids):
         query1 = '';
         query2 = '';
@@ -154,7 +151,6 @@ class SQLVisualization:
                 self._People.append(p)
                 self._PersonIDs.append(id)
     def getLocation(self, ids):
-
             query1 = '';
             if ids == 'All':
                 sqlquery1 = 'SELECT * FROM Location';
@@ -198,7 +194,6 @@ class SQLVisualization:
                 if not (id in self._LocationIDs):
                     self._Locations.append(d)
                     self._LocationIDs.append(id)
-
     def countPeakes(self):
         te = self.T[-1]
         dt = self.T[1]-self.T[0]
@@ -241,7 +236,6 @@ class SQLVisualization:
             self._Peaks.append(ps)
             self._PeakTimes.append(self.T[int((ii-floor(n/2.))*self._PeakRes/dt)])
         return ii
-
     def Render(self):
         plt.show()
     def PlotHistory(self, fignum):
@@ -327,7 +321,6 @@ class SQLVisualization:
         plt.ylabel(r'Number of Occurances', fontsize=18)
         plt.title(r'Slope: %2.2f' %slope, fontsize=18)
         plt.grid(True)
-
     def MPlotHistogram(self, fignum):
         h = plt.figure(fignum);
 
@@ -343,7 +336,7 @@ class SQLVisualization:
         cc = collections.OrderedDict(sorted(counter.items()))
         vals = cc.keys()
 
-        ml = int(floor(len(vals)*0.6))
+        ml = int(floor(len(vals)*0.8))
         xl = [log10(x) for x in vals[0:ml]]
         yl = [log10(x) for x in self._Prob[0:ml]]
         slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
@@ -358,7 +351,7 @@ class SQLVisualization:
         cc = collections.OrderedDict(sorted(counter.items()))
         vals = cc.keys()
 
-        ml = int(floor(len(vals)*0.6))
+        ml = int(floor(len(vals)*0.8))
         xl = [log10(x) for x in vals[0:ml]]
         yl = [log10(x) for x in self._Prob[0:ml]]
         slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
@@ -366,10 +359,7 @@ class SQLVisualization:
         self._stderr = std_err;
         pi = plt.plot(vals, self._Prob,'k.',markersize=10) #this is a hack. Get rid of it.
         pi = plt.plot(vals, self._Prob)
-
-
         pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
-
         plt.ylim((0.01,1.1))
         plt.xscale('log')
         plt.yscale('log')
@@ -377,23 +367,18 @@ class SQLVisualization:
         plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'P(>s)', fontsize=18)
-        plt.title('Slope: %2.2f, R^2: %2.2f' %(-slope+2,r_value**2), fontsize=18)
+        plt.title('Slope: %2.2f, R^2: %2.4f' %(-slope+2,r_value**2), fontsize=18)
         plt.grid(True)
-
     def ComputeProb(self):
         l = self._MPeaks
-
         counter=collections.Counter(l)
         cc = collections.OrderedDict(sorted(counter.items()))
-
         sp = cc.keys()
         ns = cc.values()
         ssp = sum([n for s, n in zip(sp,ns)]);
-
         for ii in range(len(sp)):
             sspi = sum([n for s, n in zip(sp[ii:len(sp)],ns[ii:len(sp)])])
             self._Prob.append((float(sspi)/float(ssp)))
-
     def PlotIndividual(self,fignum, ppl):
         h = plt.figure(fignum)
         ymax = 0
@@ -448,7 +433,6 @@ class SQLVisualization:
                 lines1, labels1 = ax1.get_legend_handles_labels()
                 lines2, labels2 = ax2.get_legend_handles_labels()
                 ax2.legend(lines1 + lines2, labels1 + labels2, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=3, mode="expand", borderaxespad=0.)
-
     def draw_graph(self,graph,fignum):
         h = plt.figure(fignum);
         # extract nodes from graph

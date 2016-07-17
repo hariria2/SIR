@@ -19,6 +19,8 @@ using namespace std;
  *
  * ## Introduction
  *
+ * We use an agent-based model approach to simulate the spread of infectious diseases throughout populations. Each _agent_ represents a person or a collection of people.
+ *
  * ## Faroe Islands
  * We are simulating spread of disease on the Faroe Islands.
  *![Map of the Faroe Islands](/Users/sahand/Research/WebInterface/public_html/images/Faroe_map.png)
@@ -55,14 +57,19 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-double dt = 1;
+bool store = true;
+bool visualize = false;
+double dt = visualize? 0.1:1;
 double tend = 36000;
 const double ageIncrement = dt/365;
 string version = "2";
+
 int main(){
 
-	FaroeIslands(tend, dt, version, true, false);
-	//SingleLocation(tend, dt, version, true, false);
+
+
+	FaroeIslands(tend, dt, version, store, visualize);
+	//SingleLocation(tend, dt, version, store, visualize);
 	
 	
 	return 0;
@@ -236,16 +243,15 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	default_random_engine generator(seed);
 	
 	normal_distribution<double> ageDist(40,25);
-	normal_distribution<double> suDist(3.5,0.5);            // Susceptibility (S)
-	normal_distribution<double> icDist(2,0.1);              // Initial Condition
-	normal_distribution<double> betaDist(0.1,0.05);          // Beta (rate of decay of T cells)
-	normal_distribution<double> deltaDist(0.1,0.005);        // Delta (rate of decay of I cells)
-	normal_distribution<double> PDist(.4,0.05);             // P (rate of growth of Virions)
-	normal_distribution<double> CDist(.5,0.05);            // C (rate of decay of Virions)
-	normal_distribution<double> ILDist(0.001,0.0001);     // No idea what this does
-
+	normal_distribution<double> suDist(3.5,0.5);     // Susceptibility (S)
+	normal_distribution<double> icDist(2,0.1);       // Initial Condition
+	normal_distribution<double> betaDist(0.1,0.05);  // Beta (rate of decay of T cells)
+	normal_distribution<double> deltaDist(0.1,0.005);// Delta (rate of decay of I cells)
+	normal_distribution<double> PDist(.4,0.05);      // P (rate of growth of Virions)
+	normal_distribution<double> CDist(.5,0.05);      // C (rate of decay of Virions)
+	normal_distribution<double> ILDist(0.001,0.0001);// No idea what this does
 	normal_distribution<double> sociability(0.2,1);
-
+	normal_distribution<double> randStep(0.1,0.05);
 	vector<Person*> people;
 	list<Person*> vpeople;
 	
@@ -256,6 +262,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	double randdelta, delta;
 	double randP, P;
 	double randC, C;
+	double randStepSize, stepSize;
 
 	for(auto p=islands.begin(); p!=islands.end();++p){
 
@@ -294,6 +301,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			C      = (randC < 0.01)? 0.01:randC;
 			ihd.setC(C);
 
+			randStepSize  = randStep(generator);
+			stepSize      = (randStepSize < 0.001)? 0.001:randStepSize;
+			ihd.setC(C);
+
 //			if (age<10){
 //				state='B';
 //				ihd.setT(0);
@@ -302,7 +313,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			Person *ip = new Person(ii, name, age, state, ihd,
 															&Island, (*p),islands,10,10,10);
 			ip->setAgeIncrement(ageIncrement);
-			ip->setMotionStepSize(0.05);
+			ip->setMotionStepSize(stepSize);
 			ip->setTimeStep(dt);
 			ip->setSociability(sociability(generator));
 			people.push_back(ip);
