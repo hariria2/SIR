@@ -203,10 +203,18 @@ void Visualization::DrawPlace(){
 			RR = 0.7;
 			GG = 0.5;
 			BB = 0.6;
+
+			PRR = 0.6;
+			PGG = 0.7;
+			PBB = 0.6;
 		} else {
 			RR = 1.;
 			GG = 1.;
 			BB = 1.;
+
+			PRR = 0.6;
+			PGG = 0.7;
+			PBB = 0.6;
 		}
 		//Draw the coastline
 		glBegin(GL_LINE_LOOP);

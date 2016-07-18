@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    258868,       5323]
-NotebookOptionsPosition[    253110,       5122]
-NotebookOutlinePosition[    253465,       5138]
-CellTagsIndexPosition[    253422,       5135]
+NotebookDataLength[    263775,       5487]
+NotebookOptionsPosition[    257194,       5258]
+NotebookOutlinePosition[    257549,       5274]
+CellTagsIndexPosition[    257506,       5271]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -4871,6 +4871,142 @@ Cell[BoxData[
    3.676234485749607*^9, 3.676234598422118*^9, 3.676234684307419*^9, 
    3.676254712924911*^9, 3.676290777631239*^9, 3.676377896594441*^9, 
    3.676383332725322*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Single Location file", "Subsubsection",
+ CellChangeTimes->{{3.677848009913822*^9, 3.677848012847271*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"xmax", " ", "=", " ", "90"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ymax", " ", "=", " ", "80"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.6778529472215776`*^9, 3.677852973107951*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"coordinates", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"xmax", ",", "0"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"xmax", ",", "ymax"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "ymax"}], "}"}]}], "}"}]}]], "Input",
+ CellChangeTimes->{{3.677848019223082*^9, 3.677848051238452*^9}, {
+  3.677852960134935*^9, 3.677852978699257*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"105", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"105", ",", "80"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "80"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.677848052527233*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"triangles", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "xmax", ",", "0", ",", "0", ",", "80"}], 
+     "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+     "xmax", ",", "0", ",", "xmax", ",", "ymax", ",", "0", ",", "ymax"}], 
+     "}"}]}], "}"}]}]], "Input",
+ CellChangeTimes->{{3.677848079793024*^9, 3.67784811449292*^9}, {
+  3.677852963844771*^9, 3.6778529823877373`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0", ",", "105", ",", "0", ",", "0", ",", "80"}], "}"}],
+    ",", 
+   RowBox[{"{", 
+    RowBox[{"105", ",", "0", ",", "105", ",", "80", ",", "0", ",", "80"}], 
+    "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.677848115725347*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<~/Research/SIR/Source/SingleRoom.csv\>\"", ",", "coordinates"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.677848128806778*^9, 3.677848154109275*^9}}],
+
+Cell[BoxData["\<\"~/Research/SIR/Source/SingleRoom.csv\"\>"], "Output",
+ CellChangeTimes->{3.677848155908636*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<~/Research/SIR/Source/SingleRoomPolygon.csv\>\"", ",", "triangles"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.677848128806778*^9, 3.6778481747910347`*^9}}],
+
+Cell[BoxData["\<\"~/Research/SIR/Source/SingleRoomPolygon.csv\"\>"], "Output",
+ CellChangeTimes->{3.677848175971607*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"generaldata", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "\"\<SingleRoom\>\"", ",", "\"\<GeneralArea\>\"", ",", "0", ",",
+      "xmax", ",", "0", ",", "ymax", ",", "500"}], "}"}], "}"}]}]], "Input",
+ CellChangeTimes->{{3.6778489253128443`*^9, 3.6778489990234337`*^9}, {
+  3.67784967462997*^9, 3.677849691380959*^9}, {3.677849736159409*^9, 
+  3.6778497377559977`*^9}, {3.677850174697195*^9, 3.6778501770484657`*^9}, {
+  3.677852938587616*^9, 3.677852938752524*^9}, {3.6778529700680103`*^9, 
+  3.677852984780013*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{
+   "1", ",", "\<\"SingleRoom\"\>", ",", "\<\"GeneralArea\"\>", ",", "0", ",", 
+    "90", ",", "0", ",", "80", ",", "500"}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{3.677850177406548*^9, 3.67785294181583*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<~/Research/SIR/Source/GeneralDataSingle.csv\>\"", ",", "generaldata"}],
+   "]"}]], "Input",
+ CellChangeTimes->{{3.6778490254864902`*^9, 3.677849041622568*^9}}],
+
+Cell[BoxData["\<\"~/Research/SIR/Source/GeneralDataSingle.csv\"\>"], "Output",
+ CellChangeTimes->{3.677849043570218*^9, 3.677849694647813*^9, 
+  3.677849739226572*^9, 3.677850179945703*^9}]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 
@@ -4968,7 +5104,7 @@ Cell[BoxData[
 
  CellChangeTimes->{3.676378507846122*^9, 3.676383350936554*^9}]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -5298,31 +5434,59 @@ Cell[242003, 4823, 94, 1, 28, "Output"]
 Cell[CellGroupData[{
 Cell[242134, 4829, 1077, 27, 28, "Input"],
 Cell[243214, 4858, 777, 14, 46, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[244028, 4877, 111, 1, 35, "Subsubsection"],
+Cell[244142, 4880, 233, 5, 46, "Input"],
+Cell[CellGroupData[{
+Cell[244400, 4889, 467, 13, 28, "Input"],
+Cell[244870, 4904, 337, 11, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[245244, 4920, 446, 12, 28, "Input"],
+Cell[245693, 4934, 311, 9, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[246041, 4948, 207, 5, 28, "Input"],
+Cell[246251, 4955, 113, 1, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[246401, 4961, 214, 5, 28, "Input"],
+Cell[246618, 4968, 120, 1, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[246775, 4974, 572, 11, 28, "Input"],
+Cell[247350, 4987, 268, 6, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[247655, 4998, 216, 5, 28, "Input"],
+Cell[247874, 5005, 189, 2, 28, "Output"]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[244040, 4878, 108, 1, 64, "Section"],
-Cell[244151, 4881, 1455, 35, 165, "Input"],
-Cell[245609, 4918, 1324, 31, 182, "Input"],
+Cell[248124, 5014, 108, 1, 64, "Section"],
+Cell[248235, 5017, 1455, 35, 165, "Input"],
+Cell[249693, 5054, 1324, 31, 182, "Input"],
 Cell[CellGroupData[{
-Cell[246958, 4953, 146, 2, 28, "Input"],
-Cell[247107, 4957, 598, 11, 63, "Output"]
+Cell[251042, 5089, 146, 2, 28, "Input"],
+Cell[251191, 5093, 598, 11, 63, "Output"]
 }, Open  ]]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[247754, 4974, 92, 1, 50, "Section"],
-Cell[CellGroupData[{
-Cell[247871, 4979, 906, 28, 28, "Input"],
-Cell[248780, 5009, 2250, 44, 538, "Output"]
-}, Open  ]],
-Cell[251045, 5056, 272, 7, 28, "Input"],
-Cell[CellGroupData[{
-Cell[251342, 5067, 252, 6, 28, "Input"],
-Cell[251597, 5075, 1246, 33, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[252880, 5113, 128, 2, 28, "Input"],
-Cell[253011, 5117, 71, 1, 28, "Output"]
+Cell[251838, 5110, 92, 1, 64, "Section"],
+Cell[CellGroupData[{
+Cell[251955, 5115, 906, 28, 28, "Input"],
+Cell[252864, 5145, 2250, 44, 538, "Output"]
+}, Open  ]],
+Cell[255129, 5192, 272, 7, 28, "Input"],
+Cell[CellGroupData[{
+Cell[255426, 5203, 252, 6, 28, "Input"],
+Cell[255681, 5211, 1246, 33, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[256964, 5249, 128, 2, 28, "Input"],
+Cell[257095, 5253, 71, 1, 28, "Output"]
 }, Open  ]]
 }, Closed]]
 }

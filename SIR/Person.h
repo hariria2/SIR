@@ -33,9 +33,7 @@ public:
 
 	bool IsSingleLocation;
 	/// This is one of the constructors for the class.
-	Person(int id, string name, double age,char state, InHostDynamics ihd, Domain* city, Place* Location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var);
-	/// This is the second constructor. It delas with the case of only one location.
-	Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city,vector<Place*> availplaces, int inf_var, int inc_var, int rec_var, bool IsSingleLocation);
+	Person(int id, string name, double age,char state, InHostDynamics ihd, Domain* city, Place* Location, vector<Place*> availplaces);
 	
 	~Person();
 	// Setters

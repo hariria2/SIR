@@ -1,6 +1,6 @@
 #include "Person.h"
 
-Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city, Place* location, vector<Place*> availplaces, int inf_var, int inc_var, int rec_var):
+Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city, Place* location, vector<Place*> availplaces):
 _ihdynamics(ihd),
 _City(city),
 _Location(location),
@@ -21,68 +21,21 @@ _AvailablePlaces(availplaces)
  * + _Name
  * + _State
  */
+
 	_generator = new default_random_engine(_RandSeed);
 	setID(id);
 	setAge(age);
 	setName(name);
 	setState(state);
 	_Time = 0;
-	_TimeStep = 1;
 	_TimeInfected = 0;
-	setInfVar(inf_var);
-	setIncVar(inc_var);
-	setRecVar(rec_var);
-	setInfectionPeriod();
-	setIncubationPeriod();
-	setRecoveryPeriod();
-	IsSingleLocation = false;
 	setGender('M');
 	setLocation(location);
 	setDefaultLocation(location);
 	setAgeInteraction();
 	setAgeGroup();
-	
+
 }// end constructor
-
-
-Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city,vector<Place*> availplaces, int inf_var, int inc_var, int rec_var, bool isSingleLocation):
-_ihdynamics(ihd),
-_AvailablePlaces(availplaces)
-{
-	/**
-	 * ### Things that are set using member initialization:
-	 * + _ihdynamics
-	 * + _City
-	 * + _AvailablePlaces
-	 *
-	 * ### Things that are set whithin the constructor:
-	 * + _generator
-	 * + _ID
-	 * + _Age
-	 * + _Name
-	 * + _State
-	 */
-	_generator = new default_random_engine(_RandSeed);
-	setID(id);
-	setAge(age);
-	setName(name);
-	setState(state);
-	_Time = 0;
-	_TimeStep = 1;
-	_TimeInfected = 0;
-	setInfVar(inf_var);
-	setIncVar(inc_var);
-	setRecVar(rec_var);
-	setInfectionPeriod();
-	setIncubationPeriod();
-	setRecoveryPeriod();
-	IsSingleLocation = isSingleLocation;
-	setLocation(availplaces[0]);
-	setDefaultLocation(_Location);
-	setGender('M');
-	setAgeInteraction();
-	setAgeGroup();
-}
 
 // Setters
 void Person::setID(int id){
@@ -115,41 +68,41 @@ void Person::setName(string name){
 void Person::setCoordinates(double coordinates[2]){
 	double x = coordinates[0];
 	double y = coordinates[1];
-
-	if (!_Location->ContainsQ(x, y)){
-		setLocation(_Location);
-	}
-	else{
-		_Coordinates[0] = x;
-		_Coordinates[1] = y;
-		setX(x);
-		setY(y);
-	}
+	_Coordinates[0] = x;
+	_Coordinates[1] = y;
+	setX(x);
+	setY(y);
+//	if (!_Location->ContainsQ(x, y)){
+//		setLocation(_Location);
+//	}
+//	else{
+//		_Coordinates[0] = x;
+//		_Coordinates[1] = y;
+//		setX(x);
+//		setY(y);
+//	}
 
 }
 void Person::setState(char state){
 	_State = state;
 }
 void Person::setLocation(Place* location){
-	if (IsSingleLocation==false){
-		_Location->removePerson(this);
-	}
-	_Location = location;
-	_Location->addPerson(this);
-	
+
 	double xmin = location->Perimeter[0][0];
 	double xmax = location->Perimeter[0][1];
 	double ymin = location->Perimeter[1][0];
 	double ymax = location->Perimeter[1][1];
-	
+
 	uniform_real_distribution<double> xdist(xmin, xmax);
 	uniform_real_distribution<double> ydist(ymin, ymax);
 
-
 	double x = xdist(*_generator);
 	double y = ydist(*_generator);
-	double Co[2] = {x,y};
 
+	_Location = location;
+	_Location->addPerson(this);
+
+	double Co[2] = {x,y};
 
 	while(!_Location->ContainsQ(x, y)){
 		x = xdist(*_generator);
@@ -159,7 +112,6 @@ void Person::setLocation(Place* location){
 
 	setCoordinates(Co);
 }
-
 void Person::setDefaultLocation(Place* location){
 	_DefaultLocation = location;
 }

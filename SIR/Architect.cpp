@@ -179,7 +179,7 @@ void Architect::Simulate(){
 					return;
 				}
 				
-				int indx  = rand() % (_AllPlaces.size()-1);
+				int indx  = rand() % (_AllPlaces.size());
 				
 				introtime = (*_introtimeDist)(*_generator);
 				
@@ -253,7 +253,7 @@ void Architect::Simulate(){
 				
 				_Visualization->Render();
 				
-				int indx  = rand() % (_AllPlaces.size()-1);
+				int indx  = rand() % (_AllPlaces.size());
 				
 				introtime = (*_introtimeDist)(*_generator);
 				
@@ -613,7 +613,7 @@ void Architect::AddPerson(double x, double y){
 	vector<Place*> availPlaces = p1->getAvailablePlaces();
 	//vector<Place*> availPlaces = _PeoplePtr[randPIdx]->getAvailablePlaces();
 	
-	Person* p = new Person(id, "Alplego", 40, 'S', ihd, _City, loc, availPlaces, 1,1,1);
+	Person* p = new Person(id, "Alplego", 40, 'S', ihd, _City, loc, availPlaces);
 	
 	p->setTravelerQ(false);
 	p->setTime(_CurrentTime);
@@ -672,7 +672,7 @@ void Architect::AddPerson(string NewBirth){
 	vector<Place*> availPlaces = p1->getAvailablePlaces();
 
 	
-	Person* p = new Person(id, "Alplego", 0, 'B', ihd, _City, _AllPlaces[indx], availPlaces, 1,1,1);
+	Person* p = new Person(id, "Alplego", 0, 'B', ihd, _City, _AllPlaces[indx], availPlaces);
 
 	p->setTime(_CurrentTime);
 	p->setTimeStep(_TimeStep);

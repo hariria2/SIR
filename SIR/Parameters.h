@@ -11,11 +11,11 @@
 
 // Simulation Version
 #define Version              "4"
-#define IsSingleLocation     true
+#define isSingleLocation     true
 
 // Storage and Visualization
 #define StoreData            true
-#define VisualizeData        true
+#define VisualizeData        false
 
 // Global Timing
 #define endTime              36000

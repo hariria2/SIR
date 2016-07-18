@@ -205,7 +205,7 @@ int Place::ContainsQ(double x, double y){
 	int intQ;
 
 	for (int side = 0; side < _Sides.size(); side++) {
-		intQ = areIntersecting(0, 0, x, y, _Sides[side][0], _Sides[side][1], _Sides[side][2], _Sides[side][3]);
+		intQ = areIntersecting(-.01, -.02, x, y, _Sides[side][0], _Sides[side][1], _Sides[side][2], _Sides[side][3]);
 		if (intQ){
 			intersections++;
 		}

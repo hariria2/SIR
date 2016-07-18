@@ -141,8 +141,6 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 			getline(File, sy, '\n');
 			y = atof(sy.c_str());
 
-			//if (File.eof()) break;
-
 			co.push_back(x);
 			co.push_back(y);
 
@@ -150,6 +148,9 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 
 		}
 
+	}
+	else{
+		cout << "Coordinate file for " << filename << " FAILED to open." << endl;
 	}
 
 	return coordinates;

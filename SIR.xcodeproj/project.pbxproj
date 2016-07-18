@@ -47,7 +47,7 @@
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		D8B50A161D248636001065F4 /* Source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Source.cpp; sourceTree = "<group>"; };
 		D8B50A171D248636001065F4 /* Source.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Source.hpp; sourceTree = "<group>"; };
-		D8BA6CB61D3C3A41004761A8 /* Parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Parameters.h; path = SIR/Parameters.h; sourceTree = "<group>"; };
+		D8BA6CB61D3C3A41004761A8 /* Parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameters.h; sourceTree = "<group>"; };
 		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
 		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; lineEnding = 0; path = Visualization.h; sourceTree = "<group>"; };
 		D8E077A21BCF173200FE27FA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -72,7 +72,6 @@
 		D87484171AB36A78007EC18E = {
 			isa = PBXGroup;
 			children = (
-				D8BA6CB61D3C3A41004761A8 /* Parameters.h */,
 				D8E077A41BCF173A00FE27FA /* GLUT.framework */,
 				D8E077A21BCF173200FE27FA /* OpenGL.framework */,
 				D87484221AB36A78007EC18E /* SIR */,
@@ -91,6 +90,7 @@
 		D87484221AB36A78007EC18E /* SIR */ = {
 			isa = PBXGroup;
 			children = (
+				D8BA6CB61D3C3A41004761A8 /* Parameters.h */,
 				D8B50A161D248636001065F4 /* Source.cpp */,
 				D8B50A171D248636001065F4 /* Source.hpp */,
 				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,

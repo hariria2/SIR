@@ -83,13 +83,12 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	
 	int maxdim = 110;
 	int Boundary[2][2]   = {{0, 105},{0, 80}};
-	//int Boundary[2][2]   = {{-8, -6},{61, 63}};
 	Domain Island("Faroe", Boundary);
 
 
 	vector<Place*> islands;
 
-	if (IsSingleLocation){
+	if (isSingleLocation){
 		Source src("/Users/sahand/Research/SIR/Source/");
 		src.readGeneralData("GeneralDataSingle.csv", &Island);
 		src.getCoordinateDataForPlaces();
@@ -114,7 +113,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 		}
 	}
 
-	
+
 	char state = 'S';
 	double VirLev = 0.0;
 	
@@ -149,6 +148,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	for(auto p=islands.begin(); p!=islands.end();++p){
 
 		for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
+
 			string name = "randomName"+to_string(ii);
 			double randage  = ageDist(generator);
 			double age = (randage < 1)? 1:floor(randage);
@@ -190,8 +190,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			lifeExpec     = (randLifeExpec < 10)? 10:randLifeExpec;
 
 			
-			Person *ip = new Person(ii, name, age, state, ihd,
-															&Island, (*p),islands,10,10,10);
+			Person *ip = new Person(ii, name, age, state, ihd, &Island, (*p), islands);
 			ip->setAgeIncrement(ageIncrement);
 			ip->setMotionStepSize(stepSize);
 			ip->setTimeStep(dt);
