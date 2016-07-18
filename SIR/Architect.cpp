@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(850, 950);
+	_introtimeDist = new uniform_int_distribution<int>(850, 851);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(850, 950);
+	_introtimeDist = new uniform_int_distribution<int>(850, 851);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -159,7 +159,7 @@ void Architect::Simulate(){
 	 * \callergraph
 	 *
 	 */
-	_BirthRate = (_N>0.0)? 0.03 : 0.06;
+	_BirthRate = (_N>0.0)? 0.02 : 0.02;
 	
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;

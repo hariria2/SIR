@@ -379,6 +379,9 @@ void Person::Update(){
 			}
 		}
 		else if (_Age >= _LifeExpectancy){
+			cout << "Im here becase" << endl;
+			cout << "age: " << _Age << endl;
+			cout << "Life Expectency: " << _LifeExpectancy << endl;
 			Die();
 		}
 	}

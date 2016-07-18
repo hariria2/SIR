@@ -306,10 +306,9 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 
 			randStepSize  = randStep(generator);
 			stepSize      = (randStepSize < 0.001)? 0.001:randStepSize;
-			ihd.setC(C);
 
 			randLifeExpec = randLifeExpDist(generator);
-			lifeExpec     = (randStepSize < 10)? 10:randStepSize;
+			lifeExpec     = (randLifeExpec < 10)? 10:randLifeExpec;
 
 //			if (age<10){
 //				state='B';
