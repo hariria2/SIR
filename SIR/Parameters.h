@@ -10,7 +10,8 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "3"
+#define Version              "4"
+#define IsSingleLocation     true
 
 // Storage and Visualization
 #define StoreData            true

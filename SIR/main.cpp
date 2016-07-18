@@ -79,135 +79,6 @@ int main(){
 
 // ========================= Example Simulations ==============================
 
-void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
-	int maxdim = 115;
-	int Boundary[2][2]   = {{0, maxdim},{0, maxdim}};
-	
-	int population = 500;
-	char state = 'S';
-	double VirLev = 0.0;
-	
-	Domain Main("Room", Boundary);
-	double LBoundary[2][2]= {{0, 20},{0, 20}};
-	Place *MainPlace = new Place(1,"MainRoom","Home",LBoundary,Main,population);
-	vector<Place*> locations;
-	locations.push_back(MainPlace);
-	
-	
-	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
-	
-	normal_distribution<double> ageDist(25,0);
-	normal_distribution<double> suDist(3.,0);
-	normal_distribution<double> icDist(.7,0);
-	normal_distribution<double> betaDist(3.,.5);
-	normal_distribution<double> deltaDist(0.3,0);
-	normal_distribution<double> PDist(0.2,0);
-	normal_distribution<double> CDist(0.2,0);
-	normal_distribution<double> ILDist(0.0001,0.0);
-	
-	vector<Person*> people;
-	list<Person*> vpeople;
-	
-	for (int ii=1; ii <= population; ii++){
-		string name = "randomName"+to_string(ii);
-		double randage  = ageDist(generator);
-		double age = (randage < 1)? 1:floor(randage);
-		if (ii == 1){
-			VirLev = 0.1;
-		} else {
-			VirLev = 0;
-			state = 'S';
-		}
-		double randic  = icDist(generator);
-		double ict = (randic < 0.5)? 0.5:randic;
-		double randsu  = suDist(generator);
-		double sus = (randsu < 0.5)? 0.5:randsu;
-		InHostDynamics ihd = InHostDynamics(ii, 0.01 ,sus,0.0,VirLev,ict,44, 40, 100);
-		double randil = ILDist(generator);
-		double il = (randil < 0.0005)? 0.0005:randil;
-		ihd.setILRate(il);
-		double randbeta  = betaDist(generator);
-		double beta = (randbeta < 0.01)? 0.01:randbeta;
-		ihd.setBeta(beta);
-		double randdelta  = deltaDist(generator);
-		double delta = (randdelta < 0.01)? 0.01:randdelta;
-		ihd.setDelta(delta);
-		double randP  = PDist(generator);
-		double P = (randP < 0.01)? 0.01:randP;
-		ihd.setP(P);
-		double randC  = CDist(generator);
-		double C = (randC < 0.01)? 0.01:randC;
-		ihd.setC(C);
-		
-		Person *ip = new Person(ii, name, age, state, ihd,
-														&Main, locations,10,10,10, true);
-		ip->setAgeIncrement(ageIncrement);
-		ip->setMotionStepSize(0.1);
-		ip->setTimeStep(dt);
-		people.push_back(ip);
-		vpeople.push_back(ip);
-		
-	}
-	
-	
-	double InitialTime = 0;
-	//int l = floor((EndTime-InitialTime)/TimeStep);
-	//cout << "Enter version number for multi location simulation: ";
-	//cin >> ver;
-	
-	
-	if (ShowVis & SaveData){
-		
-		int xdim = maxdim;
-		int ydim = maxdim;
-		Visualization* vis = getVisualization(xdim, ydim, true);
-		vis->setPlaces(locations);
-		vis->setPeople(vpeople);
-		
-		
-		SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
-		
-		vis->Init();
-		vis->setArchitect(&archie);
-		//vis->RenderSplash();
-		archie.setDomain(&Main);
-		archie.setPlaces(locations);
-		archie.setBatchSize(1);
-		archie.setSaveIntegerTimes(true);
-		archie.Simulate();
-	}
-	else if (ShowVis){
-		int xdim = maxdim;
-		int ydim = maxdim;
-		Visualization* vis = getVisualization(xdim, ydim, true);
-		vis->setPlaces(locations);
-		vis->setPeople(vpeople);
-		
-		
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);
-		vis->Init();
-		vis->setArchitect(&archie);
-		archie.setDomain(&Main);
-		archie.setPlaces(locations);
-		archie.setBatchSize(1);
-		archie.Simulate();
-	}
-	else {
-		SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
-		archie.setDomain(&Main);
-		archie.setPlaces(locations);
-		archie.setBatchSize(1);
-		archie.setSaveIntegerTimes(true);
-		archie.Simulate();
-	}
-	
-	
-	
-}
-
 void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
 	
 	int maxdim = 110;
@@ -218,22 +89,30 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 
 	vector<Place*> islands;
 
-
-
-	if (ShowVis){
+	if (IsSingleLocation){
 		Source src("/Users/sahand/Research/SIR/Source/");
-		src.readGeneralData("GeneralDataVis.csv", &Island);
+		src.readGeneralData("GeneralDataSingle.csv", &Island);
 		src.getCoordinateDataForPlaces();
 		src.getPolygonDataForPlaces();
 		islands = src.getPlaces();
 	}
-	else{
-		Source src("/Users/sahand/Research/SIR/Source/");
-		src.readGeneralData("GeneralData.csv", &Island);
-		src.getCoordinateDataForPlaces();
-		islands = src.getPlaces();
-	}
 
+	else{
+
+		if (ShowVis){
+			Source src("/Users/sahand/Research/SIR/Source/");
+			src.readGeneralData("GeneralDataVis.csv", &Island);
+			src.getCoordinateDataForPlaces();
+			src.getPolygonDataForPlaces();
+			islands = src.getPlaces();
+		}
+		else{
+			Source src("/Users/sahand/Research/SIR/Source/");
+			src.readGeneralData("GeneralData.csv", &Island);
+			src.getCoordinateDataForPlaces();
+			islands = src.getPlaces();
+		}
+	}
 
 	
 	char state = 'S';
@@ -310,10 +189,6 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			randLifeExpec = randLifeExpDist(generator);
 			lifeExpec     = (randLifeExpec < 10)? 10:randLifeExpec;
 
-//			if (age<10){
-//				state='B';
-//				ihd.setT(0);
-//			}
 			
 			Person *ip = new Person(ii, name, age, state, ihd,
 															&Island, (*p),islands,10,10,10);

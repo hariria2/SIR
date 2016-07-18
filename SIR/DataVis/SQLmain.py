@@ -41,7 +41,7 @@ def myStem(fignum=1,x=[],y=[],xl='',yl='',t='',c='k'):
     plt.grid(True)
 
 #vis = SQLVisualization('root','','localhost','sim_v1_3_4_2016')
-vis = SQLVisualization('root','','localhost','sim_v3_7_17_2016')
+vis = SQLVisualization('root','','localhost','sim_v3_7_18_2016')
 
 fignum = 1
 #sir = SIR(0,10,.1,.2,0.3,100);
