@@ -7,6 +7,7 @@ from ProjectClasses import Location, Person
 import numpy as np
 import collections
 from scipy import stats
+from itertools import chain
 
 class SQLVisualization:
 
@@ -31,6 +32,7 @@ class SQLVisualization:
         self._Prob = [];
         self._R2 = 0;
         self._stderr = 0;
+        self._neteork = [];
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -127,6 +129,7 @@ class SQLVisualization:
 
         # data1 - id, name, age, gender, homeID, locatioinID
         # data2 - index, PersID, time, x, y, LocID, State, HBS, S, I, V, MaxI
+        peeps = []
         for idx in range(l):
             id = ids[idx]
             alldata = [x for x in data2 if x[1] == id]
@@ -150,6 +153,8 @@ class SQLVisualization:
             if not (id in self._PersonIDs):
                 self._People.append(p)
                 self._PersonIDs.append(id)
+            peeps.append(p)
+        return peeps
     def getLocation(self, ids):
             query1 = '';
             if ids == 'All':
@@ -452,3 +457,101 @@ class SQLVisualization:
         # draw graph
         pos = nx.shell_layout(G)
         nx.draw(G, pos)
+    def draw_graph_detailed(self, graph, fignum, labels=None, graph_layout='shell',
+                   node_size=1600, node_color='blue', node_alpha=0.3,
+                   node_text_size=12,
+                   edge_color='blue', edge_alpha=0.3, edge_tickness=1,
+                   edge_text_pos=0.3,
+                   text_font='sans-serif'):
+        h = plt.figure(fignum);
+        # create networkx graph
+        G=nx.Graph()
+
+        # add edges
+        for edge in graph:
+            G.add_edge(edge[0], edge[1])
+
+        # these are different layouts for the network you may try
+        # shell seems to work best
+        if graph_layout == 'spring':
+            graph_pos=nx.spring_layout(G)
+        elif graph_layout == 'spectral':
+            graph_pos=nx.spectral_layout(G)
+        elif graph_layout == 'random':
+            graph_pos=nx.random_layout(G)
+        else:
+            graph_pos=nx.shell_layout(G)
+
+        # draw graph
+        nx.draw_networkx_nodes(G,graph_pos,node_size=node_size,
+                               alpha=node_alpha, node_color=node_color)
+        nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
+                               alpha=edge_alpha,edge_color=edge_color)
+        nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,
+                                font_family=text_font)
+
+        '''
+        if labels is None:
+            labels = range(len(graph))
+
+        edge_labels = dict(zip(graph, labels))
+        nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels,
+                                     label_pos=edge_text_pos)
+        '''
+        # show graph
+        # plt.show()
+    def degree_dist(self,graph,fignum):
+        h = plt.figure(fignum);
+        # create networkx graph
+        G=nx.Graph()
+
+        # add edges
+        for edge in graph:
+            G.add_edge(edge[0], edge[1])
+        degree_sequence=sorted(nx.degree(G).values(),reverse=True) # degree sequence
+        #print "Degree sequence", degree_sequence
+        dmax=max(degree_sequence)
+
+        counter=collections.Counter(degree_sequence)
+        cc = collections.OrderedDict(sorted(counter.items()))
+        x = cc.keys()
+        y = cc.values()
+
+        ml = int(floor(len(x)*0.8))
+        #xl = [log10(xx) for xx in x[0:ml]]
+        #yl = [log10(xx) for xx in self._Prob[0:ml]]
+
+        pi = plt.loglog(x,y,'o-')
+        #plt.ylim((0.01,1.1))
+        #plt.xscale('log')
+        #plt.yscale('log')
+
+        #plt.loglog(degree_sequence,'b-',marker='o')
+        plt.title("Degree rank plot")
+        plt.ylabel("degree")
+        plt.xlabel("rank")
+
+        # draw graph in inset
+        plt.axes([0.45,0.45,0.45,0.45])
+        Gcc=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)[0]
+        pos=nx.spring_layout(Gcc)
+        plt.axis('off')
+        nx.draw_networkx_nodes(Gcc,pos,node_size=20)
+        nx.draw_networkx_edges(Gcc,pos,alpha=0.4)
+    def draw_person_connections(self, id, time, fignum):
+        peeps = self.getPerson(id)
+        graph = []
+        for t in time:
+            for p in peeps:
+                for con in p._Connections[t]:
+                    graph.append(con)
+        self.draw_graph_detailed(graph,fignum,graph_layout='spring',node_size=500)
+        #self.degree_dist(graph,fignum)
+    def draw_degree_distribution(self, id, time, fignum):
+        peeps = self.getPerson(id)
+        graph = []
+        for t in time:
+            for p in peeps:
+                for con in p._Connections[t]:
+                    graph.append(con)
+        self.degree_dist(graph,fignum)

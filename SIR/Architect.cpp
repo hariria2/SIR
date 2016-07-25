@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(850, 851);
+	_introtimeDist = new uniform_int_distribution<int>(900, 901);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(850, 851);
+	_introtimeDist = new uniform_int_distribution<int>(900, 901);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -64,7 +64,7 @@ _sqlDataPtr(d)
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(850, 950);
+	_introtimeDist = new uniform_int_distribution<int>(900, 901);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -195,6 +195,10 @@ void Architect::Simulate(){
 					double x = xdist(*_generator);
 					double y = ydist(*_generator);
 					AddPerson(x,y);
+					x = xdist(*_generator);
+					y = ydist(*_generator);
+					AddPerson(x,y);
+
 					cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
 				}
 				

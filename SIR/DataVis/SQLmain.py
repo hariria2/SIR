@@ -41,7 +41,7 @@ def myStem(fignum=1,x=[],y=[],xl='',yl='',t='',c='k'):
     plt.grid(True)
 
 #vis = SQLVisualization('root','','localhost','sim_v1_3_4_2016')
-vis = SQLVisualization('root','','localhost','sim_v4_7_18_2016')
+vis = SQLVisualization('root','','localhost','sim_v2_7_25_2016')
 
 fignum = 1
 #sir = SIR(0,10,.1,.2,0.3,100);
@@ -50,17 +50,33 @@ fignum = 1
 #sir.PlotSIR(fignum);
 #fignum += 1
 
+
 vis._AllInfected = False;    # Exposed + Infected. I usually want False
 vis._AllPopulations = False; # These both need fixing in PlotHistory.
 vis._PeaksOnly = False;      # These both need fixing in PlotHistory.
 vis.getHistoryData()
-popOnly = False;
+popOnly = True;
+
+'''
+print fignum
+vis.draw_person_connections([1,2,3,4,5,6,7,8],range(1,50),fignum)
+fignum += 1
+'''
+
+alivepeople=[x for x in range(1,100) if x not in [6,15,63,87,90,101]]
+timerange = [1,20]
+vis.draw_degree_distribution(alivepeople,timerange,fignum)
+fignum += 1
+
+vis.draw_person_connections(alivepeople,timerange,fignum)
+fignum += 1
+
 
 if popOnly:
-    vis.PlotHistory(fignum)
+    #vis.PlotHistory(fignum)
     fignum += 1
-    myPlot(fignum,x=vis.T,y=vis.N,xl='Time (days)',yl='Number of infection incidences',t='',c='k')
-    fignum += 1
+    #myPlot(fignum,x=vis.T,y=vis.N,xl='Time (days)',yl='Number of infection incidences',t='',c='k')
+    #fignum += 1
     #vis.PlotIndividual(fignum, [1,3])
     #fignum += 1
 else:
@@ -87,11 +103,11 @@ v1 -> 0.1
 v2 -> 0.05
 v3 -> 0.025
 '''
-errors = getError(['sim_v3_7_5_2016','sim_v2_7_5_2016','sim_v1_7_5_2016','sim_v4_7_5_2016'],True,fignum)
-rr = [0.025,0.05,0.1,0.2]
-fignum += 1
-myPlot(fignum,x=rr,y=errors,xl='Motion step size',yl='r-squared values',t='',c='k')
-fignum += 1
+#errors = #getError(['sim_v3_7_18_2016','sim_v2_7_5_2016','sim_v1_7_5_2016','sim_v4_7_5_2016','sim_v5_7_18_2016','sim_v4_7_18_2016'],True,fignum)
+#rr = [0.025,0.05,0.1,0.2,1,2]
+#fignum += 1
+#myPlot(fignum,x=rr,y=errors,xl='Motion step size',yl='r-squared values',t='',c='k')
+#fignum += 1
 
 #vis.MPlotLog(2)
 

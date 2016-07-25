@@ -10,7 +10,7 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "4"
+#define Version              "3"
 #define isSingleLocation     true
 
 // Storage and Visualization
@@ -30,12 +30,12 @@
 #define deltaMean            0.1
 #define PMean                0.4
 #define CMean                0.5
-#define sociabilityMean      0.2
-#define stepSizeMean         2
+#define sociabilityMean      0
+#define stepSizeMean         50
 #define lifeExpectencyMean   80
 
 // Variances
-#define ageVar               0
+#define ageVar               25
 #define susceptibilityVar    0
 #define initialConditionVar  0
 #define betaVar              0.

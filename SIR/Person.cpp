@@ -312,7 +312,7 @@ void Person::Update(){
 	 * \callergraph
 	 * \todo
 	 */
-
+	_Connections = "";
 	_Age += _AgeIncrement;
 
 	if (_State != 'D'){
@@ -320,20 +320,17 @@ void Person::Update(){
 		Move();
 		UpdateDiseaseWithInHost();
 
-		if (_Age < 10){
+		if (_Age < 0.1){
 			setState('B');
 			_ihdynamics.setT(0);
 		}
-		else if ((_Age >= 10) & (_Age - 0.1 < 15)){
+		else if ((_Age >= 0.1) & (_Age - 0.1 < 15)){
 			if (getState() == 'B'){
 				setState('S');
 				_ihdynamics.setT(3);
 			}
 		}
 		else if (_Age >= _LifeExpectancy){
-			cout << "Im here becase" << endl;
-			cout << "age: " << _Age << endl;
-			cout << "Life Expectency: " << _LifeExpectancy << endl;
 			Die();
 		}
 	}
@@ -349,8 +346,8 @@ void Person::InteractWithOthers(){
 	 *	2. Compute the effect of others in how much virions the person collects.
 	 *
 	 */
-	double criticalDistance  = 2;
-	double criticalDistanceD = 1;
+	double criticalDistance  = 60;
+	double criticalDistanceD = 60;
 	
 	double motionBias[2];
 	double r[4];
@@ -371,10 +368,10 @@ void Person::InteractWithOthers(){
 			_MotionBiasX += motionBias[0];
 			_MotionBiasY += motionBias[1];
 
-			//_Connections.append("," + to_string((*ip)->getID()));
+			_Connections.append("," + to_string((*ip)->getID()));
 		}
 		if (dist != 0 & dist < criticalDistanceD){
-			_TotalVirion += ((*ip)->_ihdynamics.getV())/(dist*dist);
+			_TotalVirion += 2*((*ip)->_ihdynamics.getV())/(dist*dist);
 		}
 	}
 }

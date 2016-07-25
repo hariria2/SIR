@@ -148,7 +148,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	for(auto p=islands.begin(); p!=islands.end();++p){
 
 		for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
-
+			(*p)->setTotalPopulation(200);
 			string name = "randomName"+to_string(ii);
 			double randage  = ageDist(generator);
 			double age = (randage < 1)? 1:floor(randage);
