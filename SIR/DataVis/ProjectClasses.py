@@ -41,6 +41,7 @@ class Person:
                 self._Connections.append([(self._ID,int(x)) for x in c])
             else:
                 self._Connections.append([])
+        print len(self._Connections)
     def setHBS(self, hbs):
         self._HBS = hbs
     def setSC(self, sc):

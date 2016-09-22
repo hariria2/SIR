@@ -145,11 +145,13 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	double randStepSize, stepSize;
 	double randLifeExpec, lifeExpec;
 
+	int id = 0;
 	for(auto p=islands.begin(); p!=islands.end();++p){
 
 		for (int ii = 1; ii <= (*p)->getTotalPopulation(); ii++){
-			(*p)->setTotalPopulation(200);
-			string name = "randomName"+to_string(ii);
+			id++;
+			//(*p)->setTotalPopulation(50);
+			string name = "randomName"+to_string(id);
 			double randage  = ageDist(generator);
 			double age = (randage < 1)? 1:floor(randage);
 			//if (ii == 1){
@@ -190,7 +192,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			lifeExpec     = (randLifeExpec < 10)? 10:randLifeExpec;
 
 			
-			Person *ip = new Person(ii, name, age, state, ihd, &Island, (*p), islands);
+			Person *ip = new Person(id, name, age, state, ihd, &Island, (*p), islands);
 			ip->setAgeIncrement(ageIncrement);
 			ip->setMotionStepSize(stepSize);
 			ip->setTimeStep(dt);
@@ -204,10 +206,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	}
 	
 	
-	//    srand((int) time(NULL));
-	//    for (int ii=0; ii < 3; ii++){
-	//        people[rand()%(people.size())]->setTravelerQ(true);
-	//    }
+	srand((int) time(NULL));
+	for (int ii=0; ii < 3; ii++){
+		people[rand()%(people.size())]->setTravelerQ(true);
+	}
 	
 	
 	double InitialTime = 0;
@@ -389,7 +391,6 @@ void readIslandData(string FileName, Domain *city, vector<Place*> &islands){
 			if (File.eof()) break;
 			
 			double boundary[2][2] = {{xmin, xmax},{ymin, ymax}};
-			cout << "Population " << pop << endl;
 			Place *h = new Place(ID, name, type, boundary, *city, pop);
 			islands.push_back(h);
 			

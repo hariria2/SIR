@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(900, 901);
+	_introtimeDist = new uniform_int_distribution<int>(600, 700);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(900, 901);
+	_introtimeDist = new uniform_int_distribution<int>(600, 700);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -64,7 +64,7 @@ _sqlDataPtr(d)
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(900, 901);
+	_introtimeDist = new uniform_int_distribution<int>(600, 700);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -195,10 +195,10 @@ void Architect::Simulate(){
 					double x = xdist(*_generator);
 					double y = ydist(*_generator);
 					AddPerson(x,y);
+
 					x = xdist(*_generator);
 					y = ydist(*_generator);
 					AddPerson(x,y);
-
 					cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
 				}
 				
@@ -228,7 +228,7 @@ void Architect::Simulate(){
 						to_string(_D) + ", " +
 						to_string(_B) + ", " +
 						to_string(_N) + ")";
-						_sqlDataPtr-> InsertValue("HistoryData",statement, true);
+						_sqlDataPtr->InsertValue("HistoryData",statement, true);
 						batchctr = 0;
 						statement = "";
 					}
@@ -369,13 +369,15 @@ void Architect::Update(SQLStorage* data){
 	 * \callergraph
 	 */
 	string SQLStatement;
+	string SQLStatementC;
 	IncrementTime();
 	list<Person*> peeps;
-	
+	vector<int> connections;
+
 	for (auto pl = _AllPlaces.begin(); pl != _AllPlaces.end(); pl++){
 		peeps = *(*pl)->getOccupants();
 		for (auto ip = peeps.begin(); ip != peeps.end(); ip++){
-			
+			 
 			SQLStatement = SQLStatement + "(NULL, " +
 			to_string((*ip)->getID()) + ", " +
 			to_string((*ip)->getTime()) + ", " +
@@ -384,15 +386,26 @@ void Architect::Update(SQLStorage* data){
 			to_string((*ip)->getCoordinates()[1]) + ", " +
 			to_string(((*ip)->getLocation())->getID()) + ", '" +
 			(*ip)->getState() + "', '" +
-			(*ip)->getConnections() + "', " +
+			"" + "', " +
+			/*(*ip)->getConnections() + "', " +*/
 			to_string((*ip)->getHasBeenSick()) + ", " +
 			to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
 			to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
 			to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
 			to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
 			"),";
-			
+
+			connections = (*ip)->getConnectionsi();
+			for (auto i = connections.begin(); i != connections.end(); i++){
+				SQLStatementC = SQLStatementC + "(NULL, " +
+				to_string((*ip)->getTime()) + ", " +
+				to_string((*ip)->getID()) + ", " +
+				to_string(*i) +
+				"),";
+			}
+
 			(*ip)->clearConnections();
+
 			(*ip)->setTime(_CurrentTime);
 
 			
@@ -416,11 +429,18 @@ void Architect::Update(SQLStorage* data){
 
 			(*ip)->Update();
 		}
+		if (SQLStatementC != ""){
+			//SQLStatementC.erase(SQLStatementC.end()-1);
+			SQLStatementC.pop_back();
+			data -> InsertValue("Connections", SQLStatementC, true);
+			SQLStatementC = "";
+		}
 	}
-	
-	
+
+
 	SQLStatement.pop_back();
 	data -> InsertValue("PersonValues",SQLStatement, true);
+
 	
 	PopulationData();
 	
@@ -601,7 +621,7 @@ void Architect::AddPerson(double x, double y){
 	 * \callergraph
 	 */
 	unsigned long s = _PeoplePtr.size();
-	int id = (int) s + 1;
+	int id = (int) s + 2;
 	Person* p1 = _PeoplePtr.front();
 	double dt = (p1->getInHostDynamics()).getdt();
 	

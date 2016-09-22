@@ -41,7 +41,7 @@ SQLStorage::SQLStorage(const char *server, const char *user, const char *passwor
 	CreateTable("HistoryData");
 	CreateTable("People");
 	CreateTable("PersonValues");
-	
+	CreateTable("Connections");
 }
 
 void SQLStorage::CreateDB(string db){
@@ -127,11 +127,12 @@ void SQLStorage::CreateTable(string table){
 		"MaxInfLev DOUBLE NOT NULL DEFAULT 0"
 		");";
 	}
-	else if (table == "SIConnection") {
+	else if (table == "Connections") {
 		statement = "CREATE TABLE " +table+ "(" +
 		"INDX INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
 		"Time DOUBLE UNSIGNED NOT NULL, " +
-		"Host INT UNSIGNED NOT NULL REFERENCES People(ID), " +
+		"PersonA INT UNSIGNED NOT NULL REFERENCES People(ID), " +
+		"PersonB INT UNSIGNED NOT NULL REFERENCES People(ID)"   +
 		");";
 	}
 	else {

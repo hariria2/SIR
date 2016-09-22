@@ -162,25 +162,25 @@ void Person::setNeighbors(list<Person *> *n){
 	_Neighbors = n;
 }
 void Person::setAgeInteraction(){
-	_AgeInteraction["AA"]=1;
-	_AgeInteraction["AC"]=0.4;
-	_AgeInteraction["AS"]=0.2;
-	_AgeInteraction["AT"]=0.3;
-	_AgeInteraction["AY"]=0.7;
+	_AgeInteraction["AA"]=10;
+	_AgeInteraction["AC"]=0;
+	_AgeInteraction["AS"]=0;
+	_AgeInteraction["AT"]=0;
+	_AgeInteraction["AY"]=0;
 
-	_AgeInteraction["CC"]=0.01;
-	_AgeInteraction["CS"]=0.8;
-	_AgeInteraction["CT"]=0.1;
-	_AgeInteraction["CY"]=1;
+	_AgeInteraction["CC"]=10;
+	_AgeInteraction["CS"]=0.;
+	_AgeInteraction["CT"]=0.0;
+	_AgeInteraction["CY"]=0;
 
-	_AgeInteraction["SS"]=.4;
-	_AgeInteraction["ST"]=-0.5;
-	_AgeInteraction["SY"]=-0.2;
+	_AgeInteraction["SS"]=10;
+	_AgeInteraction["ST"]=0;
+	_AgeInteraction["SY"]=0;
 
-	_AgeInteraction["TT"]=1;
-	_AgeInteraction["TY"]=0.6;
+	_AgeInteraction["TT"]=10;
+	_AgeInteraction["TY"]=0;
 
-	_AgeInteraction["YY"]=0.9;
+	_AgeInteraction["YY"]=10;
 }
 void Person::setAgeGroup(){
 	if (_Age < 10)
@@ -302,9 +302,13 @@ double Person::getSociability(){
 string Person::getConnections(){
 	return _Connections;
 }
+vector<int> Person::getConnectionsi(){
+	return _Connectionsi;
+}
 
 void Person::clearConnections(){
 	_Connections = "";
+	_Connectionsi.clear();
 }
 
 void Person::Update(){
@@ -313,6 +317,7 @@ void Person::Update(){
 	 * \todo
 	 */
 	_Connections = "";
+	_Connectionsi.clear();
 	_Age += _AgeIncrement;
 
 	if (_State != 'D'){
@@ -346,8 +351,8 @@ void Person::InteractWithOthers(){
 	 *	2. Compute the effect of others in how much virions the person collects.
 	 *
 	 */
-	double criticalDistance  = 60;
-	double criticalDistanceD = 60;
+	double criticalDistance  = .01;
+	double criticalDistanceD = 3;
 	
 	double motionBias[2];
 	double r[4];
@@ -368,12 +373,14 @@ void Person::InteractWithOthers(){
 			_MotionBiasX += motionBias[0];
 			_MotionBiasY += motionBias[1];
 
-			_Connections.append("," + to_string((*ip)->getID()));
+			//_Connections.append("," + to_string((*ip)->getID()));
+			_Connectionsi.push_back((*ip)->getID());
 		}
 		if (dist != 0 & dist < criticalDistanceD){
-			_TotalVirion += 2*((*ip)->_ihdynamics.getV())/(dist*dist);
+			_TotalVirion += 1*((*ip)->_ihdynamics.getV())/(dist*dist);
 		}
 	}
+
 }
 void Person::computeMotionEffect(double* distVector, char ag, double * r){
 	/**
@@ -400,8 +407,8 @@ void Person::Move(){
 	double rx = xdist(*_generator);
 	double ry = ydist(*_generator);
 
-	double x = rx; //+ _MotionBiasX;
-	double y = ry; //+ _MotionBiasY;
+	double x = rx + _MotionBiasX;
+	double y = ry + _MotionBiasY;
 
 
 	if (_State == 'P' | _State == 'I'){
@@ -415,6 +422,7 @@ void Person::Move(double xr, double yr, string motionType){
 	 * \callgraph
 	 */
 
+	/*
 	if (_State == 'D') {
 		if (_Location->getType()=="Cemetery"){
 			return;
@@ -425,12 +433,27 @@ void Person::Move(double xr, double yr, string motionType){
 				return;
 			}
 		}
-	}
+	}*/
 
-	
 	double x = _X + xr; // r*cos(theta);
 	double y = _Y + yr; //*sin(theta);
 	double co[2] = {x,y};
+
+/*
+	if (_Time != 0 & (fmod(_Time,50)) < 1e-3){
+		if (_TravelerQ & (_State != 'D')){
+			cout << "============= We have a Traverler ======================" << endl;
+			int lid = rand() % (_AvailablePlaces.size()-2) + 1;
+			for (auto L = _AvailablePlaces.cbegin(); L != _AvailablePlaces.cend()-1; L++){
+				if (((*L)->getID()==lid)){
+					setLocation(*L);
+				}
+			}
+
+		}
+	}
+*/
+
 
 	if(_Location->ContainsQ(x, y)){
 		setCoordinates(co);

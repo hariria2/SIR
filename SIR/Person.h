@@ -100,6 +100,7 @@ public:
 	double getLifeExpectancy();
 	bool getTraverlerQ();
 	string getConnections();
+	vector<int> getConnectionsi();
 	char getAgeGroup();
 	double getSociability();
 	
@@ -193,6 +194,7 @@ private:
 	int _RecoveryVar;
 
 	string _Connections = "";
+	vector<int> _Connectionsi;
 
 	/// The level of interaction of two individuals based on their age groups.
 	map<string,double> _AgeInteraction; /**< Detailed description. */

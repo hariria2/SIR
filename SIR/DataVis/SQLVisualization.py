@@ -28,11 +28,11 @@ class SQLVisualization:
         self._MPeaks = [];
         self._PeakTimes = [];
         self._MPeakTimes = [];
-        self._PeakRes = 30.
+        self._PeakRes = 1.
         self._Prob = [];
         self._R2 = 0;
         self._stderr = 0;
-        self._neteork = [];
+        self._network = [];
         self.gr = '#32AF4B'
         self.re = '#AF324B'
         self.bl = '#323BAF'
@@ -309,7 +309,7 @@ class SQLVisualization:
         counter=collections.Counter(l)
         vals = [log10(x) for x in counter.keys()]
         freq = [log10(x) for x in counter.values()]
-        ml = int(floor(len(freq)*0.6))
+        ml = int(floor(len(freq)*0.8))
         slope, intercept, r_value, p_value, std_err = stats.linregress(vals[0:ml],freq[0:ml])
         vals = counter.keys()
         freq = counter.values()
@@ -341,7 +341,7 @@ class SQLVisualization:
         cc = collections.OrderedDict(sorted(counter.items()))
         vals = cc.keys()
 
-        ml = int(floor(len(vals)*0.8))
+        ml = int(floor(len(vals)*0.95))
         xl = [log10(x) for x in vals[0:ml]]
         yl = [log10(x) for x in self._Prob[0:ml]]
         slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
@@ -356,7 +356,7 @@ class SQLVisualization:
         cc = collections.OrderedDict(sorted(counter.items()))
         vals = cc.keys()
 
-        ml = int(floor(len(vals)*0.8))
+        ml = int(floor(len(vals)*0.95))
         xl = [log10(x) for x in vals[0:ml]]
         yl = [log10(x) for x in self._Prob[0:ml]]
         slope, intercept, r_value, p_value, std_err = stats.linregress(xl,yl)
@@ -364,12 +364,12 @@ class SQLVisualization:
         self._stderr = std_err;
         pi = plt.plot(vals, self._Prob,'k.',markersize=10) #this is a hack. Get rid of it.
         pi = plt.plot(vals, self._Prob)
-        pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
+        #pl = plt.plot(vals, [10**(slope*log10(x)+intercept) for x in vals])
         plt.ylim((0.01,1.1))
         plt.xscale('log')
         plt.yscale('log')
-        plt.setp(pi, 'Color', self.bk, 'LineWidth', 2)
-        plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
+        #plt.setp(pi, 'Color', self.bk, 'LineWidth', 2)
+        #plt.setp(pl, 'Color', self.re, 'LineWidth', 4, 'linestyle','--')
         plt.xlabel(r'Epidemic Size', fontsize=18)
         plt.ylabel(r'P(>s)', fontsize=18)
         plt.title('Slope: %2.2f, R^2: %2.4f' %(-slope+2,r_value**2), fontsize=18)
@@ -438,38 +438,40 @@ class SQLVisualization:
                 lines1, labels1 = ax1.get_legend_handles_labels()
                 lines2, labels2 = ax2.get_legend_handles_labels()
                 ax2.legend(lines1 + lines2, labels1 + labels2, bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=3, mode="expand", borderaxespad=0.)
-    def draw_graph(self,graph,fignum):
-        h = plt.figure(fignum);
+    def getGraph(self,ids, time):
+        peeps = self.getPerson(ids)
+        graph = []
+        for t in time:
+            for p in peeps:
+                for con in p._Connections[t]:
+                    graph.append(con)
         # extract nodes from graph
         nodes = set([n1 for n1, n2 in graph] + [n2 for n1, n2 in graph])
-        print nodes
         # create networkx graph
         G=nx.Graph()
-
         # add nodes
         for node in nodes:
             G.add_node(node)
-
         # add edges
         for edge in graph:
             G.add_edge(edge[0], edge[1])
-
+        return G
+    def getConnectivity(self,G):
+        return nx.average_node_connectivity(G);
+    def getClustering(self,G):
+        return nx.average_clustering(G);
+    def draw_graph(self,G,fignum):
+        h = plt.figure(fignum);
         # draw graph
         pos = nx.shell_layout(G)
         nx.draw(G, pos)
-    def draw_graph_detailed(self, graph, fignum, labels=None, graph_layout='shell',
+    def draw_graph_detailed(self, G, fignum, labels=None, graph_layout='shell',
                    node_size=1600, node_color='blue', node_alpha=0.3,
                    node_text_size=12,
                    edge_color='blue', edge_alpha=0.3, edge_tickness=1,
                    edge_text_pos=0.3,
                    text_font='sans-serif'):
         h = plt.figure(fignum);
-        # create networkx graph
-        G=nx.Graph()
-
-        # add edges
-        for edge in graph:
-            G.add_edge(edge[0], edge[1])
 
         # these are different layouts for the network you may try
         # shell seems to work best
@@ -500,14 +502,8 @@ class SQLVisualization:
         '''
         # show graph
         # plt.show()
-    def degree_dist(self,graph,fignum):
+    def degree_dist(self,G,fignum):
         h = plt.figure(fignum);
-        # create networkx graph
-        G=nx.Graph()
-
-        # add edges
-        for edge in graph:
-            G.add_edge(edge[0], edge[1])
         degree_sequence=sorted(nx.degree(G).values(),reverse=True) # degree sequence
         #print "Degree sequence", degree_sequence
         dmax=max(degree_sequence)
@@ -538,20 +534,8 @@ class SQLVisualization:
         plt.axis('off')
         nx.draw_networkx_nodes(Gcc,pos,node_size=20)
         nx.draw_networkx_edges(Gcc,pos,alpha=0.4)
-    def draw_person_connections(self, id, time, fignum):
-        peeps = self.getPerson(id)
-        graph = []
-        for t in time:
-            for p in peeps:
-                for con in p._Connections[t]:
-                    graph.append(con)
-        self.draw_graph_detailed(graph,fignum,graph_layout='spring',node_size=500)
+    def draw_person_connections(self, G, fignum):
+        self.draw_graph_detailed(G,fignum,graph_layout='spring',node_size=500)
         #self.degree_dist(graph,fignum)
-    def draw_degree_distribution(self, id, time, fignum):
-        peeps = self.getPerson(id)
-        graph = []
-        for t in time:
-            for p in peeps:
-                for con in p._Connections[t]:
-                    graph.append(con)
-        self.degree_dist(graph,fignum)
+    def draw_degree_distribution(self, G, fignum):
+        self.degree_dist(G,fignum)
