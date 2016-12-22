@@ -130,13 +130,13 @@ void SQLStorage::CreateTable(string table){
 	else if (table == "Connections") {
 		statement = "CREATE TABLE " +table+ "(" +
 		"INDX INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
-		"Time DOUBLE UNSIGNED NOT NULL, " +
 		"PersonA INT UNSIGNED NOT NULL REFERENCES People(ID), " +
-		"PersonB INT UNSIGNED NOT NULL REFERENCES People(ID)"   +
+		"PersonB INT UNSIGNED NOT NULL REFERENCES People(ID), "   +
+		"Weight INT UNSIGNED NOT NULL"   +
 		");";
 	}
 	else {
-		cout << "Wrong table name you dummy!!";
+		cout << "Wrong table name: " << table << " you dummy!!";
 	}
 	
 	query_states = mysql_query(_conn, statement.c_str());

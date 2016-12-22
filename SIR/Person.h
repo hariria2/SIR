@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 #include <map>
+#include <algorithm>
 
 #include "Place.h"
 #include "InHostDynamics.h"
@@ -68,6 +69,7 @@ public:
 	void setAgeInteraction();
 	void setAgeGroup();
 	void setSociability(double s);
+	void setAgeGroupRules();
 	
 	
 	// Getters
@@ -99,8 +101,9 @@ public:
 	int getRecVar();
 	double getLifeExpectancy();
 	bool getTraverlerQ();
-	string getConnections();
+	map<vector<int>,double> getConnections();
 	vector<int> getConnectionsi();
+	vector<vector<int>> getWeightedConnections();
 	char getAgeGroup();
 	double getSociability();
 	
@@ -114,6 +117,7 @@ public:
 	void CartesianDistance(Person* p, double* r);
 	//void Move(double theta, double r, string type = "DailyMovement", double demand = 0);
 	void computeMotionEffect(double* distVector, char ag, double* r);
+	void computeMotionEffect(double* distVector, int ag, double* r);
 	void InteractWithOthers();
 	/// Tell people how to move.
 	void Move();
@@ -129,6 +133,8 @@ public:
 	void addSIConnectionHist(int id);
 	void addAllConnection(int id);
 	void addAllConnectionHist(int id);
+
+	bool memberQ(vector<int>* v, int value);
 	
 	bool operator==(const Person& p) const;
 	bool operator=(Person &A) const;
@@ -151,7 +157,7 @@ private:
 	double _Age;
 	double _AgeIncrement;
 	double _LifeExpectancy;
-	char _AgeGroup;
+	char	 _AgeGroup;
 	string _Name;
 	double _Time;
 	double _TimeStep;
@@ -193,11 +199,14 @@ private:
 	int _IncubationVar;
 	int _RecoveryVar;
 
-	string _Connections = "";
 	vector<int> _Connectionsi;
+	vector<vector<int>> _WeightedConnections;
 
 	/// The level of interaction of two individuals based on their age groups.
 	map<string,double> _AgeInteraction; /**< Detailed description. */
+
+	map<vector<int>,double> _Connections;
+	map<int,char> _AgeGroupRules;
 
 };
 

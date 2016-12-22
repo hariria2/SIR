@@ -22,7 +22,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(600, 700);
+	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +43,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(600, 700);
+	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -64,7 +64,7 @@ _sqlDataPtr(d)
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(600, 700);
+	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -159,8 +159,7 @@ void Architect::Simulate(){
 	 * \callergraph
 	 *
 	 */
-	_BirthRate = (_N>0.0)? 0.02 : 0.02;
-	
+	_BirthRate = (_I>0.0)? 0.015 : 0.02;
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
 	if (_Store == "MYSQL"){
@@ -173,7 +172,7 @@ void Architect::Simulate(){
 		if (_Visualization == NULL){
 			
 			for (double t = 0; t < _EndTime; t += _TimeStep){  //Main Loop
-				
+
 				if (_PeoplePtr.empty()){
 					cout << "You have run out of people. Enjoy playing god without puppets." << endl;
 					return;
@@ -249,7 +248,7 @@ void Architect::Simulate(){
 					}
 				}
 			}
-			
+
 		}
 		else {
 			while (!glfwWindowShouldClose(_Visualization->getWindow())){
@@ -330,6 +329,7 @@ void Architect::Simulate(){
 				}
 			}
 		}
+		StoreConnections();
 	}
 	else{
 		
@@ -370,9 +370,14 @@ void Architect::Update(SQLStorage* data){
 	 */
 	string SQLStatement;
 	string SQLStatementC;
+	string SQLStatementD;
 	IncrementTime();
 	list<Person*> peeps;
 	vector<int> connections;
+	vector<int> oldconnections;
+	double weight;
+
+	_BirthRate = (_I>0.0)? 0.015 : 0.02;
 
 	for (auto pl = _AllPlaces.begin(); pl != _AllPlaces.end(); pl++){
 		peeps = *(*pl)->getOccupants();
@@ -395,6 +400,7 @@ void Architect::Update(SQLStorage* data){
 			to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
 			"),";
 
+			weight = 1;
 			connections = (*ip)->getConnectionsi();
 			for (auto i = connections.begin(); i != connections.end(); i++){
 				SQLStatementC = SQLStatementC + "(NULL, " +
@@ -402,12 +408,33 @@ void Architect::Update(SQLStorage* data){
 				to_string((*ip)->getID()) + ", " +
 				to_string(*i) +
 				"),";
+
+				if (memberQ(&oldconnections,*i)){
+					weight += _TimeStep;
+				}
+				else{
+					SQLStatementD = SQLStatementD + "(NULL, " +
+					to_string((*ip)->getTime()) + ", " +
+					to_string((*ip)->getID()) + ", " +
+					to_string(*i) + ", " +
+					to_string(weight) +
+					"),";
+				}
+
+			}  
+			oldconnections = connections;
+
+			//(*ip)->clearConnections();
+
+			/*
+			if (SQLStatementC != ""){
+				//SQLStatementC.erase(SQLStatementC.end()-1);
+				SQLStatementC.pop_back();
+				data -> InsertValue("Connections", SQLStatementC, true);
+				SQLStatementC = "";
 			}
-
-			(*ip)->clearConnections();
-
+			*/
 			(*ip)->setTime(_CurrentTime);
-
 			
 			if ((*ip)->getState()=='D'){
 				if (_CurrentTime >= (*ip)->getTimeOfDeath()+1){
@@ -422,35 +449,26 @@ void Architect::Update(SQLStorage* data){
 				}
 			}
 			else{
-
 				(*ip)->setNeighbors(&peeps);
 				((*ip)->getInHostDynamics()).setMaxInfLev(0);
 			}
 
 			(*ip)->Update();
 		}
-		if (SQLStatementC != ""){
-			//SQLStatementC.erase(SQLStatementC.end()-1);
-			SQLStatementC.pop_back();
-			data -> InsertValue("Connections", SQLStatementC, true);
-			SQLStatementC = "";
-		}
-	}
 
+	}
 
 	SQLStatement.pop_back();
 	data -> InsertValue("PersonValues",SQLStatement, true);
 
-	
 	PopulationData();
-	
 }
 void Architect::Update(){
 	/**
 	 * \callergraph
 	 */
 	IncrementTime();
-	
+	_BirthRate = (_I>0.0)? 0.015 : 0.02;
 	
 	list<Person*> peeps;
 	
@@ -596,6 +614,25 @@ void Architect::PrepDB(){
 	
 	
 }
+void Architect::StoreConnections(){
+	map<vector<int>,double>  connections;
+	string statement = "";
+	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend(); ip++){
+		cout << "Writing Person " << (*ip)->getID() << "'s connections." << endl;
+		connections = (*ip)->getConnections();
+		if (connections.size() > 0){
+			for (auto c = connections.begin(); c != connections.end(); ++c){
+				statement = statement + "(" + "NULL, " +
+				to_string((c->first)[0]) + ", " +
+				to_string((c->first)[1]) + ", " +
+				to_string((c->second)) + "),";
+			}
+			statement.pop_back();
+			_sqlDataPtr -> InsertValue("Connections", statement, true);
+		}
+		statement = "";
+	}
+}
 Place* Architect::LocFromCoo(double x, double y){
 	/**
 	 * \callergraph
@@ -733,4 +770,7 @@ void Architect::Funeral(Person* p){
 		(p->getLocation())->removePerson(p);
 		_Visualization->removePerson(p);
 	}
+}
+bool Architect::memberQ(vector<int>* v, int value){
+	return (find(v->begin(), v->end(),value)!=v->end());
 }

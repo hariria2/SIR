@@ -33,6 +33,7 @@ _AvailablePlaces(availplaces)
 	setLocation(location);
 	setDefaultLocation(location);
 	setAgeInteraction();
+	setAgeGroupRules();
 	setAgeGroup();
 
 }// end constructor
@@ -162,50 +163,44 @@ void Person::setNeighbors(list<Person *> *n){
 	_Neighbors = n;
 }
 void Person::setAgeInteraction(){
-	_AgeInteraction["AA"]=10;
+	_AgeInteraction["CC"]=0.1;
+	_AgeInteraction["TT"]=0.1;
+	_AgeInteraction["CT"]=0;
+	_AgeInteraction["YY"]=0.1;
+	_AgeInteraction["CY"]=0.1;
+	_AgeInteraction["AT"]=0.1;
+	_AgeInteraction["AA"]=0.1;
 	_AgeInteraction["AC"]=0;
-	_AgeInteraction["AS"]=0;
-	_AgeInteraction["AT"]=0;
-	_AgeInteraction["AY"]=0;
-
-	_AgeInteraction["CC"]=10;
-	_AgeInteraction["CS"]=0.;
-	_AgeInteraction["CT"]=0.0;
-	_AgeInteraction["CY"]=0;
-
-	_AgeInteraction["SS"]=10;
-	_AgeInteraction["ST"]=0;
-	_AgeInteraction["SY"]=0;
-
-	_AgeInteraction["TT"]=10;
 	_AgeInteraction["TY"]=0;
-
-	_AgeInteraction["YY"]=10;
+	_AgeInteraction["SS"]=0.1;
+	_AgeInteraction["CS"]=0;
+	_AgeInteraction["ST"]=0;
+	_AgeInteraction["SY"]=0.1;
 }
 void Person::setAgeGroup(){
-	if (_Age < 10)
-	{
-		_AgeGroup = 'C';
-	}
-	else if (_Age < 20)
-	{
-		_AgeGroup = 'T';
-	}
-	else if (_Age < 40)
-	{
-		_AgeGroup = 'Y';
-	}
-	else if (_Age < 65)
-	{
-		_AgeGroup = 'A';
-	}
-	else
-	{
-		_AgeGroup = 'S';
-	}
+	_AgeGroup = _AgeGroupRules[floor(_Age)];
 }
 void Person::setSociability(double s){
 	_Sociability = s;
+}
+void Person::setAgeGroupRules(){
+	for (int i = 0; i <= 100; i++){
+		if (i<10){
+			_AgeGroupRules[i] = 'C';
+		}
+		else if (i<20){
+			_AgeGroupRules[i] = 'T';
+		}
+		else if (i<30){
+			_AgeGroupRules[i] = 'Y';
+		}
+		else if(i<60){
+			_AgeGroupRules[i] = 'A';
+		}
+		else{
+			_AgeGroupRules[i] = 'S';
+		}
+	}
 }
 
 // Getters
@@ -299,16 +294,20 @@ char Person::getAgeGroup(){
 double Person::getSociability(){
 	return _Sociability;
 }
-string Person::getConnections(){
+map<vector<int>,double> Person::getConnections(){
 	return _Connections;
 }
 vector<int> Person::getConnectionsi(){
 	return _Connectionsi;
 }
 
+vector<vector<int>> Person::getWeightedConnections(){
+	return _WeightedConnections;
+}
+
 void Person::clearConnections(){
-	_Connections = "";
 	_Connectionsi.clear();
+	_WeightedConnections.clear();
 }
 
 void Person::Update(){
@@ -316,8 +315,8 @@ void Person::Update(){
 	 * \callergraph
 	 * \todo
 	 */
-	_Connections = "";
-	_Connectionsi.clear();
+	//_Connections = "";
+	//_Connectionsi.clear();
 	_Age += _AgeIncrement;
 
 	if (_State != 'D'){
@@ -351,36 +350,57 @@ void Person::InteractWithOthers(){
 	 *	2. Compute the effect of others in how much virions the person collects.
 	 *
 	 */
-	double criticalDistance  = .01;
-	double criticalDistanceD = 3;
+	double criticalDistance  = 1;
+	double criticalDistanceD = 1;
 	
 	double motionBias[2];
 	double r[4];
 	double dist;
-	double theta;
+	//double theta;
+	vector<int> con (2);
+	con[0]=_Age;
+	vector<int> connections = getConnectionsi();
+	vector<int> weightedConnection;
+	double weight;
+
+	clearConnections();
 
 	_TotalVirion = 0;
 	_MotionBiasX = 0;
 	_MotionBiasY = 0;
-
+	weight = 1;
 	for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
 		CartesianDistance(*ip,r);
 		dist  = sqrt(r[0]*r[0]+r[1]*r[1]);//r[0];
-		theta = atan2(r[1],r[0]);//r[1];
+																			//theta = atan2(r[1],r[0]);//r[1];
 
 		if (dist != 0 & dist < criticalDistance){
+			weightedConnection.clear();
 			computeMotionEffect(r,(*ip)->getAgeGroup(),motionBias);
+			//computeMotionEffect(r,(int) (*ip)->getAge(),motionBias);
 			_MotionBiasX += motionBias[0];
 			_MotionBiasY += motionBias[1];
-
-			//_Connections.append("," + to_string((*ip)->getID()));
-			_Connectionsi.push_back((*ip)->getID());
 		}
 		if (dist != 0 & dist < criticalDistanceD){
-			_TotalVirion += 1*((*ip)->_ihdynamics.getV())/(dist*dist);
+			_TotalVirion += 10*((*ip)->_ihdynamics.getV())/(dist*dist);
+			_Connectionsi.push_back((*ip)->getID());
+			con[1] = (*ip)->getAge();
+			sort(con.begin(), con.end());
+			_Connections[con] = _Connections[con]+_TimeStep;
 		}
 	}
+}
+void Person::computeMotionEffect(double* distVector, int ag, double * r){
+	/**
+	 * \callergraph
+	 * \todo
+	 */
 
+	double G = (abs(_Age-ag)<1)? 0.3:-0.1;
+	double critDist = 0.1; //This is so that the force doesn't grow very large
+
+	r[0] = (abs(distVector[0])<critDist)? 0:distVector[2]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[0]),2));//*cos(distVector[1]);
+	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
 }
 void Person::computeMotionEffect(double* distVector, char ag, double * r){
 	/**
@@ -389,10 +409,8 @@ void Person::computeMotionEffect(double* distVector, char ag, double * r){
 	 */
 	string interType = string()+_AgeGroup+ag;
 	sort(interType.begin(),interType.end());
-
 	double G = _AgeInteraction[interType];
-	double critDist = 1;
-
+	double critDist = 0.1; //This is so that the force doesn't grow very large
 	r[0] = (abs(distVector[0])<critDist)? 0:distVector[2]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[0]),2));//*cos(distVector[1]);
 	r[1] = (abs(distVector[1])<critDist)? 0:distVector[3]*pow(_TimeStep,2)*(_Sociability*G/pow(abs(distVector[1]),2));//*sin(distVector[1]);
 }
@@ -482,7 +500,7 @@ void Person::UpdateDiseaseWithInHost(){
 	}
 	else if (getState() == 'I'){
 		_NewInf = false;
-		if (_ihdynamics.getI() > 0.3 & _ihdynamics.getI() < 3 & _HasBeenSick==0){
+		if (_ihdynamics.getI() > 0.3 & _ihdynamics.getI() < 2.9 & _HasBeenSick==0){
 			setState('P');
 			setHasBeenSick(1);
 			_ihdynamics.HasBeenSick = 1;
@@ -562,11 +580,13 @@ void Person::Die(){
 	Move(0, 0, "IslandHopper");
 }
 
+bool Person::memberQ(vector<int>* v, int value){
+	return (find(v->begin(), v->end(),value)!=v->end());
+}
 
 bool Person::operator=(Person &A) const{
 	return (this->getState() == A.getState());
 }
-
 bool Person::operator == (const Person& p) const {
 	return (p._ID == this->_ID);
 }

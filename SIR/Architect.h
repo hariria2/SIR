@@ -76,12 +76,15 @@ public:
 	void AddPerson(Person *p);
 	void RemovePerson(Person *p);
 	void PrepDB();
+	void StoreConnections();
 	
 	void AddPerson(double x, double y);
 	void AddPerson(string s);
 	Place* LocFromCoo(double x, double y);
 	
 	void Funeral(Person* p);
+
+	bool memberQ(vector<int>*, int value);
 	
 private:
 	list<Person*> _PeoplePtr;

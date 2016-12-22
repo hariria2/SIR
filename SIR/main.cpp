@@ -61,12 +61,11 @@ bool store = StoreData;
 bool visualize = VisualizeData;
 double dt = visualize? timeStepVis:timeStep;
 double tend = endTime;
+double sz = visualize? stepSizeMeanVis:stepSizeMean;
 const double ageIncrement = dt/365;
 string version = Version;
 
 int main(){
-
-
 
 	FaroeIslands(tend, dt, version, store, visualize);
 	//SingleLocation(tend, dt, version, store, visualize);
@@ -120,7 +119,8 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	unsigned seed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 	
-	normal_distribution<double> ageDist(ageMean,ageVar);
+	uniform_real_distribution<double> ageDist(0,82);
+	//normal_distribution<double> ageDist(40,20);
 	normal_distribution<double> suDist(susceptibilityMean,susceptibilityVar);					// Susceptibility (S)
 	normal_distribution<double> icDist(initialConditionMean,initialConditionVar);     // Initial Condition
 	normal_distribution<double> betaDist(betaMean,betaVar);														// Beta (rate of decay of T cells)
@@ -129,7 +129,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	normal_distribution<double> CDist(CMean,CVar);																		// C (rate of decay of Virions)
 	normal_distribution<double> ILDist(0.001,0.0001);																	// No idea what this does
 	normal_distribution<double> sociability(sociabilityMean,sociabilityVar);
-	normal_distribution<double> randStep(stepSizeMean,stepSizeVar);
+	normal_distribution<double> randStep(sz,stepSizeVar);
 	normal_distribution<double> randLifeExpDist(lifeExpectencyMean,lifeExpectencyVar);
 
 	vector<Person*> people;
