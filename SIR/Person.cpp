@@ -1,4 +1,5 @@
 #include "Person.h"
+#include "parameters.h"
 
 Person::Person(int id, string name, double age, char state, InHostDynamics ihd, Domain* city, Place* location, vector<Place*> availplaces):
 _ihdynamics(ihd),
@@ -350,8 +351,6 @@ void Person::InteractWithOthers(){
 	 *	2. Compute the effect of others in how much virions the person collects.
 	 *
 	 */
-	double criticalDistance  = 1;
-	double criticalDistanceD = 1;
 	
 	double motionBias[2];
 	double r[4];
@@ -425,14 +424,21 @@ void Person::Move(){
 	double rx = xdist(*_generator);
 	double ry = ydist(*_generator);
 
-	double x = rx + _MotionBiasX;
-	double y = ry + _MotionBiasY;
+	double x,y;
 
+	if (motionBiasQ){
+		x = rx + _MotionBiasX;
+		y = ry + _MotionBiasY;
+	}
+	else {
+		x = rx;
+		y = ry;
+	}
 
-	if (_State == 'P' | _State == 'I'){
-		Move(x,y, "IslandHopper");
+	if ((_State == 'P' | _State == 'I') & varyStepSize){
+		Move(x/3,y/3, "IslandHopper");
 	}else{
-		Move(x/2,y/2, "IslandHopper");
+		Move(x,y, "IslandHopper");
 	}
 }
 void Person::Move(double xr, double yr, string motionType){

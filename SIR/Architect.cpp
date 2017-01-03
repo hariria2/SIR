@@ -8,6 +8,7 @@
 
 #include "Architect.h"
 #include "unistd.h"
+#include "Parameters.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualiza
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
+	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
 	
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
@@ -43,7 +44,7 @@ _sqlDataPtr(d)
 	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
+	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -64,7 +65,7 @@ _sqlDataPtr(d)
 	setVisualization(vis);
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(650, 1000);
+	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
 	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
 		(*ip)->setNeighbors(&_PeoplePtr);
 	}
@@ -159,7 +160,7 @@ void Architect::Simulate(){
 	 * \callergraph
 	 *
 	 */
-	_BirthRate = (_I>0.0)? 0.015 : 0.02;
+	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
 	if (_Store == "MYSQL"){
@@ -377,7 +378,7 @@ void Architect::Update(SQLStorage* data){
 	vector<int> oldconnections;
 	double weight;
 
-	_BirthRate = (_I>0.0)? 0.015 : 0.02;
+	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
 
 	for (auto pl = _AllPlaces.begin(); pl != _AllPlaces.end(); pl++){
 		peeps = *(*pl)->getOccupants();
@@ -468,7 +469,7 @@ void Architect::Update(){
 	 * \callergraph
 	 */
 	IncrementTime();
-	_BirthRate = (_I>0.0)? 0.015 : 0.02;
+	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
 	
 	list<Person*> peeps;
 	

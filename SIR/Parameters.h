@@ -10,15 +10,15 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "18"
-#define isSingleLocation     false
+#define Version              "1"
+#define isSingleLocation     true
 
 // Storage and Visualization
 #define StoreData            true
 #define VisualizeData        false
 
 // Global Timing
-#define endTime              36000
+#define endTime              43300
 #define timeStep             1
 #define timeStepVis          0.1
 
@@ -36,17 +36,28 @@
 #define lifeExpectencyMean   82
 
 
-// Variances
-#define ageVar               10
-#define susceptibilityVar    1
-#define initialConditionVar  .5
-#define betaVar              0.02
-#define deltaVar             0.02
-#define PVar                 0.1
-#define CVar                 0.1
-#define sociabilityVar       2
-#define stepSizeVar          0.05
-#define lifeExpectencyVar    10
+#define ageVar               0
+#define susceptibilityVar    0
+#define initialConditionVar  0
+#define betaVar              0
+#define deltaVar             0
+#define PVar                 0
+#define CVar                 0
+#define sociabilityVar       0
+#define stepSizeVar          0
+#define lifeExpectencyVar    0
+
+#define criticalDistance     4
+#define criticalDistanceD    4
+
+#define birthRate1           0.02  // 0.015
+#define birthRate2           0.02  //0.02
+#define introtimeDist1       650
+#define introtimeDist2       651
+
+#define motionBiasQ          false
+#define varyStepSize         false
 
 
 #endif /* Parameters_h */
+
