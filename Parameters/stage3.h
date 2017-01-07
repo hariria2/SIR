@@ -26,7 +26,7 @@
 #define ageMean              30
 #define susceptibilityMean   3.1
 #define initialConditionMean 2
-#define betaMean             2
+#define betaMean             3
 #define deltaMean            0.1
 #define PMean                2
 #define CMean                1

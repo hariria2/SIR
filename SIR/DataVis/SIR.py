@@ -52,3 +52,11 @@ class SIR:
         plt.setp(pr, 'Color', 'g', 'linewidth', 3)
         plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=3, mode="expand", borderaxespad=0.)
         plt.grid(True)
+
+
+if __name__ == "__main__":
+    sir = SIR(0,8,.01,.8,1.2,100);
+    sir.Initialize(999,1,0);
+    sir.Simulate();
+    sir.PlotSIR(1)
+    plt.show()

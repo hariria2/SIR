@@ -224,7 +224,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 		vis->setPeople(vpeople);
 		
 		
-		SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+		SQLStorage sqldata("localhost", "root", "", "sys", ver);
 		Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
 		
 		vis->Init();
@@ -255,7 +255,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	}
 	else {
 		cout << "version: " << ver << endl;
-		SQLStorage sqldata("localhost", "root", "", "anchorDB", ver);
+		SQLStorage sqldata("localhost", "root", "", "sys", ver);
 		Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
 		archie.setDomain(&Island);
 		archie.setPlaces(islands);
