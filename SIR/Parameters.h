@@ -10,7 +10,7 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "13"
+#define Version              "23"
 #define isSingleLocation     false
 
 // Storage and Visualization
@@ -47,15 +47,15 @@
 #define stepSizeVar          0.05
 #define lifeExpectencyVar    10
 
-#define criticalDistance     3
-#define criticalDistanceD    3
+#define criticalDistance     1.5
+#define criticalDistanceD    1.5
 
 #define birthRate1           0.015
 #define birthRate2           0.020
 #define introtimeDist1       650
 #define introtimeDist2       651
 
-#define motionBiasQ          false
+#define motionBiasQ          true
 #define varyStepSize         true
 
 
