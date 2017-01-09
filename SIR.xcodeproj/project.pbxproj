@@ -13,7 +13,8 @@
 		D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D71AB36B3A00726652 /* Domain.cpp */; };
 		D8B403E51AB36B3A00726652 /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403D91AB36B3A00726652 /* Person.cpp */; };
 		D8B403E61AB36B3A00726652 /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B403DB1AB36B3A00726652 /* Place.cpp */; };
-		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; };
+		D8B50A181D248636001065F4 /* Source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8B50A161D248636001065F4 /* Source.cpp */; };
+		D8E077A01BCF144C00FE27FA /* Visualization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E0779E1BCF144C00FE27FA /* Visualization.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		D8E077A31BCF173200FE27FA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A21BCF173200FE27FA /* OpenGL.framework */; };
 		D8E077A51BCF173A00FE27FA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E077A41BCF173A00FE27FA /* GLUT.framework */; };
 		D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8E242BF1B43204700AC0D10 /* InHostDynamics.cpp */; };
@@ -36,7 +37,7 @@
 		D81C45A71B6A9353007007FA /* SQLStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLStorage.h; sourceTree = "<group>"; };
 		D87484201AB36A78007EC18E /* SIR */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SIR; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87484231AB36A78007EC18E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		D8B403D01AB36B3A00726652 /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Architect.cpp; sourceTree = "<group>"; };
+		D8B403D01AB36B3A00726652 /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Architect.cpp; sourceTree = "<group>"; usesTabs = 1; };
 		D8B403D11AB36B3A00726652 /* Architect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Architect.h; sourceTree = "<group>"; };
 		D8B403D71AB36B3A00726652 /* Domain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Domain.cpp; sourceTree = "<group>"; };
 		D8B403D81AB36B3A00726652 /* Domain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Domain.h; sourceTree = "<group>"; };
@@ -44,8 +45,11 @@
 		D8B403DA1AB36B3A00726652 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		D8B403DB1AB36B3A00726652 /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Place.cpp; sourceTree = "<group>"; };
 		D8B403DC1AB36B3A00726652 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
+		D8B50A161D248636001065F4 /* Source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Source.cpp; sourceTree = "<group>"; };
+		D8B50A171D248636001065F4 /* Source.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Source.hpp; sourceTree = "<group>"; };
+		D8BA6CB61D3C3A41004761A8 /* Parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameters.h; sourceTree = "<group>"; };
 		D8E0779E1BCF144C00FE27FA /* Visualization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualization.cpp; sourceTree = "<group>"; };
-		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualization.h; sourceTree = "<group>"; };
+		D8E077A11BCF15E600FE27FA /* Visualization.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; lineEnding = 0; path = Visualization.h; sourceTree = "<group>"; };
 		D8E077A21BCF173200FE27FA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		D8E077A41BCF173A00FE27FA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		D8E242BE1B43203100AC0D10 /* InHostDynamics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InHostDynamics.h; sourceTree = "<group>"; };
@@ -86,6 +90,9 @@
 		D87484221AB36A78007EC18E /* SIR */ = {
 			isa = PBXGroup;
 			children = (
+				D8BA6CB61D3C3A41004761A8 /* Parameters.h */,
+				D8B50A161D248636001065F4 /* Source.cpp */,
+				D8B50A171D248636001065F4 /* Source.hpp */,
 				D81C45A61B6A9353007007FA /* SQLStorage.cpp */,
 				D8E077A11BCF15E600FE27FA /* Visualization.h */,
 				D8E0779E1BCF144C00FE27FA /* Visualization.cpp */,
@@ -162,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D87484241AB36A78007EC18E /* main.cpp in Sources */,
+				D8B50A181D248636001065F4 /* Source.cpp in Sources */,
 				D8E242C01B43204700AC0D10 /* InHostDynamics.cpp in Sources */,
 				D8B403E51AB36B3A00726652 /* Person.cpp in Sources */,
 				D8B403E41AB36B3A00726652 /* Domain.cpp in Sources */,
@@ -208,12 +216,22 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib/,
+					/usr/local/Cellar/mysql/5.7.13/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lz",
+					"-lm",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -246,11 +264,21 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib/,
+					/usr/local/Cellar/mysql/5.7.13/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lmysqlclient",
+					"-lz",
+					"-lm",
+				);
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -260,13 +288,13 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glfw3/3.1.1/include,
+					/usr/local/Cellar/glfw3/3.1.2/include,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/mysql/5.6.26/lib,
-					/usr/local/Cellar/glfw3/3.1.1/lib,
+					/usr/local/Cellar/glfw3/3.1.2/lib,
+					/usr/local/Cellar/mysql/5.7.13/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lmysqlclient",
@@ -283,13 +311,13 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glfw3/3.1.1/include,
+					/usr/local/Cellar/glfw3/3.1.2/include,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/usr/local/Cellar/mysql/5.6.26/include/mysql,
+					/usr/local/Cellar/mysql/5.7.13/include/mysql,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/mysql/5.6.26/lib,
-					/usr/local/Cellar/glfw3/3.1.1/lib,
+					/usr/local/Cellar/glfw3/3.1.2/lib,
+					/usr/local/Cellar/mysql/5.7.13/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lmysqlclient",
