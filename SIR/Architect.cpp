@@ -12,26 +12,6 @@
 
 using namespace std;
 
-Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis)
-{
-	_InitialTime  = t0;
-	_EndTime      = te;
-	_TimeStep     = ts;
-	_CurrentTime  = t0;
-	_TimeIndex    = 0;
-	_PeoplePtr    = pp;
-	setVisualization(vis);
-	PopulationData();
-	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
-	
-	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
-		(*ip)->setNeighbors(&_PeoplePtr);
-	}
-	_SQLBatchSize = 0;
-	_SaveIntegerTimes = false;
-}
-
 Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
 _sqlDataPtr(d)
 {
@@ -52,28 +32,6 @@ _sqlDataPtr(d)
 	_SaveIntegerTimes = false;
 }
 
-Architect::Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d):
-_sqlDataPtr(d)
-{
-	_InitialTime  = t0;
-	_EndTime      = te;
-	_TimeStep     = ts;
-	_CurrentTime  = t0;
-	_TimeIndex    = 0;
-	_PeoplePtr    = pp;
-	_Store        = store;
-	setVisualization(vis);
-	PopulationData();
-	_generator = new default_random_engine(_RandSeed);
-	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
-	for (auto ip = _PeoplePtr.cbegin(); ip != _PeoplePtr.cend();ip++){
-		(*ip)->setNeighbors(&_PeoplePtr);
-	}
-	_SQLBatchSize = 0;
-	_SaveIntegerTimes = false;
-}
-
-
 
 Architect::~Architect() {
 	delete _generator;
@@ -86,9 +44,6 @@ void Architect::setDomain(Domain *city){
 };
 void Architect::setPlaces(vector<Place *> places){
 	_AllPlaces = places;
-}
-void Architect::setVisualization(Visualization *vis){
-	_Visualization = vis;
 }
 void Architect::setBatchSize(int btchsz){
 	_SQLBatchSize=btchsz;
@@ -109,9 +64,6 @@ list<Person*> Architect::getPeople(){
 }
 vector<Place*> Architect::getPlaces(){
 	return _AllPlaces;
-}
-Visualization* Architect::getVisualization(){
-	return _Visualization;
 }
 double Architect::getMonthlyTime(){
 	int hour    = floor(_CurrentTime);
@@ -764,13 +716,7 @@ void Architect::Funeral(Person* p){
 	/**
 	 * \callergraph
 	 */
-	if (_Visualization == NULL) {
-		(p->getLocation())->removePerson(p);
-	}
-	else {
-		(p->getLocation())->removePerson(p);
-		_Visualization->removePerson(p);
-	}
+	(p->getLocation())->removePerson(p);
 }
 bool Architect::memberQ(vector<int>* v, int value){
 	return (find(v->begin(), v->end(),value)!=v->end());

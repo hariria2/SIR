@@ -6,15 +6,12 @@
 #include "SQLStorage.h"
 #include "Domain.h"
 #include "Place.h"
-#include "Visualization.h"
 #include "Person.h"
 #include <random>
 #include <vector>
 
 
 using namespace std;
-
-class Visualization;
 
 /**
  * Architect.h
@@ -31,9 +28,7 @@ class Architect {
 
 public:
 	
-	Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis);
 	Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d);
-	Architect(double t0, double te, double ts,list<Person *> pp,Visualization* vis, string store, SQLStorage* d);
 	
 	virtual ~Architect();
 	
@@ -43,8 +38,6 @@ public:
 	void setDomain(Domain *city);
 	/// setPlaces Docs
 	void setPlaces(vector<Place*> places);
-	///setVisualization Docs
-	void setVisualization(Visualization* vis);
 	void setBatchSize(int btchsz);
 	void setSaveIntegerTimes(bool siono);
 	
@@ -63,7 +56,6 @@ public:
 	Domain* getDomain();
 	list<Person*> getPeople();
 	vector<Place*> getPlaces();
-	Visualization* getVisualization();
 	
 	// Utilities
 	void IncrementTime();
@@ -97,7 +89,6 @@ private:
 	Domain* _City;
 	SQLStorage* _sqlDataPtr;
 	string _Store = "None";
-	Visualization* _Visualization = NULL;
 	unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine *_generator;
 	uniform_int_distribution<int> *_introtimeDist;
