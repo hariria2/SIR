@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <list>
-#include "SQLStorage.h"
 #include "Domain.h"
 #include "Place.h"
 #include "Person.h"
@@ -28,7 +27,7 @@ class Architect {
 
 public:
 	
-	Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d);
+	Architect(double t0, double te, double ts,list<Person *> pp, string store);
 	
 	virtual ~Architect();
 	
