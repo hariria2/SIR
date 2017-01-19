@@ -15,12 +15,10 @@
 
 // Storage and Visualization
 #define StoreData            true
-#define VisualizeData        false
 
 // Global Timing
 #define endTime              43300
 #define timeStep             1
-#define timeStepVis          0.1
 
 // Means
 #define ageMean              30
@@ -32,7 +30,6 @@
 #define CMean                1
 #define sociabilityMean      0
 #define stepSizeMean         3.5
-#define stepSizeMeanVis      0.3
 #define lifeExpectencyMean   82
 
 

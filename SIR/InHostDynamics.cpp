@@ -8,7 +8,8 @@
 
 #include "InHostDynamics.h"
 
-InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol,int incubationPeriod, int infectionPeriod, int recoveryPeriod){
+InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double vi, double tol,int incubationPeriod, int infectionPeriod, int recoveryPeriod)
+{
 	setID(id);
 	setdt(ti);
 	setT(sc);
@@ -22,119 +23,156 @@ InHostDynamics::InHostDynamics(int id, double ti, double sc, double ic, double v
 }
 
 // setters
-void InHostDynamics::setID(int id){
+void InHostDynamics::setID(int id)
+{
 	_ID = id;
 }
-void InHostDynamics::setdt(double ti){
+void InHostDynamics::setdt(double ti)
+{
 	_dt = ti;
 }
-void InHostDynamics::setT0(int it){
+void InHostDynamics::setT0(int it)
+{
 	_t0 = it;
 }
-void InHostDynamics::setBeta(double b){
+void InHostDynamics::setBeta(double b)
+{
 	_Beta = b;
 }
-void InHostDynamics::setDelta(double d){
+void InHostDynamics::setDelta(double d)
+{
 	_Delta = d;
 }
-void InHostDynamics::setP(double p){
+void InHostDynamics::setP(double p)
+{
 	_P = p;
 }
-void InHostDynamics::setC(double c){
+void InHostDynamics::setC(double c)
+{
 	_C = c;
 }
-void InHostDynamics::setT(double sc){
+void InHostDynamics::setT(double sc)
+{
 	_T  = sc;
 }
-void InHostDynamics::setTi(double sc){
+void InHostDynamics::setTi(double sc)
+{
 	_Ti = sc;
 }
-void InHostDynamics::setI(double ic){
+void InHostDynamics::setI(double ic)
+{
 	_I = ic;
 }
-void InHostDynamics::setV(double vi){
+void InHostDynamics::setV(double vi)
+{
 	_V = vi;
 }
-void InHostDynamics::setMaxInfLev(double mil){
+void InHostDynamics::setMaxInfLev(double mil)
+{
 	_MaxInfLev = mil;
 }
-void InHostDynamics::setNE(double ne){
+void InHostDynamics::setNE(double ne)
+{
 	_NE = ne;
 }
-void InHostDynamics::setTol(double tol){
+void InHostDynamics::setTol(double tol)
+{
 	_Tol = tol;
 }
-void InHostDynamics::setILRate(double ilrate){
+void InHostDynamics::setILRate(double ilrate)
+{
 	_ILRate = ilrate;
 }
-void InHostDynamics::setAverageInfectionPeriod(int ip){
+void InHostDynamics::setAverageInfectionPeriod(int ip)
+{
 	_AverageInfectionPeriod = ip;
 }
-void InHostDynamics::setAverageIncubationPeriod(int ip){
+void InHostDynamics::setAverageIncubationPeriod(int ip)
+{
 	_AverageIncubationPeriod = ip;
 }
-void InHostDynamics::setAverageRecoveryPeriod(int rp){
+void InHostDynamics::setAverageRecoveryPeriod(int rp)
+{
 	_AverageRecoveryPeriod = rp;
 }
 
 // getters
-int InHostDynamics::getID(){
+int InHostDynamics::getID()
+{
 	return _ID;
 }
-double InHostDynamics::getdt(){
+double InHostDynamics::getdt()
+{
 	return _dt;
 }
-double InHostDynamics::getT0(){
+double InHostDynamics::getT0()
+{
 	return _t0;
 }
-double InHostDynamics::getBeta(){
+double InHostDynamics::getBeta()
+{
 	return _Beta;
 }
-double InHostDynamics::getDelta(){
+double InHostDynamics::getDelta()
+{
 	return _Delta;
 }
-double InHostDynamics::getP(){
+double InHostDynamics::getP()
+{
 	return _P;
 }
-double InHostDynamics::getC(){
+double InHostDynamics::getC()
+{
 	return _C;
 }
-double InHostDynamics::getT(){
+double InHostDynamics::getT()
+{
 	return _T;
 }
-double InHostDynamics::getTi(){
+double InHostDynamics::getTi()
+{
 	return _Ti;
 }
-double InHostDynamics::getI(){
+double InHostDynamics::getI()
+{
 	return _I;
 }
-double InHostDynamics::getV(){
+double InHostDynamics::getV()
+{
 	return _V;
 }
-double InHostDynamics::getMaxInfLev(){
+double InHostDynamics::getMaxInfLev()
+{
 	return _MaxInfLev;
 }
-double InHostDynamics::getNE(){
+double InHostDynamics::getNE()
+{
 	return _NE;
 }
-double InHostDynamics::getTol(){
+double InHostDynamics::getTol()
+{
 	return _Tol;
 }
-double InHostDynamics::getILRate(){
+double InHostDynamics::getILRate()
+{
 	return _ILRate;
 }
-int InHostDynamics::getAverageInfectionPeriod(){
+int InHostDynamics::getAverageInfectionPeriod()
+{
 	return _AverageInfectionPeriod;
 }
-int InHostDynamics::getAverageIncubationPeriod(){
+int InHostDynamics::getAverageIncubationPeriod()
+{
 	return _AverageIncubationPeriod;
 }
-int InHostDynamics::getAverageRecoveryPeriod(){
+int InHostDynamics::getAverageRecoveryPeriod()
+{
 	return _AverageRecoveryPeriod;
 }
 
 //utilities
-void InHostDynamics::Simulate(){
+void InHostDynamics::Simulate()
+{
 	for (double tt = _t0; tt <= _t0+1; tt = tt+_dt){
 		Update();
 		if (getI() > getMaxInfLev()){
@@ -143,7 +181,8 @@ void InHostDynamics::Simulate(){
 	}
 	
 }
-void InHostDynamics::Update(){
+void InHostDynamics::Update()
+{
 	/**
 	 *\callergraph
 	 *
@@ -162,7 +201,8 @@ void InHostDynamics::Update(){
 	 */
 	Flow();
 
-	if (isnan(_V)){
+	if (isnan(_V))
+    {
 		cout << "V: " << _V << endl;
 		cout << "I: " << _I << endl;
 		cout << "T: " << _T << endl;
@@ -176,9 +216,9 @@ void InHostDynamics::Update(){
 	_I = _I + _dt*_dI;
 	_V = _V + _dt*_dV;
 	
-	/*if (_I < 1e-3){
+	if (_I < 1e-3){
 	 _I=0;
-	 }*/
+	 }
 	if (_V < 1e-2){
 		_V=0;
 	}
@@ -187,7 +227,8 @@ void InHostDynamics::Update(){
 		_I=0;
 	}
 }
-void InHostDynamics::Flow(){
+void InHostDynamics::Flow()
+{
 	/**
 	 *\callergraph
 	 *

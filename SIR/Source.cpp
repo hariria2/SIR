@@ -9,24 +9,30 @@
 #include "Source.hpp"
 
 
-Source::Source(string datadirectory){
+Source::Source(string datadirectory)
+{
 	setDataDirectory(datadirectory);
 }
 
-void Source::setDataDirectory(string dd){
+void Source::setDataDirectory(string dd)
+{
 	_DataDirectory = dd;
 }
-void Source::setPlaces(vector<Place *> ps){
+void Source::setPlaces(vector<Place *> ps)
+{
 	_Places = ps;
 }
 
-string Source::getDataDirectory(){
+string Source::getDataDirectory()
+{
 	return _DataDirectory;
 }
-vector<Place*> Source::getPlaces(){
+vector<Place*> Source::getPlaces()
+{
 	return _Places;
 }
-void Source::readGeneralData(string FileName, Domain *domain){
+void Source::readGeneralData(string FileName, Domain *domain)
+{
 
 	string filename;
 
@@ -48,7 +54,8 @@ void Source::readGeneralData(string FileName, Domain *domain){
 		string symax;
 		string spop;
 
-		while (File.good()){
+		while (File.good())
+        {
 			getline(File, sID, ',');
 			int ID = atoi(sID.c_str());
 
@@ -83,16 +90,19 @@ void Source::readGeneralData(string FileName, Domain *domain){
 		}
 		cout << "Finished reading the file. Will close now. " << endl;
 		File.close();
-	} else {
+	} else 
+    {
 		cout << "File did not open correctly." << endl;
 	}
 };
-void Source::getCoordinateDataForPlaces(){
+void Source::getCoordinateDataForPlaces()
+{
 	string placeName;
 	string filename = _DataDirectory;
 	vector<vector<double>> coordinates;
 
-	for (auto p=_Places.begin(); p<_Places.end(); p++){
+	for (auto p=_Places.begin(); p<_Places.end(); p++)
+    {
 		coordinates.clear();
 		placeName   = (*p)->getName();
 		filename    = _DataDirectory+placeName+".csv";
@@ -102,12 +112,14 @@ void Source::getCoordinateDataForPlaces(){
 	}
 
 }
-void Source::getPolygonDataForPlaces(){
+void Source::getPolygonDataForPlaces()
+{
 	string placeName;
 	string filename = _DataDirectory;
 	vector<vector<double>> triangles;
 
-	for (auto p=_Places.begin(); p<_Places.end(); p++){
+	for (auto p=_Places.begin(); p<_Places.end(); p++)
+    {
 		triangles.clear();
 		placeName   = (*p)->getName();
 		filename    = _DataDirectory+placeName+"Polygon"+".csv";
@@ -116,7 +128,8 @@ void Source::getPolygonDataForPlaces(){
 
 	}};
 
-vector<vector<double>> Source::readCoordinateFile(string filename){
+vector<vector<double>> Source::readCoordinateFile(string filename)
+{
 	ifstream File;
 	File.open(filename,ios_base::in);
 
@@ -129,10 +142,12 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 	vector<double> co;
 	vector<vector<double>> coordinates;
 
-	if (File.is_open()){
+	if (File.is_open())
+    {
 		cout << "Coordinate file for " << filename << " opened up correctly." << endl;
 
-		while (File.good()){
+		while (File.good())
+        {
 			co.clear();
 
 			getline(File, sx, ',');
@@ -149,13 +164,15 @@ vector<vector<double>> Source::readCoordinateFile(string filename){
 		}
 
 	}
-	else{
+	else
+    {
 		cout << "Coordinate file for " << filename << " FAILED to open." << endl;
 	}
 
 	return coordinates;
 }
-vector<vector<double>> Source::readPolygonFile(string filename){
+vector<vector<double>> Source::readPolygonFile(string filename)
+{
 	ifstream File;
 	File.open(filename,ios_base::in);
 
@@ -169,7 +186,8 @@ vector<vector<double>> Source::readPolygonFile(string filename){
 	vector<double> tri;
 	vector<vector<double>> tridata;
 
-	if (File.is_open()){
+	if (File.is_open())
+    {
 		cout << "Coordinate file for " << filename << " opened up correctly." << endl;
 
 		while (File.good()){

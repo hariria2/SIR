@@ -21,40 +21,49 @@ Place::Place(int id, string name, string type, double perimeter[2][2], Domain lo
 }// end constructor
 
 // setters
-void Place::setID(int id){
+void Place::setID(int id)
+{
 	_ID = id;
 }
-void Place::setName(string name){
+void Place::setName(string name)
+{
 	_Name = name;
 }
-void Place::setType(string type){
+void Place::setType(string type)
+{
 	_Type = type;
 }
-void Place::setPerimeter(double perimeter[2][2]){
+void Place::setPerimeter(double perimeter[2][2])
+{
 	for (int ii=0; ii<2; ii++){
 		for (int jj=0; jj<2; jj++){
 			Perimeter[ii][jj] = perimeter[ii][jj];
 		}
 	}
 }
-void Place::setInfectionRadius(int r){
+void Place::setInfectionRadius(int r)
+{
     _InfectionRadius = r;
 }
-void Place::setTotalPopulation(int pop){
+void Place::setTotalPopulation(int pop)
+{
     _TotalPopulation = pop;
 }
-void Place::setCoordinates(vector<vector<double>> coo){
+void Place::setCoordinates(vector<vector<double>> coo)
+{
 	for (auto s=coo.begin(); s<coo.end(); s++){
 		_Coordinates.push_back(*s);
 	}
 }
-void Place::setSides(){
+void Place::setSides()
+{
 	vector<double> side;
 	vector<double> co1;
 	vector<double> co2;
 	long size = _Coordinates.size();
 
-	for (int i=0; i<size-1; i++){
+	$for (int i=0; i<size-1; i++)
+    {
 		side.clear();
 		co1.clear();
 		co2.clear();
@@ -78,17 +87,21 @@ void Place::setSides(){
 
 	_Sides.push_back(side);
 }
-void Place::setPolygonData(vector<vector<double>> pd){
+void Place::setPolygonData(vector<vector<double>> pd)
+{
 	_PolygonData = pd;
 }
-void Place::setDistanceMatrix(){
+void Place::setDistanceMatrix()
+{
     double x1, x2, y1, y2;
     int id1, id2;
     //string key1, key2;
     double val;
-    for (auto p1=_Occupants.cbegin(); p1 != _Occupants.cend(); ++p1) {
+    for (auto p1=_Occupants.cbegin(); p1 != _Occupants.cend(); ++p1) 
+    {
         auto p2 = p1; ++p2;
-        for (; p2 != _Occupants.cend();++p2){
+        for (; p2 != _Occupants.cend();++p2)
+        {
             id1 = (*p1)->getID();
             id2 = (*p1)->getID();
             x1 = ((*p1)->getCoordinates())[0];
@@ -103,51 +116,65 @@ void Place::setDistanceMatrix(){
         }
     }
 }
-void Place::addPerson(Person* p){
+void Place::addPerson(Person* p)
+{
 	(_Occupants).push_back(p);
 }
-void Place::removePerson(Person* p){
+void Place::removePerson(Person* p)
+{
 	_Occupants.remove(p);
 }
 
 // getters
-int Place::getID(){
+int Place::getID()
+{
 	return _ID;
 }
-int Place::getTotalPopulation(){
+int Place::getTotalPopulation()
+{
     return _TotalPopulation;
 }
-string Place::getName(){
+string Place::getName()
+{
 	return _Name;
 }
-string Place::getType(){
+string Place::getType()
+{
 	return _Type;
 }
-string Place::getLocation(){
+string Place::getLocation()
+{
 	return _Location.getName();
 }
-int Place::getInfectionRadius(){
+int Place::getInfectionRadius()
+{
     return _InfectionRadius;
 }
-list<Person*>* Place::getOccupants(){
+list<Person*>* Place::getOccupants()
+{
     return &_Occupants;
 }
-vector<vector<double>> Place::getCoordinates(){
+vector<vector<double>> Place::getCoordinates()
+{
 	return _Coordinates;
 }
-vector<vector<double>> Place::getSides(){
+vector<vector<double>> Place::getSides()
+{
 	return _Sides;
 }
-vector<vector<double>> Place::getPolygonData(){
+vector<vector<double>> Place::getPolygonData()
+{
 	return _PolygonData;
 }
-double Place::Distance(double x1, double y1, double x2, double y2){
+double Place::Distance(double x1, double y1, double x2, double y2)
+{
     return sqrt(pow((x2-x1),2) + pow((y2 - y1),2));
 }
 int Place::areIntersecting(
 										float v1x1, float v1y1, float v1x2, float v1y2,
 										float v2x1, float v2y1, float v2x2, float v2y2
-										) {
+										) 
+{
 	float d1, d2;
 	float a1, a2, b1, b2, c1, c2;
 
@@ -200,11 +227,13 @@ int Place::areIntersecting(
 	// If they are not collinear, they must intersect in exactly one point.
 	return 1;
 }
-int Place::ContainsQ(double x, double y){
+int Place::ContainsQ(double x, double y)
+{
 	int intersections = 0;
 	int intQ;
 
-	for (int side = 0; side < _Sides.size(); side++) {
+	for (int side = 0; side < _Sides.size(); side++) 
+    {
 		intQ = areIntersecting(-.01, -.02, x, y, _Sides[side][0], _Sides[side][1], _Sides[side][2], _Sides[side][3]);
 		if (intQ){
 			intersections++;
