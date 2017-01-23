@@ -7,7 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D81CF9311E313EF4008855CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF9301E313EF4008855CB /* main.cpp */; };
+		D81CF9461E313F10008855CB /* Architect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF9371E313F10008855CB /* Architect.cpp */; };
+		D81CF9471E313F10008855CB /* Domain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF9391E313F10008855CB /* Domain.cpp */; };
+		D81CF9481E313F10008855CB /* InHostDynamics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF93B1E313F10008855CB /* InHostDynamics.cpp */; };
+		D81CF9491E313F10008855CB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF93D1E313F10008855CB /* main.cpp */; };
+		D81CF94A1E313F10008855CB /* Person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF93F1E313F10008855CB /* Person.cpp */; };
+		D81CF94B1E313F10008855CB /* Place.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF9411E313F10008855CB /* Place.cpp */; };
+		D81CF94D1E313F10008855CB /* Source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF9441E313F10008855CB /* Source.cpp */; };
+		D81CF9501E315577008855CB /* Storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D81CF94E1E315577008855CB /* Storage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +31,22 @@
 
 /* Begin PBXFileReference section */
 		D81CF92D1E313EF4008855CB /* SIR_BW */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SIR_BW; sourceTree = BUILT_PRODUCTS_DIR; };
-		D81CF9301E313EF4008855CB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D81CF9371E313F10008855CB /* Architect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Architect.cpp; path = ../../SIR/Architect.cpp; sourceTree = "<group>"; };
+		D81CF9381E313F10008855CB /* Architect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Architect.h; path = ../../SIR/Architect.h; sourceTree = "<group>"; };
+		D81CF9391E313F10008855CB /* Domain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Domain.cpp; path = ../../SIR/Domain.cpp; sourceTree = "<group>"; };
+		D81CF93A1E313F10008855CB /* Domain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Domain.h; path = ../../SIR/Domain.h; sourceTree = "<group>"; };
+		D81CF93B1E313F10008855CB /* InHostDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InHostDynamics.cpp; path = ../../SIR/InHostDynamics.cpp; sourceTree = "<group>"; };
+		D81CF93C1E313F10008855CB /* InHostDynamics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InHostDynamics.h; path = ../../SIR/InHostDynamics.h; sourceTree = "<group>"; };
+		D81CF93D1E313F10008855CB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../SIR/main.cpp; sourceTree = "<group>"; };
+		D81CF93E1E313F10008855CB /* Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Parameters.h; path = ../../SIR/Parameters.h; sourceTree = "<group>"; };
+		D81CF93F1E313F10008855CB /* Person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Person.cpp; path = ../../SIR/Person.cpp; sourceTree = "<group>"; };
+		D81CF9401E313F10008855CB /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = ../../SIR/Person.h; sourceTree = "<group>"; };
+		D81CF9411E313F10008855CB /* Place.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Place.cpp; path = ../../SIR/Place.cpp; sourceTree = "<group>"; };
+		D81CF9421E313F10008855CB /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Place.h; path = ../../SIR/Place.h; sourceTree = "<group>"; };
+		D81CF9441E313F10008855CB /* Source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Source.cpp; path = ../../SIR/Source.cpp; sourceTree = "<group>"; };
+		D81CF9451E313F10008855CB /* Source.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Source.hpp; path = ../../SIR/Source.hpp; sourceTree = "<group>"; };
+		D81CF94E1E315577008855CB /* Storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storage.cpp; sourceTree = "<group>"; };
+		D81CF94F1E315577008855CB /* Storage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Storage.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +79,22 @@
 		D81CF92F1E313EF4008855CB /* SIR_BW */ = {
 			isa = PBXGroup;
 			children = (
-				D81CF9301E313EF4008855CB /* main.cpp */,
+				D81CF9371E313F10008855CB /* Architect.cpp */,
+				D81CF94E1E315577008855CB /* Storage.cpp */,
+				D81CF94F1E315577008855CB /* Storage.hpp */,
+				D81CF9381E313F10008855CB /* Architect.h */,
+				D81CF9391E313F10008855CB /* Domain.cpp */,
+				D81CF93A1E313F10008855CB /* Domain.h */,
+				D81CF93B1E313F10008855CB /* InHostDynamics.cpp */,
+				D81CF93C1E313F10008855CB /* InHostDynamics.h */,
+				D81CF93D1E313F10008855CB /* main.cpp */,
+				D81CF93E1E313F10008855CB /* Parameters.h */,
+				D81CF93F1E313F10008855CB /* Person.cpp */,
+				D81CF9401E313F10008855CB /* Person.h */,
+				D81CF9411E313F10008855CB /* Place.cpp */,
+				D81CF9421E313F10008855CB /* Place.h */,
+				D81CF9441E313F10008855CB /* Source.cpp */,
+				D81CF9451E313F10008855CB /* Source.hpp */,
 			);
 			path = SIR_BW;
 			sourceTree = "<group>";
@@ -119,7 +156,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D81CF9311E313EF4008855CB /* main.cpp in Sources */,
+				D81CF9481E313F10008855CB /* InHostDynamics.cpp in Sources */,
+				D81CF9501E315577008855CB /* Storage.cpp in Sources */,
+				D81CF94D1E313F10008855CB /* Source.cpp in Sources */,
+				D81CF94B1E313F10008855CB /* Place.cpp in Sources */,
+				D81CF9471E313F10008855CB /* Domain.cpp in Sources */,
+				D81CF9491E313F10008855CB /* main.cpp in Sources */,
+				D81CF94A1E313F10008855CB /* Person.cpp in Sources */,
+				D81CF9461E313F10008855CB /* Architect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
