@@ -154,9 +154,13 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			string name = "randomName"+to_string(id);
 			double randage  = ageDist(generator);
 			double age = (randage < 1)? 1:floor(randage);
-			//if (ii == 1){
-			//    VirLev = 0.1;
-			//}
+
+			if (ii == 1){
+			    VirLev = 0.;
+			}
+			else{
+				VirLev = 0.0;
+			}
 			
 			randic  = icDist(generator);
 			ict     = (randic < 0.5)? 0.5:randic;
