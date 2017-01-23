@@ -12,8 +12,8 @@
 
 using namespace std;
 
-Architect::Architect(double t0, double te, double ts,list<Person *> pp, string store, SQLStorage* d):
-_sqlDataPtr(d)
+Architect::Architect(double t0, double te, double ts, list<Person *> pp, Storage* store):
+_Storage(store)
 {
 	_InitialTime  = t0;
 	_EndTime      = te;
@@ -21,7 +21,6 @@ _sqlDataPtr(d)
 	_CurrentTime  = t0;
 	_TimeIndex    = 0;
 	_PeoplePtr    = pp;
-	_Store        = store;
 	PopulationData();
 	_generator = new default_random_engine(_RandSeed);
 	_introtimeDist = new uniform_int_distribution<int>(introtimeDist1, introtimeDist2);
@@ -156,7 +155,8 @@ void Architect::Simulate()
 		int indx  = rand() % (_AllPlaces.size());
 		
 		introtime = (*_introtimeDist)(*_generator);
-		
+
+		// This block is here to add outside travelers (lightining events).
 		if (_CurrentTime != 0 & (fmod(_CurrentTime,introtime)) < 1e-6)
         {
 			
@@ -176,7 +176,8 @@ void Architect::Simulate()
 			AddPerson(x,y);
 			cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
 		}
-		
+
+		/*
 		if (timeIntegerQ){//(abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
 			cout << "time " << _CurrentTime << "!" << endl;
 			
@@ -205,16 +206,18 @@ void Architect::Simulate()
 				to_string(_D) + ", " +
 				to_string(_B) + ", " +
 				to_string(_N) + ")";
-				_sqlDataPtr->InsertValue("HistoryData",statement, true);
+							//_sqlDataPtr->InsertValue("HistoryData",statement, true);
 				batchctr = 0;
 				statement = "";
 			}
 			
-		}
+		}*/
 
-		Update(_sqlDataPtr);
-		
-		if (_BirthRate >= 1){ // Keep in mind this condition works correctly only for dt=1
+		Update(_Storage);
+
+		// Next block adds ppl by the process of birth
+		if (_BirthRate >= 1)
+		{ // Keep in mind this condition works correctly only for dt=1
 			for (int i = 0; i<_BirthRate; i++)
             {
 				AddPerson("NewBirth");
@@ -228,22 +231,23 @@ void Architect::Simulate()
 			}
 		}
 	}
-	StoreConnections();
+
+	//StoreConnections();
 	
 	cout << "Simulation Complete. Thank you...!" << endl;
 }
-void Architect::Update(SQLStorage* data)
+void Architect::Update(Storage* store)
 {
 	/**
 	 * \callergraph
 	 */
-	string SQLStatement;
-	string SQLStatementC;
-	string SQLStatementD;
+
+	store->saveSIR(_TimeIndex, _CurrentTime, _S, _I, _P, _R, _D);
+	store->startPersonDataSave(_CurrentTime);
+
 	IncrementTime();
 	list<Person*> peeps;
-	vector<int> connections;
-	vector<int> oldconnections;
+
 	double weight;
 
 	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
@@ -253,50 +257,21 @@ void Architect::Update(SQLStorage* data)
 		peeps = *(*pl)->getOccupants();
 		for (auto ip = peeps.begin(); ip != peeps.end(); ip++)
         {
-			 
-			SQLStatement = SQLStatement + "(NULL, " +
-			to_string((*ip)->getID()) + ", " +
-			to_string((*ip)->getTime()) + ", " +
-			to_string((*ip)->getAge()) + ", " +
-			to_string((*ip)->getCoordinates()[0]) + ", " +
-			to_string((*ip)->getCoordinates()[1]) + ", " +
-			to_string(((*ip)->getLocation())->getID()) + ", '" +
-			(*ip)->getState() + "', '" +
-			"" + "', " +
-			/*(*ip)->getConnections() + "', " +*/
-			to_string((*ip)->getHasBeenSick()) + ", " +
-			to_string(((*ip)->getInHostDynamics()).getT()) + ", " +
-			to_string(((*ip)->getInHostDynamics()).getI()) + ", " +
-			to_string(((*ip)->getInHostDynamics()).getV()) + ", " +
-			to_string(((*ip)->getInHostDynamics()).getMaxInfLev())+
-			"),";
+
+			store ->personDataSave((*ip)->getID(),
+														 (*ip)->getTime(),
+														 (*ip)->getAge(),
+														 (*ip)->getCoordinates(),
+														 ((*ip)->getLocation())->getID(),
+														 (*ip)->getState(),
+														 ((*ip)->getInHostDynamics()).getT(),
+														 ((*ip)->getInHostDynamics()).getI(),
+														 ((*ip)->getInHostDynamics()).getV());
 
 			weight = 1;
-			connections = (*ip)->getConnectionsi();
-			for (auto i = connections.begin(); i != connections.end(); i++)
-            {
-				SQLStatementC = SQLStatementC + "(NULL, " +
-				to_string((*ip)->getTime()) + ", " +
-				to_string((*ip)->getID()) + ", " +
-				to_string(*i) +
-				"),";
 
-				if (memberQ(&oldconnections,*i))
-                {
-					weight += _TimeStep;
-				}
-				else
-                {
-					SQLStatementD = SQLStatementD + "(NULL, " +
-					to_string((*ip)->getTime()) + ", " +
-					to_string((*ip)->getID()) + ", " +
-					to_string(*i) + ", " +
-					to_string(weight) +
-					"),";
-				}
 
-			}  
-			oldconnections = connections;
+			store->endPersonDataSave();
 
 			(*ip)->setTime(_CurrentTime);
 			
@@ -327,16 +302,16 @@ void Architect::Update(SQLStorage* data)
 
 	}
 
-	SQLStatement.pop_back();
-	data -> InsertValue("PersonValues",SQLStatement, true);
+	//SQLStatement.pop_back();
+	//data -> InsertValue("PersonValues",SQLStatement, true);
 
 	PopulationData();
 }
+
+/***
 void Architect::Update()
 {
-	/**
-	 * \callergraph
-	 */
+
 	IncrementTime();
 	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
 	
@@ -377,6 +352,7 @@ void Architect::Update()
  
 	PopulationData();
 }
+***/
 void Architect::DisplayTime()
 {
 	int day   = floor(_CurrentTime/24);
@@ -449,7 +425,8 @@ void Architect::PrepDB()
 	// ====================>>>>LocationData<<<========================== //
 	// Domain
 	
-	
+
+	/***
 	_sqlDataPtr->InsertValue("Location",
 							"NULL, '1', '" +
 							_City->getName() + "', " +
@@ -458,8 +435,10 @@ void Architect::PrepDB()
 							to_string((_City->Boundary)[0][1]) + ", " +
 							to_string((_City->Boundary)[1][0]) + ", " +
 							to_string((_City->Boundary)[1][1]));
+	***/
 	for(auto p = _AllPlaces.cbegin(); p != _AllPlaces.cend(); ++p) 
     {
+		/*
 		_sqlDataPtr->InsertValue("Location",
 								"NULL, '"        +
 								to_string((*p)->getID()) + "', '" +
@@ -469,6 +448,7 @@ void Architect::PrepDB()
 								to_string(((*p)->Perimeter)[0][1]) + ", " +
 								to_string(((*p)->Perimeter)[1][0]) + ", " +
 								to_string(((*p)->Perimeter)[1][1]));
+		 */
 	}
 	// =====================>>>End of LocationData<<<========================= //
 	
@@ -478,7 +458,8 @@ void Architect::PrepDB()
 	cout << "Prepping tables for " << ps << " people. Please wait..." << endl;
 	for(auto p = _PeoplePtr.cbegin(); p != _PeoplePtr.cend(); ++p) 
     {
-		
+
+		/*
 		_sqlDataPtr->InsertValue("People",
 								"NULL, '"        +
 								(*p)->getName() + "', " +
@@ -486,7 +467,7 @@ void Architect::PrepDB()
 								(*p)->getGender() + "', " +
 								to_string(((*p)->getDeafaultLocation())->getID()) + ", " +
 								to_string(((*p)->getLocation())->getID()));
-		
+		*/
 	}
 	
 	
@@ -509,7 +490,7 @@ void Architect::StoreConnections()
 				to_string((c->second)) + "),";
 			}
 			statement.pop_back();
-			_sqlDataPtr -> InsertValue("Connections", statement, true);
+			//_sqlDataPtr -> InsertValue("Connections", statement, true);
 		}
 		statement = "";
 	}
@@ -573,15 +554,16 @@ void Architect::AddPerson(double x, double y)
 	p->setSociability(1);
 	p->setLifeExpectancy(80);
 
-	if (_Store == "MYSQL"){
+	/*
 		_sqlDataPtr->InsertValue("People",
-														 "NULL, '" +
-														 p->getName() + "', "+
-														 to_string(p->getAge()) + ", '" +
-														 p->getGender() + "', " +
-														 to_string((p->getDeafaultLocation())->getID()) + ", " +
-														 to_string((p->getLocation())->getID()));
-	}
+	 "NULL, '" +
+	 p->getName() + "', "+
+	 to_string(p->getAge()) + ", '" +
+	 p->getGender() + "', " +
+	 to_string((p->getDeafaultLocation())->getID()) + ", " +
+	 to_string((p->getLocation())->getID()));
+	 */
+
 }
 void Architect::AddPerson(string NewBirth)
 {
@@ -623,17 +605,17 @@ void Architect::AddPerson(string NewBirth)
 	p->setLifeExpectancy(80);
 	//p->setTravelerQ(true);
 	p->setHasBeenSick(0);
-	if (_Store == "MYSQL"){
+	/*
 		_sqlDataPtr->InsertValue("People",
-														 "NULL, '" +
-														 p->getName() + "', "+
-														 to_string(p->getAge()) + ", '" +
-														 p->getGender() + "', " +
-														 to_string((p->getDeafaultLocation())->getID()) + ", " +
-														 to_string((p->getLocation())->getID()));
-	}
+	 "NULL, '" +
+	 p->getName() + "', "+
+	 to_string(p->getAge()) + ", '" +
+	 p->getGender() + "', " +
+	 to_string((p->getDeafaultLocation())->getID()) + ", " +
+	 to_string((p->getLocation())->getID()));
+	 */
 	AddPerson(p);
-	
+
 }
 void Architect::Funeral(Person* p)
 {

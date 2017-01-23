@@ -7,7 +7,6 @@
 #include "InHostDynamics.h"
 #include "Person.h"
 #include "Architect.h"
-#include "SQLStorage.h"
 #include "Source.hpp"
 #include <thread>
 #include "Parameters.h"
@@ -47,8 +46,8 @@ void GenerateHomes(vector<Place*> &homes, int perimeter[2][2], int homesize[2], 
 void getDefaultCoordinates(Place* location, double co[2]);
 void readIslandData(string FileName, Domain *city, vector<Place*> &islands);
 
-void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData=false, bool ShowVis=true);
-void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=true, bool ShowVis=true);
+void FaroeIslands(double EndTime, double TimeStep, string ver);
+
 
 //=================
 
@@ -57,20 +56,17 @@ void SingleLocation(double EndTime, double TimeStep, string ver, bool SaveData=t
 
 // ========================= Main ======================
 
-bool store = StoreData;
-bool visualize = VisualizeData;
-double dt = visualize? timeStepVis:timeStep;
+
+double dt   = timeStep;
 double tend = endTime;
-double sz = visualize? stepSizeMeanVis:stepSizeMean;
+double sz   = stepSizeMean;
 const double ageIncrement = dt/365;
 string version = Version;
 
 int main(){
 
-	FaroeIslands(tend, dt, version, store, visualize);
-	//SingleLocation(tend, dt, version, store, visualize);
-	
-	
+	FaroeIslands(tend, dt, version);
+
 	return 0;
 }
 // ========================= End main =================
@@ -78,9 +74,9 @@ int main(){
 
 // ========================= Example Simulations ==============================
 
-void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bool ShowVis){
+void FaroeIslands(double EndTime, double TimeStep, string ver){
 	
-	int maxdim = 110;
+	//int maxdim = 110;
 	int Boundary[2][2]   = {{0, 105},{0, 80}};
 	Domain Island("Faroe", Boundary);
 
@@ -97,19 +93,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 
 	else{
 
-		if (ShowVis){
-			Source src("/Users/sahand/Research/SIR/Source/");
-			src.readGeneralData("GeneralDataVis.csv", &Island);
-			src.getCoordinateDataForPlaces();
-			src.getPolygonDataForPlaces();
-			islands = src.getPlaces();
-		}
-		else{
-			Source src("/Users/sahand/Research/SIR/Source/");
-			src.readGeneralData("GeneralData.csv", &Island);
-			src.getCoordinateDataForPlaces();
-			islands = src.getPlaces();
-		}
+		Source src("/Users/sahand/Research/SIR/Source/");
+		src.readGeneralData("GeneralData.csv", &Island);
+		src.getCoordinateDataForPlaces();
+		islands = src.getPlaces();
 	}
 
 
@@ -120,7 +107,6 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	default_random_engine generator(seed);
 	
 	uniform_real_distribution<double> ageDist(0,82);
-	//normal_distribution<double> ageDist(40,20);
 	normal_distribution<double> suDist(susceptibilityMean,susceptibilityVar);					// Susceptibility (S)
 	normal_distribution<double> icDist(initialConditionMean,initialConditionVar);     // Initial Condition
 	normal_distribution<double> betaDist(betaMean,betaVar);														// Beta (rate of decay of T cells)
@@ -213,56 +199,19 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	
 	
 	double InitialTime = 0;
-	
-	
-	if (ShowVis & SaveData){
-		
-		int xdim = maxdim;
-		int ydim = maxdim;
-		Visualization* vis = getVisualization(xdim, ydim, true);
-		vis->setPlaces(islands);
-		vis->setPeople(vpeople);
-		
-		
-		SQLStorage sqldata("localhost", "root", "", "sys", ver);
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis, "MYSQL", &sqldata);
-		
-		vis->Init();
-		vis->setArchitect(&archie);
-		//vis->RenderSplash();
-		archie.setDomain(&Island);
-		archie.setPlaces(islands);
-		archie.setSaveIntegerTimes(true);
-		archie.setBatchSize(50);
-		archie.Simulate();
-	}
-	else if (ShowVis){
-		int xdim = maxdim;
-		int ydim = maxdim;
-		Visualization* vis = getVisualization(xdim, ydim, true);
-		vis->setPlaces(islands);
-		vis->setPeople(vpeople);
-		
-		
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople, vis);
-		vis->Init();
-		vis->setArchitect(&archie);
-		archie.setDomain(&Island);
-		archie.setPlaces(islands);
-		archie.setSaveIntegerTimes(true);
-		archie.setBatchSize(50);
-		archie.Simulate();
-	}
-	else {
-		cout << "version: " << ver << endl;
-		SQLStorage sqldata("localhost", "root", "", "sys", ver);
-		Architect archie(InitialTime,EndTime,TimeStep, vpeople,  "MYSQL", &sqldata);
-		archie.setDomain(&Island);
-		archie.setPlaces(islands);
-		archie.setSaveIntegerTimes(true);
-		archie.setBatchSize(5);
-		archie.Simulate();
-	}
+	int l = floor((EndTime-InitialTime)/TimeStep);
+
+	cout << "version: " << ver << endl;
+	string historyDataFolder = "historydata_v"+ver+"_";
+	string personValueDataFolder = "personvaluedata_v"+ver+"_";
+	Storage data(l, islands, historyDataFolder,personValueDataFolder);
+	Architect archie(InitialTime,EndTime,TimeStep, vpeople,&data);
+	archie.setDomain(&Island);
+	archie.setPlaces(islands);
+	archie.setSaveIntegerTimes(true);
+	archie.setBatchSize(5);
+	archie.Simulate();
+
 	
 	
 }

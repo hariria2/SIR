@@ -62,7 +62,7 @@ void Place::setSides()
 	vector<double> co2;
 	long size = _Coordinates.size();
 
-	$for (int i=0; i<size-1; i++)
+	for (int i=0; i<size-1; i++)
     {
 		side.clear();
 		co1.clear();

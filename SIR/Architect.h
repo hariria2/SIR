@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <list>
+#include <random>
+#include <vector>
 #include "Domain.h"
 #include "Place.h"
 #include "Person.h"
-#include <random>
-#include <vector>
-
+#include "Storage.hpp"
 
 using namespace std;
 
@@ -27,7 +27,7 @@ class Architect {
 
 public:
 	
-	Architect(double t0, double te, double ts,list<Person *> pp, string store);
+	Architect(double t0, double te, double ts,list<Person *> pp, Storage* store);
 	
 	virtual ~Architect();
 	
@@ -60,7 +60,7 @@ public:
 	void IncrementTime();
 	/// Loops through time and calls all the relevant functions.
 	void Simulate();
-	void Update(SQLStorage* dPtr);
+	void Update(Storage *store);
 	void Update();
 	void DisplayTime();
 	void PopulationData();
@@ -86,14 +86,13 @@ private:
 	double _CurrentTime;
 	int _TimeIndex;
 	Domain* _City;
-	SQLStorage* _sqlDataPtr;
-	string _Store = "None";
 	unsigned _RandSeed = (unsigned int) chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine *_generator;
 	uniform_int_distribution<int> *_introtimeDist;
 	bool _SaveIntegerTimes;
 	int _SQLBatchSize;
 	double _BirthRate;
+	Storage* _Storage;
 	int _S;
 	int _I;
 	int _P;
