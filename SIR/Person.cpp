@@ -367,7 +367,7 @@ void Person::InteractWithOthers(){
 	_TotalVirion = 0;
 	_MotionBiasX = 0;
 	_MotionBiasY = 0;
-	weight = 1;
+	weight = 10;
 	for(auto ip = _Neighbors->cbegin(); ip != _Neighbors->cend(); ++ip){
 		CartesianDistance(*ip,r);
 		dist  = sqrt(r[0]*r[0]+r[1]*r[1]);//r[0];

@@ -133,7 +133,7 @@ getLogData[db_String, OptionsPattern[]] :=
   data = SQLSelect[conn, "HistoryData", {"Time", "Infected"}][[7300 ;; -1]];
   d = Most@Map[Total, DeleteCases[Split[data[[All, 2]], # != 0 &], {0}]];
   pd = computeProbability[d];
-  model = LinearModelFit[Log@pd[[1 ;; Floor[0.8 Length[pd]]]], x, x];
+  model = LinearModelFit[Log@pd[[4 ;; Floor[0.8 Length[pd]]]], x, x];
   line = model["BestFit"];
   r2 = model["RSquared"];
   {sr, fr} = model[{"StandardizedResiduals", "FitResiduals"}];
@@ -149,7 +149,7 @@ getLogData[db_String, OptionsPattern[]] :=
      ImageSize -> Large, PlotStyle -> 96, Filling -> Axis,
      AspectRatio -> ar]];
   AppendTo[res, "Histogram" ->
-    Histogram[d, 20, ImageSize -> Large,
+    Histogram[d, {200}, ImageSize -> Large,
      PlotRange->{{0,OptionValue[AxisRange]}, Automatic},
      ChartElementFunction -> "FadingRectangle", ChartStyle -> Orange,
      Frame -> True,
@@ -159,8 +159,6 @@ getLogData[db_String, OptionsPattern[]] :=
   AppendTo[res, "Log Probability Distribution" ->
     ListLogLogPlot[pd, Joined -> True, Mesh -> Full, ImageSize -> Large,
       PlotRange -> {{20,OptionValue[AxisRange]}, {Min[0.1, Min[pd]], 1.1}},
-      (*Ticks -> {Table[{10^k, Superscript[10, k]}, {k, -2, 6}],
-      Table[{10^k, Superscript[10, k]}, {k, -5, 1, 0.2}]},*)
       GridLines -> Automatic, Frame -> True,
       FrameLabel -> {Style["Epidemic Size", FontSize -> 26],
       Style["Probability", FontSize -> 26]}, AspectRatio -> ar,

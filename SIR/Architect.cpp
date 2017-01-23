@@ -664,7 +664,7 @@ void Architect::AddPerson(double x, double y){
 	double dt = (p1->getInHostDynamics()).getdt();
 	
 	InHostDynamics ihd = InHostDynamics(id,dt, 3, 0, 0.3, 2,44, 40, 100);
-	ihd.setBeta(0.1);
+	ihd.setBeta(0.3);
 	ihd.setDelta(0.1);
 	ihd.setP(0.4);
 	ihd.setC(0.5);
