@@ -46,13 +46,16 @@ OMPFLAGS    = -openmp
 LIBS        = -lm
 endif
 
+
+main:
+	$(CC) main.exe main.cpp 
 mpi_greetings:
 	$(MPICC) -o mpi_greetings.exe mpi_greetings.c
 mpi_matmult:
 	$(MPICC) -o mpi_matmult.exe mpi_matmult.c
 all:
 	make clean
-	make mpi_matmult mpi_greetings
+	make main
 
 clean:
 	rm -rf *.exe
