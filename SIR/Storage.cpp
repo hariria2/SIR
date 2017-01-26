@@ -45,12 +45,19 @@ void Storage::saveSIR(int idx, double t, int S, int I, int P, int R, int D){
 	_RR[idx] = R;
 	_DD[idx] = D;
 
+
 }
 
 void Storage::writeSIR(){
+	string folder = "/Users/sahand/Research/SIR/Data/"+_HistoryDataFolderName+_timeStamp;
+	string historyFileName = folder+"/HistoryData.dat";
 
-	string historyFileName = "../Data/"+_HistoryDataFolderName+_timeStamp+"/HistoryData.dat";
+	mode_t process_mask = umask(0);
+	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+	umask(process_mask);
+
 	_HistoryDataFile.open(historyFileName, ios_base::out|ios_base::app);
+
 	cout << "Thank you!" << endl;
 	if (_HistoryDataFile.is_open()){
 		cout << "File "+historyFileName+" opened correctly." << endl;
@@ -80,13 +87,13 @@ void Storage::writeSIR(){
 
 }
 void Storage::startPersonDataSave(double t){
-	string folder = "../Data/"+_PersonValueFolderName+_timeStamp;
+	string folder = "/Users/sahand/Research/SIR/Data/"+_PersonValueFolderName+_timeStamp;
 
 	mode_t process_mask = umask(0);
 	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
 	umask(process_mask);
 
-	string movieFileName;
+	string personValueFileName;
 	stringstream ss(stringstream::in | stringstream::out);
 	ss << setprecision(4) << t;
 	string filename = ss.str();
@@ -97,12 +104,12 @@ void Storage::startPersonDataSave(double t){
 		filename = "0"+ filename;
 	}
 	// movieFileName = "../Data/"+movieFolderName+"/Time"+filename+".dat";
-	movieFileName = folder+"/Time"+filename+".dat";
+	personValueFileName = folder+"/Time"+filename+".dat";
 
-	_PersonValueFile.open(movieFileName, ios_base::out|ios_base::app);
+	_PersonValueFile.open(personValueFileName, ios_base::out|ios_base::app);
 	cout << "Thank you!" << endl;
 	if (_PersonValueFile.is_open()){
-		cout << "File "+movieFileName+" opened correctly." << endl;
+		cout << "File "+personValueFileName+" opened correctly." << endl;
 		_PersonValueFile << setw(8) << "ID,";
 		_PersonValueFile << setw(15) << "Time,";
 		_PersonValueFile << setw(15) << "Age,";

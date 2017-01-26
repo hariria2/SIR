@@ -137,12 +137,12 @@ void Architect::Simulate()
 	bool timeIntegerQ = (_SaveIntegerTimes)? (abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.):true;
 	cout << timeIntegerQ << endl;
 		
-	PrepDB();
+
+
 	int batchctr = 0;
 	string statement="";
 	int introtime;
-	
-		
+
 	for (double t = 0; t < _EndTime; t += _TimeStep)
     {  //Main Loop
 
@@ -177,42 +177,6 @@ void Architect::Simulate()
 			cout << "==================>>>>>Traveler arrived<<<<<==============" << endl;
 		}
 
-		/*
-		if (timeIntegerQ){//(abs(_CurrentTime - round(_CurrentTime)) < _TimeStep/2.){
-			cout << "time " << _CurrentTime << "!" << endl;
-			
-			if (batchctr < _SQLBatchSize)
-            {
-				
-				statement = statement + "(" + "NULL, " +
-				to_string(_CurrentTime) + ", " +
-				to_string(_S) + ", " +
-				to_string(_I) + ", " +
-				to_string(_P) + ", " +
-				to_string(_R) + ", " +
-				to_string(_D) + ", " +
-				to_string(_B) + ", " +
-				to_string(_N) + "),";
-				batchctr++;
-			}
-			else
-            {
-				statement = statement + "(" + "NULL, " +
-				to_string(_CurrentTime) + ", " +
-				to_string(_S) + ", " +
-				to_string(_I) + ", " +
-				to_string(_P) + ", " +
-				to_string(_R) + ", " +
-				to_string(_D) + ", " +
-				to_string(_B) + ", " +
-				to_string(_N) + ")";
-							//_sqlDataPtr->InsertValue("HistoryData",statement, true);
-				batchctr = 0;
-				statement = "";
-			}
-			
-		}*/
-
 		Update(_Storage);
 
 		// Next block adds ppl by the process of birth
@@ -232,8 +196,7 @@ void Architect::Simulate()
 		}
 	}
 
-	//StoreConnections();
-	
+	_Storage->writeSIR();
 	cout << "Simulation Complete. Thank you...!" << endl;
 }
 void Architect::Update(Storage* store)
@@ -243,7 +206,7 @@ void Architect::Update(Storage* store)
 	 */
 
 	store->saveSIR(_TimeIndex, _CurrentTime, _S, _I, _P, _R, _D);
-	store->startPersonDataSave(_CurrentTime);
+	//store->startPersonDataSave(_CurrentTime);
 
 	IncrementTime();
 	list<Person*> peeps;
@@ -252,26 +215,28 @@ void Architect::Update(Storage* store)
 
 	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
 
+
+
 	for (auto pl = _AllPlaces.begin(); pl != _AllPlaces.end(); pl++)
     {
 		peeps = *(*pl)->getOccupants();
 		for (auto ip = peeps.begin(); ip != peeps.end(); ip++)
         {
-
+			/***
 			store ->personDataSave((*ip)->getID(),
 														 (*ip)->getTime(),
 														 (*ip)->getAge(),
 														 (*ip)->getCoordinates(),
-														 ((*ip)->getLocation())->getID(),
+														((*ip)->getLocation())->getID(),
 														 (*ip)->getState(),
-														 ((*ip)->getInHostDynamics()).getT(),
-														 ((*ip)->getInHostDynamics()).getI(),
-														 ((*ip)->getInHostDynamics()).getV());
-
+														((*ip)->getInHostDynamics()).getT(),
+														((*ip)->getInHostDynamics()).getI(),
+														((*ip)->getInHostDynamics()).getV());
+			***/
 			weight = 1;
 
 
-			store->endPersonDataSave();
+
 
 			(*ip)->setTime(_CurrentTime);
 			
@@ -301,58 +266,10 @@ void Architect::Update(Storage* store)
 		}
 
 	}
-
-	//SQLStatement.pop_back();
-	//data -> InsertValue("PersonValues",SQLStatement, true);
-
+	//store->endPersonDataSave();
 	PopulationData();
 }
 
-/***
-void Architect::Update()
-{
-
-	IncrementTime();
-	_BirthRate = (_I>0.0)? birthRate1 : birthRate2;
-	
-	list<Person*> peeps;
-	
-	
-	for (auto pl = _AllPlaces.cbegin(); pl != _AllPlaces.cend(); pl++)
-    {
-		
-		peeps = *(*pl)->getOccupants();
-		
-		for (auto ip = peeps.cbegin(); ip != peeps.cend(); ip++)
-        {
-			
-			
-			(*ip)->setTime(_CurrentTime);
-			(*ip)->Update();
-			if ((*pl)->getType()=="Cemetery")
-            {
-				if (_CurrentTime > (*ip)->getTimeOfDeath()+15)
-                {
-					Funeral(*ip);
-					RemovePerson(*ip);
-					delete(*ip);
-					if (ip == _PeoplePtr.end()){
-						break;
-					} else {
-						ip = ip++;
-					}
-				}
-				
-			}else{
-				(*ip)->setNeighbors(&peeps);
-				((*ip)->getInHostDynamics()).setMaxInfLev(0);
-			}
-		}
-	}
- 
-	PopulationData();
-}
-***/
 void Architect::DisplayTime()
 {
 	int day   = floor(_CurrentTime/24);

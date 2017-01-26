@@ -10,14 +10,14 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "23"
+#define Version              "1"
 #define isSingleLocation     false
 
 // Storage and Visualization
 #define StoreData            true
 
 // Global Timing
-#define endTime              43300
+#define endTime              22
 #define timeStep             1
 
 // Means
