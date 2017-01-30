@@ -7,8 +7,8 @@ COMPTYPE="Cray"
 #------ Select known target machine
 #SYSTYPE="Gordon"
 #SYSTYPE="Stampede"
-SYSTYPE="BW"
-#SYSTYPE="Mac"
+#SYSTYPE="BW"
+SYSTYPE="Mac"
 #SYSTYPE="Linux"
 
 ifeq ($(SYSTYPE), "Mac")
