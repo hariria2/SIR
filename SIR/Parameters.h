@@ -10,11 +10,11 @@
 #define Parameters_h
 
 // Simulation Version
-#define Version              "2"
+#define Version              "1"
 #define isSingleLocation     true
 
 // Storage and Visualization
-#define StoreData            true
+#define StoreData            false
 #define VisualizeData        true
 
 // Global Timing
