@@ -1,8 +1,8 @@
 # Susceptible, Infected, Recovered (SIR)
 
+This is an Agent Based model of a disease propagation through a population. The model is designed to simulate the long-time effects of randomly recurrent introduction of a disease in an isolation population. There are data available for over 100 years of epidemics in the Faroe Islands. Here we show that our simulation predicts a powerlaw in the distribution of epidemic sizes given conditions similar to Faroe Islands. We then show that the power law breaks down as we gradually reduce variability in the system.  
 
-You can read the paper here: [paper](paper.pdf)
-
+You can read our paper here: [paper](paper.pdf)
 
 
 # Abstract
