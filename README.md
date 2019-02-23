@@ -62,3 +62,14 @@ There are a number of callback functions that return a value of void. These call
 
 Each of the draw and plot methods uses OpenGL for drawing the appropriate primitives. For example DrawPeople uses GL\_POINTS to draw points for each person. DrawPlaces uses GL\_POLYGON, and PlotSIR uses GL\_LINE\_STRIP. 
 
+## Storage
+
+Even though we visualize the data in real-time, all the data are saved for further analysis.
+
+### Storage
+Stores data in text files in appropriate folders. This has been deprecated in favor of SQL storage. 
+
+### SQLStorage
+Stores data in a MYSQL database. This mathod is preferred, because it allows random access of data by multiple users. Table \ref{tab:sql}.
+
+In order for this to work, one needs to have access to a MYSQLSERVER. In our case, we have the server installed on the local machine, and access it using localhost. We then need to tell C++ where to find the "mysql.h" file, and include it in the header of our code. 
