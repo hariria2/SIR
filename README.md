@@ -26,3 +26,39 @@ We will skip listing the properties and methods as they are trivial.
 
 ## Place.h
 An instance of this class is a location with a type, e.g., island. Depending on the type of location, individuals can enter and exit this location. The class is always aware of its occupants at any given time.
+
+
+## Person.h
+In a way, this class is the most important in the simulation. Instances of this class are people (agents) who participate in the simulation. Some of the properties of these objects are set during initialization, and some are injected by the controller (discussed later) during the simulation. Here is a listing of some of the most important properties of this class.
+
+Various methods are used to define the behavior of each person. Two methods are the most important, move() and updatedisease(). At each time step of the simulation these two methods are called. Depending on the location, state of the person, the neighbors and their states, and etc., these methods determine the properties of the individual at the next time step.
+
+## InHostDynamics.h
+
+This class handles the spread of disease in an individual's body. It injects the relevant values into class Person at each time step, as regulated by the **Architect** (discussed later). There are three important methods in this class, Flow(), Update(), Simulate().
+
+## Disease.h
+This class is trivial in many ways. It only acts as a container for holding values for a given disease such as the average incubation period, average recovery period, etc. 
+
+## Controller
+
+Controller is a portion of the program that handles the timing and Communication among various components. In essence, it is the central control that makes sure all the right functions are called at the right time and on the right objects. 
+
+In our code, there is one class, **Architect**, that handles all the responsibilities of the controller. It manages time, calls update functions on each person, computes populations, passes values to the visualization class, and sends data to storage.
+
+## Architect.h
+As mentioned, this class manages the program.
+
+
+## View (Visualization)
+
+This is the portion of the code that handles visualization of the data as well as the user interaction while the simulation is running. It is handled by one class, namely Visualization.h. In order for this to work, one needs to have access to OpenGL framework, and include the GLFW library. This simulation was developed in a Mac environment, and XCode was used for compiling. OpenGL framework is included in XCode, but one needs to download GLFW and include the appropriate header file and library file paths. 
+
+Once the working environment is set up, we can get into the details of implementation. First we list the properties and methods, and then discuss how the class works. 
+
+The property, window, is essentially a window where we can draw all the OpenGL elements. During initialization, the size of this window can be chosen. It can also be set to full screen, as it is in our example here. The original coordinates on the screen for from -1 to 1, left to right, and -1 to 1 bottom to top. We therefore need to have transformation functions that map the coordinates of our model into these coordinates on the screen. We also factor in the reduction factors. The reduction factors are there to create extra space on the side and button of the simulation screen for providing extra information.
+
+There are a number of callback functions that return a value of void. These callback functions handle events such as motion of the mouse on the screen, clicking of the mouse, and key strokes from the keyboard. At each time step, these events are polled, and an action is assigned to each one. For example, hitting the Esc button on the keyboard will close the window. Clicking inside a location will return the coordinates of that point, create a new agent, and add that agent into the simulation at the specified position. 
+
+Each of the draw and plot methods uses OpenGL for drawing the appropriate primitives. For example DrawPeople uses GL\_POINTS to draw points for each person. DrawPlaces uses GL\_POLYGON, and PlotSIR uses GL\_LINE\_STRIP. 
+
