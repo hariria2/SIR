@@ -120,7 +120,11 @@ computeProbability[data_] :=
   Thread[{Sort@AllSizes, Probs}]
   ];
 
+<<<<<<< HEAD
 ar = 0.5;
+=======
+ar = 7/24;
+>>>>>>> current
 
 Options[getLogData] = {AxisRange->Automatic}
 
@@ -143,8 +147,14 @@ getLogData[db_String, OptionsPattern[]] :=
      PlotStyle -> {{Thick, SIRRed}},
      PlotRange -> Full,
      Frame -> True,
+<<<<<<< HEAD
      FrameLabel -> {Style["Epidemic Number", FontSize -> 26],
        Style["Epidemic Size", FontSize -> 26]},
+=======
+     FrameLabel -> {Style["Epidemic Number", FontSize -> 38],
+       Style["Epidemic Size", FontSize -> 38]},
+     FrameTicksStyle -> Directive["Label", 25],
+>>>>>>> current
      LabelStyle -> Directive[Medium, Bold],
      ImageSize -> Large, PlotStyle -> 96, Filling -> Axis,
      AspectRatio -> ar]];
@@ -153,15 +163,29 @@ getLogData[db_String, OptionsPattern[]] :=
      PlotRange->{{0,OptionValue[AxisRange]}, Automatic},
      ChartElementFunction -> "FadingRectangle", ChartStyle -> Orange,
      Frame -> True,
+<<<<<<< HEAD
      FrameLabel -> {Style["Epidemic Size", FontSize -> 26],
        Style["Count", FontSize -> 26]}, AspectRatio -> ar,
+=======
+     FrameLabel -> {Style["Epidemic Size", FontSize -> 38],
+       Style["Count", FontSize -> 38]},
+     FrameTicksStyle -> Directive["Label", 25],
+     AspectRatio -> ar,
+>>>>>>> current
      LabelStyle -> Directive[Medium, Bold]]];
   AppendTo[res, "Log Probability Distribution" ->
     ListLogLogPlot[pd, Joined -> True, Mesh -> Full, ImageSize -> Large,
       PlotRange -> {{20,OptionValue[AxisRange]}, {Min[0.1, Min[pd]], 1.1}},
       GridLines -> Automatic, Frame -> True,
+<<<<<<< HEAD
       FrameLabel -> {Style["Epidemic Size", FontSize -> 26],
       Style["Probability", FontSize -> 26]}, AspectRatio -> ar,
+=======
+      FrameLabel -> {Style["Epidemic Size", FontSize -> 38],
+      Style["Probability", FontSize -> 38]},
+      FrameTicksStyle -> Directive["Label", 25],
+      AspectRatio -> ar,
+>>>>>>> current
       LabelStyle -> Directive[Medium, Bold]]];
   AppendTo[res, "Log Distribution" -> ListLogLogPlot[Reverse@Sort@d,
      Joined -> True,

@@ -124,6 +124,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	normal_distribution<double> suDist(susceptibilityMean,susceptibilityVar);					// Susceptibility (S)
 	normal_distribution<double> icDist(initialConditionMean,initialConditionVar);     // Initial Condition
 	normal_distribution<double> betaDist(betaMean,betaVar);														// Beta (rate of decay of T cells)
+	normal_distribution<double> kDist(kMean,kVar);														        // k (rate of growth of E cells)
 	normal_distribution<double> deltaDist(deltaMean,deltaVar);												// Delta (rate of decay of I cells)
 	normal_distribution<double> PDist(PMean,PVar);																		// P (rate of growth of Virions)
 	normal_distribution<double> CDist(CMean,CVar);																		// C (rate of decay of Virions)
@@ -139,6 +140,7 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 	double randsu, sus;
 	double randil, il;
 	double randbeta, beta;
+	double randk, k;
 	double randdelta, delta;
 	double randP, P;
 	double randC, C;
@@ -176,6 +178,10 @@ void FaroeIslands(double EndTime, double TimeStep, string ver, bool SaveData, bo
 			randbeta  = betaDist(generator);
 			beta      = (randbeta < 0.01)? 0.01:randbeta;
 			ihd.setBeta(beta);
+
+			randk  = kDist(generator);
+			k      = (randk < 0.01)? 0.01:randk;
+			ihd.setK(k);
 			
 			randdelta  = deltaDist(generator);
 			delta      = (randdelta < 0.01)? 0.01:randdelta;

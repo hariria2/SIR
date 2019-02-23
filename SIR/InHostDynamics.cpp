@@ -37,6 +37,9 @@ void InHostDynamics::setBeta(double b){
 void InHostDynamics::setDelta(double d){
 	_Delta = d;
 }
+void InHostDynamics::setK(double k){
+	_K = k;
+}
 void InHostDynamics::setP(double p){
 	_P = p;
 }
@@ -51,6 +54,9 @@ void InHostDynamics::setTi(double sc){
 }
 void InHostDynamics::setI(double ic){
 	_I = ic;
+}
+void InHostDynamics::setE(double E){
+	_E = E;
 }
 void InHostDynamics::setV(double vi){
 	_V = vi;
@@ -173,6 +179,7 @@ void InHostDynamics::Update(){
 	}
 	
 	_T = _T + _dt*_dT;
+	_E = _E + _dt*_dE;
 	_I = _I + _dt*_dI;
 	_V = _V + _dt*_dV;
 	
@@ -205,7 +212,8 @@ void InHostDynamics::Flow(){
 	 */
 	_NE = (_NE > 1)? 1:_NE;
 	_dT = -_Beta*_T*_V;
-	_dI = _Beta*_T*_V - _Delta*_I;
+	_dE = _Beta*_T*_V - _K*_E;
+	_dI = _K*_E - _Delta*_I;
 	_dV = _P*_I - _C*_V + _NE;
 	
 }

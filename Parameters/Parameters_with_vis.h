@@ -10,20 +10,11 @@
 #define Parameters_h
 
 // Simulation Version
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-#define Version              "23"
-=======
 #define Version              "1"
->>>>>>> current
-#define isSingleLocation     false
-=======
-#define Version              "2"
 #define isSingleLocation     true
->>>>>>> Stashed changes
 
 // Storage and Visualization
-#define StoreData            true
+#define StoreData            false
 #define VisualizeData        true
 
 // Global Timing
@@ -37,37 +28,14 @@
 #define initialConditionMean 3
 #define betaMean             0.4
 #define deltaMean            0.1
-<<<<<<< HEAD
 #define PMean                0.4
 #define CMean                0.8
-=======
-#define kMean                3
-#define PMean                2
-#define CMean                1
->>>>>>> current
 #define sociabilityMean      0
 #define stepSizeMean         0.35
 #define stepSizeMeanVis      0.35
 #define lifeExpectencyMean   82
 
 
-<<<<<<< Updated upstream
-#define ageVar               10
-#define susceptibilityVar    1
-#define initialConditionVar  .5
-#define betaVar              0.02
-#define kVar								 0.02
-#define deltaVar             0.02
-#define PVar                 0.1
-#define CVar                 0.1
-#define sociabilityVar       2
-#define stepSizeVar          0.05
-#define lifeExpectencyVar    10
-
-<<<<<<< HEAD
-#define criticalDistance     1.5
-#define criticalDistanceD    1.5
-=======
 #define ageVar               0
 #define susceptibilityVar    0.
 #define initialConditionVar  0.
@@ -81,19 +49,14 @@
 
 #define criticalDistance     0.1
 #define criticalDistanceD    1.7
->>>>>>> Stashed changes
-=======
-#define criticalDistance     1
-#define criticalDistanceD    1
->>>>>>> current
 
-#define birthRate1           0.015
-#define birthRate2           0.020
+#define birthRate1           0.02  // 0.015
+#define birthRate2           0.02  //0.02
 #define introtimeDist1       650
 #define introtimeDist2       652
 
-#define motionBiasQ          true
-#define varyStepSize         true
+#define motionBiasQ          false
+#define varyStepSize         false
 
 
 #endif /* Parameters_h */

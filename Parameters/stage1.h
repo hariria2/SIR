@@ -47,8 +47,8 @@
 #define stepSizeVar          0
 #define lifeExpectencyVar    0
 
-#define criticalDistance     3
-#define criticalDistanceD    3
+#define criticalDistance     4
+#define criticalDistanceD    4
 
 #define birthRate1           0.02  // 0.015
 #define birthRate2           0.02  //0.02

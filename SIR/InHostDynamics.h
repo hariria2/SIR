@@ -27,10 +27,12 @@ public:
 	void setT0(int it);
 	void setBeta(double b);
 	void setDelta(double d);
+	void setK(double k);
 	void setP(double p);
 	void setC(double c);
 	void setT(double sc);
 	void setTi(double sc);
+	void setE(double E);
 	void setI(double ic);
 	void setV(double vi);
 	void setMaxInfLev(double mil);
@@ -53,10 +55,12 @@ public:
 	double getT0();
 	double getBeta();
 	double getDelta();
+	double getK();
 	double getP();
 	double getC();
 	double getT();
 	double getTi();
+	double getE();
 	double getI();
 	double getV();
 	double getMaxInfLev();
@@ -90,12 +94,16 @@ private:
 	double _V;
 	/// Total number of infcted cells. This is a state variable.
 	double _I;
+	/// Total number of Exposed cells. This is a state variable.
+	double _E;
 	/// Total number of susceptible cells. This is a state variable.
 	double _T;
 	/// Initial susceptibility level of the individual.
 	double _Ti;
 	/// Change of virion level per time.
 	double _dV;
+	/// Change of number of exposed cells level per time.
+	double _dE;
 	/// Change in number of infected cells per time.
 	double _dI;
 	/// Change in number of susceptible cells per time.
@@ -108,6 +116,8 @@ private:
 	// parameters
 	/// The rate at which number of suscebtile/infected cells decrease/increase.
 	double _Beta;
+	/// Rate at which exposed cells become infected
+	double _K;
 	/// The rate at which number of infected cells decrease.
 	double _Delta;
 	/// The rate at which number of virion increase because of infected cells.
